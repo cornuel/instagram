@@ -1,4 +1,4 @@
-export interface IUser {
+export interface IProfile {
   id: number
   username: string
   full_name?: string
@@ -12,9 +12,9 @@ export interface IUser {
   updated_at?: string
 }
 
-export interface IPaginatedUsers {
+export interface IPaginatedProfiles {
   count: number
   next: string
   previous: string
-  results: IUser[]
+  results: IProfile[]
 }
