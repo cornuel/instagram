@@ -1,85 +1,60 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import LoadingProgress from '@/components/Utils/LoadingProgress.vue'
+import Splash from '@/components/Utils/Splash.vue'
+
+import { RouterView, useRoute } from 'vue-router'
+import { watch, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import {
+  useModalStore,
+  useProfileStore,
+  useThemeStore,
+  useResizeStore,
+  useLoadingStore
+} from '@/stores'
+import { useResize } from '@/composables'
+
+useResize()
+const route = useRoute()
+const { stopScroll } = storeToRefs(useModalStore())
+const { darkMode } = storeToRefs(useThemeStore())
+const { screen } = storeToRefs(useResizeStore())
+const { isLoadingSplash } = storeToRefs(useLoadingStore())
+
+watch(darkMode, (newTheme) => {
+  if (newTheme) document.documentElement.classList.add('dark')
+  else document.documentElement.classList.remove('dark')
+})
+
+// onMounted(() => {
+//   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+//   if (isDark) useThemeStore().setTheme(true)
+//   else useThemeStore().setTheme(false)
+// })
+
+watch(stopScroll, (active) => {
+  document.documentElement.style.overflow = active ? 'hidden' : 'visible'
+})
+
+const token = useProfileStore().getToken();
+if (token) {
+  useProfileStore().setAxiosAuthHeader(token);
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div
+    class="has-[active-overlay]:overflow-y-scroll"
+    :class="[{ 'active-overlay': stopScroll }, screen]"
+  >
+    <Splash v-if="isLoadingSplash" />
+    <KeepAlive>
+      <Component :is="route.meta.layout || 'div'">
+        <LoadingProgress />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+        <RouterView />
+      </Component>
+    </KeepAlive>
+  </div>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>

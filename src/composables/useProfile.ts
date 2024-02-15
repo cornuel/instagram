@@ -5,7 +5,7 @@ import axios from 'axios'
 
 export const useProfile = () => {
   const profileStore = useProfileStore()
-  
+
   const getViewedProfile = async (userSlug: string) => {
     try {
       const response = await axios.get(
