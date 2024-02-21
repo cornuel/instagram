@@ -7,9 +7,8 @@ import MoonIcon from '@icons/moon.svg'
 import ReportIcon from '@icons/report.svg'
 
 import UiSwitchButton from '@/components/Atom/UiSwitchButton.vue'
-import LogoutPopup from '@/components/Popup/LogoutPopup.vue'
 
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import {
@@ -22,6 +21,12 @@ const router = useRouter()
 const tabActive = ref(false)
 const { darkMode } = storeToRefs(useThemeStore())
 const { logoutModalShow } = storeToRefs(useModalStore())
+
+const { setTheme } = useThemeStore()
+
+watch(darkMode, (newTheme) => {
+  setTheme(newTheme)
+})
 
 const logout = async () => {
   const {

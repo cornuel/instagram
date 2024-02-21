@@ -1,4 +1,5 @@
 export * from './useAuth'
 export * from './useProfile'
+export * from './usePost'
 export * from './useResize'
 export * from './useNav'

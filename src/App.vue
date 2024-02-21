@@ -26,11 +26,10 @@ watch(darkMode, (newTheme) => {
   else document.documentElement.classList.remove('dark')
 })
 
-// onMounted(() => {
-//   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-//   if (isDark) useThemeStore().setTheme(true)
-//   else useThemeStore().setTheme(false)
-// })
+onMounted(() => {
+  if (darkMode.value) document.documentElement.classList.add('dark') 
+  else document.documentElement.classList.remove('dark')
+})
 
 watch(stopScroll, (active) => {
   document.documentElement.style.overflow = active ? 'hidden' : 'visible'
