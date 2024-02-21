@@ -3,6 +3,8 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 import { useProfileStore } from '@/stores'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import post from './post'
+import profile from './profile'
 
 export default [
   {
@@ -24,6 +26,8 @@ export default [
       next()
     }
   },
+  post,
+  profile,
   {
     path: '/accounts/login',
     name: 'Login',
