@@ -2,7 +2,9 @@
   font-family: 'Segoe UI';
   font-style: normal;
   font-weight: normal;
-  src: local('Segoe UI'), url('@/assets/fonts/Segoe UI.woff') format('woff');
+  src:
+    local('Segoe UI'),
+    url('@/assets/fonts/Segoe UI.woff') format('woff');
 }
 
 :root,
@@ -62,10 +64,10 @@
 }
 
 :root.dark {
-  --primary-bg-color: #000;
+  --primary-bg-color: #000000;
   --secondary-bg-color: #fafafa;
 
-  --primary-text-color: #fff;
+  --primary-text-color: #ffffff;
   --secondary-text-color: #737373;
 
   --link-color: #e0f1ff;
@@ -94,7 +96,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont,
+    'Segoe UI', 'Roboto', sans-serif;
 }
 
 html {
@@ -161,7 +164,12 @@ button {
 
 .skeleton {
   background: #eee;
-  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background: linear-gradient(
+    110deg,
+    #ececec 8%,
+    #f5f5f5 18%,
+    #ececec 33%
+  );
   background-size: 200% 100%;
   animation: 1.5s shine linear infinite;
 }
@@ -193,7 +201,8 @@ button {
 .fadeRight-leave-active {
   transform: translateX(0px);
   opacity: 1;
-  transition: opacity 300ms cubic-bezier(0.15, 0.81, 0.24, 0.91),
+  transition:
+    opacity 300ms cubic-bezier(0.15, 0.81, 0.24, 0.91),
     transform 300ms cubic-bezier(0.15, 0.81, 0.24, 0.91);
 }
 
@@ -207,7 +216,9 @@ button {
 .fadeUp-leave-active {
   transform: translateY(0px);
   opacity: 1;
-  transition: opacity 180ms linear, transform 90ms ease-out;
+  transition:
+    opacity 180ms linear,
+    transform 90ms ease-out;
 }
 
 .fadeUp-enter-from,
@@ -235,6 +246,7 @@ button {
   height: 6px;
   background: #fff !important;
   opacity: 0.4;
+  margin: 10px 5px !important;
 }
 
 .swiper-pagination-bullet-active {

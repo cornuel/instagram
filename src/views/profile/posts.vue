@@ -5,7 +5,11 @@ import ImageIcon from '@icons/image.svg'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
 
 import { ref, onBeforeMount, onMounted } from 'vue'
-import { onBeforeRouteUpdate } from 'vue-router'
+import {
+  onBeforeRouteUpdate,
+  useRouter,
+  useRoute
+} from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { usePostStore, useProfileStore } from '@/stores'
 import { usePost } from '@/composables'
@@ -17,11 +21,9 @@ const { viewedProfile, authenticatedProfile } = storeToRefs(
 )
 const { userPosts } = storeToRefs(usePostStore())
 const isLoading = ref(true)
+const route = useRoute()
 
 const getPosts = async () => {
-  const existingPosts = usePostStore().getPosts()
-  // if(!existingPosts) {
-  //   if (existingPosts?.results[0].profile !== user.value.username) {
   const { getUserPosts } = usePost()
   isLoading.value = true
   userPosts.value = await getUserPosts(
@@ -29,11 +31,6 @@ const getPosts = async () => {
     page.value
   )
   isLoading.value = false
-  //   }
-  // }
-  // else {
-  isLoading.value = false
-  // }
 }
 
 const page = ref(1)
@@ -56,14 +53,15 @@ async function load({ loaded }: LoadAction): Promise<void> {
 }
 
 onBeforeMount(async () => {
-  // const existingPosts = usePostStore().getPosts()
-  // if(!existingPosts) {
-  //   await getPosts();
-  // }
   await getPosts()
 }),
   onBeforeRouteUpdate(async () => {
+    // console.log(route.path)
+    // const regex = /\/([^/]+)\/(following)/
+    // const match = regex.exec(route.path)
+    // if (!match) {
     await getPosts()
+    // }
   })
 </script>
 

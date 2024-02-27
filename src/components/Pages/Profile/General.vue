@@ -83,13 +83,13 @@ const isGeneralMobile = computed(() => {
 })
 
 const follow = async () => {
-  // if (currentUser) {
-  //   const { setFollow } = useFollow()
-  //   isLoadingFollow.value = true
-  //   await setFollow(user.value.username)
-  //   isLoadingFollow.value = false
-  //   user.value!.isCurrentUserFollowing = true
-  // }
+  if (authenticatedProfile) {
+    const { setFollow } = useFollow()
+    isLoadingFollow.value = true
+    await setFollow(viewedProfile.value?.username)
+    isLoadingFollow.value = false
+    viewedProfile.value!.isCurrentUserFollowing = true
+  }
 }
 
 const unfollow = async () => {
@@ -243,9 +243,6 @@ const deleteAvatar = async () => {
                 :isLoading="isLoadingFollow"
                 @click="follow"
                 >Follow</UiButton
-              >
-              <UiButton class="mr-2" secondary
-                >Nhắn tin</UiButton
               >
               <UiButton secondary>
                 <MoreUserIcon />

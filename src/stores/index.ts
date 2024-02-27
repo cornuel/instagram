@@ -1,6 +1,7 @@
 export * from './loading'
 export * from './profile'
 export * from './post'
+export * from './comment'
 export * from './createPost'
 export * from './theme'
 export * from './resize'
