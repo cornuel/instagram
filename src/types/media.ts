@@ -3,6 +3,7 @@ import type { ISize, IPoint } from '@/types'
 export interface IFilters {
   background: string
   filter: string
+  vignette: string
 }
 
 export interface IAdjust {
@@ -14,6 +15,7 @@ export interface IAdjust {
   sepia?: number
   'hue-rotate'?: number
   temperature?: number
+  vignette?: number
 }
 
 export interface IFilterTemplate {

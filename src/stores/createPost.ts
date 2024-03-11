@@ -216,6 +216,8 @@ export const useCreatePostStore = defineStore('createPost', {
       this.medias = []
       this.currentMedia = null
       this.currentRatio = '1:1'
+      this.name = ''
+      this.caption = ''
       this.filter = {} as IFilters
     }
   }

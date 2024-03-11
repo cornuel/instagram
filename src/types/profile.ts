@@ -6,6 +6,7 @@ export interface IProfile {
   profile_pic?: string
   posts_count: number
   favorite_posts?: string[]
+  is_following: boolean
   following_count: number
   followers_count: number
   created_at?: string

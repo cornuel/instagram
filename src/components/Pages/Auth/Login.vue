@@ -18,7 +18,9 @@ const authError = ref<Nullable<string>>(null)
 const loading = ref(false)
 
 const isDisable = computed(() => {
-  return !(username.value != '' && password.value.length >= 8)
+  return !(
+    username.value != '' && password.value.length >= 8
+  )
 })
 
 const submitLoginForm = async () => {
@@ -28,7 +30,10 @@ const submitLoginForm = async () => {
   loading.value = true
 
   // this login sets the current username in user store
-  const response = await logIn(username.value, password.value)
+  const response = await logIn(
+    username.value,
+    password.value
+  )
 
   // if the current username is set in user store, redirect to home
   if (getAuthenticatedUsername()) {
@@ -37,7 +42,7 @@ const submitLoginForm = async () => {
     if (route.path != '/') router.push('/')
     // else router.go(0)
   } else {
-    authError.value = response.data.detail
+    console.log('Login.vue error')
   }
 
   loading.value = false
@@ -46,8 +51,8 @@ const submitLoginForm = async () => {
 
 <template>
   <div
-    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0 max-[450px]:w-full
-      no-dark text-textColor-primary"
+    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0
+      max-[450px]:w-full no-dark text-textColor-primary"
   >
     <div
       class="flex flex-col items-center py-5 px-10 border rounded-lg
@@ -90,27 +95,35 @@ const submitLoginForm = async () => {
           >
           <div class="separator-small bg-borderColor"></div>
         </div>
-        <UiButton variant="text" class-props="max-[450px]:!p-0">
+        <UiButton
+          variant="text"
+          class-props="max-[450px]:!p-0"
+        >
           <div class="flex items-center">
             <fa
               class="mr-2"
               :icon="['fab', 'square-facebook']"
               style="color: #0d84ff; height: 18px"
             />
-            <span class="text-link">Log in with Facebook</span>
+            <span class="text-link"
+              >Log in with Facebook</span
+            >
           </div>
         </UiButton>
         <p v-if="authError" class="text-sm text-error my-8">
           {{ authError }}
         </p>
-        <RouterLink to="/" class="text-xs text-link mt-[13px]">
+        <RouterLink
+          to="/"
+          class="text-xs text-link mt-[13px]"
+        >
           <span>Forgot password?</span>
         </RouterLink>
       </form>
     </div>
     <div
-      class="p-[22px] mt-[10px] text-center border rounded-lg border-borderColor
-        max-[450px]:border-none"
+      class="p-[22px] mt-[10px] text-center border rounded-lg
+        border-borderColor max-[450px]:border-none"
     >
       <span class="">Don't have an account? </span>
       <RouterLink

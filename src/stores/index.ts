@@ -1,5 +1,6 @@
 export * from './loading'
 export * from './profile'
+export * from './auth'
 export * from './post'
 export * from './comment'
 export * from './createPost'

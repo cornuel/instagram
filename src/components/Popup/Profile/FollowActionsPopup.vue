@@ -6,11 +6,11 @@ import Modal from '@/components/Modal/Modal.vue'
 import Avatar from '@/components/Atom/Avatar.vue'
 
 import { ref } from 'vue'
-import type { IUser } from '@/types'
+import type { IProfile } from '@/types'
 
 const emit = defineEmits(['open-restriction-popup'])
 defineProps<{
-  user: IUser
+  profile: IProfile
 
   onUnfollow: Fn<any, any>
   onClose: Fn<any, any>
@@ -31,8 +31,8 @@ const openRestrictionPopup = () => {
       class="flex flex-col flex-center w-screen max-w-[400px] bg-modal rounded-xl overflow-hidden"
     >
       <div class="relative w-full p-4 flex flex-col flex-center border-b border-separator-modal">
-        <Avatar width="58" :avatar-url="user.avatar" />
-        <span class="font-semibold">{{ user.username }}</span>
+        <Avatar width="58" :avatar-url="profile.profile_pic" />
+        <span class="font-semibold">{{ profile.username }}</span>
         <div class="absolute top-1 right-2 p-2 cursor-pointer" @click="onClose">
           <CloseIcon />
         </div>
@@ -46,7 +46,7 @@ const openRestrictionPopup = () => {
         "
       >
         <span class="flex-grow mr-3 leading-tight">{{
-          isCloseFriend ? 'Bạn thân' : 'Thêm vào danh sách bạn thân'
+          isCloseFriend ? 'Add to close friend' : 'Add to close friends list'
         }}</span>
         <div
           class="flex flex-center w-5 h-5 rounded-full border"
@@ -64,7 +64,7 @@ const openRestrictionPopup = () => {
         "
       >
         <span class="flex-grow mr-3 leading-tight">{{
-          isFavorite ? 'Gỡ vào mục yêu thích' : 'Thêm vào mục yêu thích'
+          isFavorite ? 'Remove from favorites' : 'Add to favorites'
         }}</span>
         <StarActiveIcon v-if="isFavorite" />
         <StarIcon v-else />
@@ -72,21 +72,21 @@ const openRestrictionPopup = () => {
       <div
         class="flex w-full p-4 hover:bg-[#e5e5e5] border-b border-separator-modal cursor-pointer select-none"
       >
-        <span class="flex-grow mr-3 leading-tight">Cấm đăng</span>
+        <span class="flex-grow mr-3 leading-tight">Mute</span>
         <fa class="text-textColor-secondary w-4" :icon="['fas', 'chevron-right']" />
       </div>
       <div
         class="flex w-full p-4 hover:bg-[#e5e5e5] border-b border-separator-modal cursor-pointer select-none"
         @click="openRestrictionPopup"
       >
-        <span class="flex-grow mr-3 leading-tight">Hạn chế</span>
+        <span class="flex-grow mr-3 leading-tight">Restrict</span>
         <fa class="text-textColor-secondary w-4" :icon="['fas', 'chevron-right']" />
       </div>
       <div
         class="flex w-full p-4 hover:bg-[#e5e5e5] cursor-pointer select-none"
         @click="onUnfollow"
       >
-        <span class="flex-grow mr-3 leading-tight">Bỏ theo dõi</span>
+        <span class="flex-grow mr-3 leading-tight">Unfollow</span>
       </div>
     </div>
   </Modal>

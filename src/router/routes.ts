@@ -11,7 +11,7 @@ export default [
     path: '/',
     name: 'Home',
     component: () => import('@/views/home.vue'),
-    meta: { title: 'Instagram' },
+    meta: { title: 'Instagram', requiresAuth: true },
     beforeEnter: async (
       to: RouteLocationNormalized,
       from: RouteLocationNormalized,
@@ -19,6 +19,8 @@ export default [
     ) => {
       const profileStore = useProfileStore()
       const authenticatedProfile = profileStore.getAuthenticatedProfile()
+
+      console.log(authenticatedProfile)
 
       if (authenticatedProfile) to.meta.layout = DashboardLayout
       else to.meta.layout = AuthLayout

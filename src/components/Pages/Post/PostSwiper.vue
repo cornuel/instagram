@@ -3,7 +3,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePostStore } from '@/stores'
 
@@ -26,6 +26,16 @@ const postSwiperOptions = reactive({
 const ratio = computed(() => ({
   paddingBottom: `${(1 / post.value!.ratio) * 100}%`
 }))
+
+const loading = ref(true)
+
+const handleLoad = () => {
+  loading.value = false
+}
+
+const isMultipleImages = computed(() => {
+  return post.value!.images.length > 1
+})
 </script>
 
 <template>
@@ -39,9 +49,24 @@ const ratio = computed(() => ({
           class="relative w-full pb-[100%]"
           :style="ratio"
         >
-          <img
-            :src="item.image"
+          <!-- <img
+            :src="item.thumbnail"
+            :srcset="item.image"
             class="absolute top-0 left-0 w-full h-full object-cover"
+          /> -->
+          <!-- Thumbnail Image -->
+          <img
+            :src="item.thumbnail"
+            alt=""
+            @load="handleLoad()"
+            class="absolute top-0 left-0 w-full h-full object-contain"
+          />
+          <!-- Original Image -->
+          <img
+            v-if="!loading"
+            :src="item.image"
+            alt=""
+            class="absolute top-0 left-0 w-full h-full object-contain"
           />
         </div>
       </SwiperSlide>
@@ -62,7 +87,7 @@ const ratio = computed(() => ({
       </div>
     </Swiper>
 
-    <div>
+    <div v-if="isMultipleImages">
       <div
         class="absolute px-2 py-4 top-1/2 left-0 -translate-y-1/2
           opacity-60 cursor-pointer z-10 has-[disabled]:hidden

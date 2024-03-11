@@ -20,7 +20,7 @@ withDefaults(
 
 <template>
   <ConfirmPopup
-    confirm-message="Bỏ theo dõi"
+    confirm-message="Confirm"
     @confirm="onConfirm"
     @cancel="onCancel"
     @click-outside="onClickOutside"
@@ -28,9 +28,8 @@ withDefaults(
     <div class="flex flex-col flex-center">
       <Avatar width="90" :avatar-url="user.profile_pic" />
       <span class="text-center mt-6"
-        >Nếu đổi ý, bạn sẽ phải yêu cầu theo dõi lại @{{
-          user.username
-        }}.</span
+        >If you change your mind, you will need to follow
+        @{{ user.username }} again.</span
       >
     </div>
   </ConfirmPopup>

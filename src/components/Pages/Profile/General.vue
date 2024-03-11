@@ -7,7 +7,7 @@ import Avatar from '@/components/Atom/Avatar.vue'
 import FollowActionsPopup from '@/components/Popup/Profile/FollowActionsPopup.vue'
 import RestrictionPopup from '@/components/Popup/Profile/RestrictionPopup.vue'
 import ChangeAvatarPopup from '@/components/Popup/Profile/ChangeAvatarPopup.vue'
-import Stories from '@/components/Molecules/Stories/Stories.vue'
+// import Stories from '@/components/Molecules/Stories/Stories.vue'
 import GeneralMobile from '@/components/Pages/Profile/GeneralMobile.vue'
 
 import { ref, computed, reactive } from 'vue'
@@ -86,20 +86,28 @@ const follow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
-    await setFollow(viewedProfile.value?.username)
+    const res: string = await setFollow(
+      viewedProfile.value?.username
+    )
     isLoadingFollow.value = false
-    viewedProfile.value!.isCurrentUserFollowing = true
+    if (res.includes('following')) {
+      viewedProfile.value!.is_following = true
+    }
   }
 }
 
 const unfollow = async () => {
-  // if (currentUser) {
-  //   const { deleteFollow } = useFollow()
-  //   isLoadingFollow.value = true
-  //   await deleteFollow(currentUser.value!.id, user.value!.id)
-  //   isLoadingFollow.value = false
-  //   user.value!.isCurrentUserFollowing = false
-  // }
+  if (authenticatedProfile) {
+    const { setFollow } = useFollow()
+    isLoadingFollow.value = true
+    const res: string = await setFollow(
+      viewedProfile.value?.username
+    )
+    isLoadingFollow.value = false
+    if (res.includes('unfollowed')) {
+      viewedProfile.value!.is_following = false
+    }
+  }
 }
 
 const hanldeClickChangeAvatar = () => {
@@ -220,10 +228,9 @@ const deleteAvatar = async () => {
               >Edit profile</UiButton
             >
             <template v-else>
-              <!-- <UiButton
+              <UiButton
                 class="mr-2 mb-1"
-                v-if="user?.isCurrentUserFollowing"
-                v-if="user?.isCurrentUserFollowing"
+                v-if="viewedProfile?.is_following"
                 secondary
                 :isDisabled="isLoadingFollow"
                 :isLoading="isLoadingFollow"
@@ -233,11 +240,15 @@ const deleteAvatar = async () => {
                   }
                 "
               >
-                <span>Đang theo dõi</span>
-                <fa class="text-xs ml-1" :icon="['fas', 'chevron-down']" />
-              </UiButton> -->
+                <span>Follow</span>
+                <fa
+                  class="text-xs ml-1"
+                  :icon="['fas', 'chevron-down']"
+                />
+              </UiButton>
               <UiButton
                 class="mr-2"
+                v-else
                 primary
                 :isDisabled="isLoadingFollow"
                 :isLoading="isLoadingFollow"
@@ -366,7 +377,7 @@ const deleteAvatar = async () => {
 
     <FollowActionsPopup
       v-if="followActionsPopupActive"
-      :user="viewedProfile!"
+      :profile="viewedProfile!"
       :onUnfollow="
         () => {
           followActionsPopupActive = false

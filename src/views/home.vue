@@ -1,21 +1,19 @@
 <script lang="ts" setup>
 import HomeLogin from '@/components/Pages/Home/HomeLogin.vue'
 import HomePage from '@/components/Pages/Home/HomePage.vue'
-import { computed, type ComputedRef } from 'vue'
-import type { IProfile } from '@/types'
 import { useProfileStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 
-const authenticatedUsername: ComputedRef<string | null> = computed(
-  () => useProfileStore().getAuthenticatedUsername()
+const { authenticatedUsername, authenticatedProfile } =
+  storeToRefs(useProfileStore())
+
+console.log(
+  'authenticatedUsername is ' + authenticatedUsername.value
 )
 
-const authenticatedProfile: ComputedRef<IProfile | null> = computed(
-  () => useProfileStore().getAuthenticatedProfile()
+console.log(
+  'authenticatedProfile is ' + authenticatedProfile.value
 )
-
-console.log('authenticatedUsername is ' + authenticatedUsername.value)
-
-console.log('authenticatedProfile is ' + authenticatedProfile.value)
 </script>
 
 <template>

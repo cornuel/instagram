@@ -14,7 +14,7 @@ withDefaults(
     cancelMessage?: string
   }>(),
   {
-    cancelMessage: 'Hủy'
+    cancelMessage: 'Cancel'
   }
 )
 

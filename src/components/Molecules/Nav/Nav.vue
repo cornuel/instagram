@@ -12,8 +12,8 @@ import { storeToRefs } from 'pinia'
 import {
   useProfileStore,
   useResizeStore,
-  useModalStore
-  // useCreatePostStore
+  useModalStore,
+  useCreatePostStore
 } from '@/stores'
 import { NavTabEnum } from '@/types'
 import { useNav } from '@/composables'
@@ -55,13 +55,13 @@ const handleCloseBarPanel = () => {
 }
 
 const handleCloseCreatePost = () => {
-  // const { setRemovePostPopupShow, setModalCreatePostShow } =
-  //   useModalStore()
-  // const { currentTab } = useCreatePostStore()
-  // if (!['InitPost', 'UploadPost'].includes(currentTab))
-  //   setRemovePostPopupShow(true)
-  // else setModalCreatePostShow(false)
-  // currentNav.value = route.matched[0].name as NavTabEnum
+  const { setRemovePostPopupShow, setModalCreatePostShow } =
+    useModalStore()
+  const { currentTab } = useCreatePostStore()
+  if (!['InitPost', 'UploadPost'].includes(currentTab))
+    setRemovePostPopupShow(true)
+  else setModalCreatePostShow(false)
+  currentNav.value = route.matched[0].name as NavTabEnum
 }
 
 const isNarrowCom = computed(() => {

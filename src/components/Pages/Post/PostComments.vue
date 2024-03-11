@@ -59,6 +59,9 @@ onBeforeMount(async () => {
       class="absolute top-0 left-0 w-full h-full flex flex-col pt-[10px]
         px-[10px] no-scrollbar overflow-y-scroll"
     >
+      <div class="w-full italic font-semibold py-2 px-2">
+        {{ post?.title }}
+      </div>
       <CommentItem v-bind="captionComp" isCaption />
       <Loading v-if="loading" class="mt-10" />
       <Comment

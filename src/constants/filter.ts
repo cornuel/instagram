@@ -1,6 +1,6 @@
 export const FILTER_TEMPLATES = [
   {
-    name: 'Normal',
+    name: 'Original',
     filter: {}
   },
   {
@@ -54,29 +54,45 @@ export const FILTER_TEMPLATES = [
     name: 'Slumber',
     filter: {
       brightness: 1.05,
-      saturate: 0.66
+      saturate: 0.66,
+      grayscale: 0.1
     }
   },
   {
     name: 'Crema',
-    filter: {}
+    filter: {
+      contrast: 0.9,
+      brightness: 1.05,
+      saturate: 0.8
+    }
   },
   {
     name: 'Ludwig',
-    filter: {}
+    filter: {
+      contrast: 1.2,
+      brightness: 1.1,
+      saturate: 1.4,
+      grayscale: 0.1
+    }
   },
   {
     name: 'Aden',
     filter: {
       'hue-rotate': -20,
       contrast: 0.9,
-      brightness: 1.2,
-      saturate: 0.85
+      saturate: 0.85,
+      brightness: 1.05,
+      grayscale: 0.1
     }
   },
   {
     name: 'Perpetua',
-    filter: {}
+    filter: {
+      contrast: 0.9,
+      brightness: 1.05,
+      saturate: 0.8,
+      grayscale: 0.1
+    }
   }
 ]
 
@@ -88,7 +104,7 @@ export const DEFAULT_FILTER = {
   grayscale: 0,
   sepia: 0,
   'hue-rotate': 0,
-  temperature: 0
+  temperature: 0,
 }
 
 export const DEFAULT_ADJUST = {
@@ -99,5 +115,6 @@ export const DEFAULT_ADJUST = {
   grayscale: 0,
   sepia: 0,
   'hue-rotate': 0,
-  temperature: 0
+  temperature: 0,
+  vignette: 0
 }

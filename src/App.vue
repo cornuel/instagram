@@ -8,6 +8,7 @@ import { storeToRefs } from 'pinia'
 import {
   useModalStore,
   useProfileStore,
+  useAuthStore,
   useThemeStore,
   useResizeStore,
   useLoadingStore
@@ -35,9 +36,9 @@ watch(stopScroll, (active) => {
   document.documentElement.style.overflow = active ? 'hidden' : 'visible'
 })
 
-const token = useProfileStore().getToken();
-if (token) {
-  useProfileStore().setAxiosAuthHeader(token);
+const accessToken = useAuthStore().getAccessToken();
+if (accessToken) {
+  useAuthStore().setAxiosAuthHeader(accessToken);
 }
 
 </script>

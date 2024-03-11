@@ -160,8 +160,8 @@ const handleClickLikeCount = async () => {
 
 onBeforeMount(async () => {
   if (!commentProfiles.value[props.profile]) {
-    const { getViewedProfile } = useProfile()
-    user.value = await getViewedProfile(props.profile)
+    const { getProfile } = useProfile()
+    user.value = await getProfile(props.profile)
     commentProfiles.value[props.profile] = user.value
   } else {
     user.value = commentProfiles.value[props.profile]

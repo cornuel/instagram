@@ -4,19 +4,57 @@ import Avatar from '@/components/Atom/Avatar.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import UnfollowPopup from '@/components/Popup/UnfollowPopup.vue'
 import ActionsPopup from '@/components/Popup/ActionsPopup.vue'
+import RemovePopup from '@/components/Popup/RemovePopup.vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useProfileStore } from '@/stores'
-import { useFollow } from '@/composables'
+import {
+  useProfileStore,
+  usePostStore,
+  useModalStore
+} from '@/stores'
+import {
+  useFollow,
+  usePost,
+  useDownload
+} from '@/composables'
 import type { IAction } from '@/types'
+import { isConstructorDeclaration } from 'typescript'
+
+const router = useRouter()
 
 const { viewedProfile, authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
+const { removePostPopupShow } = storeToRefs(useModalStore())
+
+const { post } = storeToRefs(usePostStore())
+const { downloadImages } = useDownload()
+
 const isLoadingFollow = ref(false)
 const unfollowPopupActive = ref(false)
 const actionsPopupActive = ref(false)
+
+// deletePost returns true if status code is 204
+const deletePost = async () => {
+  if (authenticatedProfile) {
+    const { deletePost } = usePost()
+    if (await deletePost(post.value?.slug)) {
+      router.push({
+        name: 'Profile',
+        params: {
+          username: authenticatedProfile.value!.username
+        }
+      })
+      removePostPopupShow.value = false
+    } else {
+      console.log(
+        'Something went wrong when deleting this post.'
+      )
+    }
+  }
+}
 
 const userPostActions = computed(() => {
   if (
@@ -27,10 +65,19 @@ const userPostActions = computed(() => {
       {
         title: 'Delete',
         classes: 'font-bold text-error',
-        action: () => {}
+        action: () => {
+          actionsPopupActive.value = false
+          removePostPopupShow.value = true
+        }
       },
       {
         title: 'Edit'
+      },
+      {
+        title: 'Download photo(s)',
+        action: () => {
+          downloadImages(post.value)
+        }
       },
       {
         title: 'Hide like counts to others'
@@ -68,6 +115,12 @@ const userPostActions = computed(() => {
         }
       },
       {
+        title: 'Download photo(s)',
+        action: () => {
+          downloadImages(post.value)
+        }
+      },
+      {
         title: 'Add to favorites'
       },
       {
@@ -80,24 +133,31 @@ const userPostActions = computed(() => {
 })
 
 const follow = async () => {
-  // if (authenticatedProfile) {
-  //   const { setFollow } = useFollow()
-  //   isLoadingFollow.value = true
-  //   await setFollow(authenticatedProfile.value!.id, viewedProfile.value!.id)
-  //   isLoadingFollow.value = false
-  //   viewedProfile.value!.isCurrentUserFollowing = true
-  // }
+  if (authenticatedProfile) {
+    const { setFollow } = useFollow()
+    isLoadingFollow.value = true
+    const res: string = await setFollow(
+      viewedProfile.value?.username
+    )
+    isLoadingFollow.value = false
+    if (res.includes('following')) {
+      viewedProfile.value!.is_following = true
+    }
+  }
 }
 
 const unfollow = async () => {
-  // if (authenticatedProfile) {
-  //   const { deleteFollow } = useFollow()
-  //   unfollowPopupActive.value = false
-  //   isLoadingFollow.value = true
-  //   await deleteFollow(authenticatedProfile.value!.id, viewedProfile.value!.id)
-  //   isLoadingFollow.value = false
-  //   viewedProfile.value!.isCurrentUserFollowing = false
-  // }
+  if (authenticatedProfile) {
+    const { setFollow } = useFollow()
+    isLoadingFollow.value = true
+    const res: string = await setFollow(
+      viewedProfile.value?.username
+    )
+    isLoadingFollow.value = false
+    if (res.includes('unfollowed')) {
+      viewedProfile.value!.is_following = true
+    }
+  }
 }
 </script>
 
@@ -132,7 +192,7 @@ const unfollow = async () => {
         <template
           v-if="
             viewedProfile!.id != authenticatedProfile?.id &&
-            viewedProfile!.isCurrentUserFollowing
+            viewedProfile!.is_following
           "
         >
           <span class="mx-1">•</span>
@@ -147,13 +207,13 @@ const unfollow = async () => {
             "
             :is-disabled="isLoadingFollow"
             :is-loading="isLoadingFollow"
-            >Đang theo dõi</UiButton
+            >Following</UiButton
           >
         </template>
         <template
           v-if="
             viewedProfile!.id != authenticatedProfile?.id &&
-            !viewedProfile!.isCurrentUserFollowing
+            !viewedProfile!.is_following
           "
         >
           <span class="mx-1">•</span>
@@ -179,6 +239,19 @@ const unfollow = async () => {
       />
     </div>
   </div>
+  <RemovePopup
+    v-if="removePostPopupShow"
+    title="Delete post?"
+    desc="Are you sure you want to delete this post?"
+    yes="Delete"
+    no="Cancel"
+    @remove="deletePost"
+    @cancel="
+      () => {
+        removePostPopupShow = false
+      }
+    "
+  />
   <UnfollowPopup
     v-if="unfollowPopupActive"
     :user="viewedProfile!"

@@ -72,7 +72,7 @@ const unfollow = async () => {
     >
       <UiButton
         secondary
-        v-if="viewedProfile.isCurrentUserFollowing"
+        v-if="viewedProfile.is_following"
         :isDisabled="isLoadingFollow"
         :isLoading="isLoadingFollow"
         @click="
@@ -81,7 +81,7 @@ const unfollow = async () => {
           }
         "
       >
-        <span>Đang theo dõi</span>
+        <span>Following</span>
       </UiButton>
       <UiButton
         primary

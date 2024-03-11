@@ -25,19 +25,16 @@ export function getReviewImageSize(realImageSize: ISize, cropperSize: ISize) {
   return reviewSize
 }
 
-export function getRatioCrop(realImageSize: ISize, cropperSize: ISize, scale: number) {
+export function getRatioCrop(realImageSize: ISize, cropperSize: ISize, scale: number, ratio: string) {
+  const wScale = realImageSize.width / cropperSize.width / scale
+  const hScale = realImageSize.height / cropperSize.height / scale
   let ratioCrop
 
-  if (realImageSize.width > realImageSize.height) {
-    ratioCrop = realImageSize.height / (cropperSize.height * scale)
-  } else if (realImageSize.width < realImageSize.height) {
-    ratioCrop = realImageSize.width / (cropperSize.width * scale)
-  } else {
-    if (cropperSize.width < cropperSize.height) {
-      ratioCrop = realImageSize.height / (cropperSize.height * scale)
-    } else {
-      ratioCrop = realImageSize.width / (cropperSize.width * scale)
-    }
+  if (ratio === '4:5') {
+    ratioCrop = hScale
+  }
+  else {
+    ratioCrop = wScale
   }
 
   return ratioCrop

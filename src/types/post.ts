@@ -1,6 +1,7 @@
 export interface IImages {
   id: number
   image: string
+  thumbnail: string
 }
 
 export interface IPost {
