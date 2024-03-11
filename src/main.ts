@@ -4,9 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { FontAwesomeIcon } from '@/libs/fontAwesome'
 import { ClickOuside } from '@/directives'
-import axios from 'axios'
-
-axios.defaults.baseURL = 'http://localhost:8000/api';
+import VueCookies from 'vue-cookies'
 
 import App from './App.vue'
 import router from './router'
@@ -18,5 +16,6 @@ app.directive('click-outside', ClickOuside)
 
 app.use(createPinia())
 app.use(router)
+app.use(VueCookies, { expires: '7d' })
 
 app.mount('#app')

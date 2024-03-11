@@ -1,31 +1,37 @@
 import type { IProfile } from '@/types'
 import { useProfileStore } from '@/stores'
-import axios from 'axios'
+import instance from '@/libs/axios/instance'
 
 
 export const useProfile = () => {
   const profileStore = useProfileStore()
 
-  const getViewedProfile = async (userSlug: string) => {
+  const getProfile = async (userSlug: string): Promise<IProfile | null> => {
     try {
-      const response = await axios.get(
-        `profiles/${userSlug}/`
-      )
-
-      profileStore.setViewedProfile(response.data)
-
-      return response.data as IProfile
+      const response = await instance.get(`profiles/${userSlug}/`)
+      return response.data
     } catch (error) {
       console.log(error)
       return null
     }
   }
 
-  const getAuthenticatedProfile = async () => {
+  const getViewedProfile = async (userSlug: string): Promise<IProfile | null> => {
+    const profile = await getProfile(userSlug)
+
+    if (profile) {
+      profileStore.setViewedProfile(profile)
+    }
+
+    return profile
+  }
+
+
+  const getAuthenticatedProfile = async (): Promise<IProfile | null> => {
     const username = profileStore.getAuthenticatedUsername()
 
     try {
-      const response = await axios.get(
+      const response = await instance.get(
         `profiles/${username}/`
       )
 
@@ -39,6 +45,7 @@ export const useProfile = () => {
   }
 
   return {
+    getProfile,
     getViewedProfile,
     getAuthenticatedProfile,
   }

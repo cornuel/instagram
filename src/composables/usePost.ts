@@ -1,6 +1,6 @@
 import { usePostStore, useCreatePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
-import axios from 'axios'
+import instance from '@/libs/axios/instance'
 
 export const usePost = () => {
   const setPost = async () => {
@@ -25,7 +25,7 @@ export const usePost = () => {
         formData.append('uploaded_images', blob, 'image.png');
       }
 
-      const response = await axios.post<IPost>('posts/', formData, {
+      const response = await instance.post<IPost>('posts/', formData, {
         headers: {
           // 'Content-Type': 'multipart/form-data' // This header is set automatically by axios when you use FormData
         }
@@ -39,8 +39,18 @@ export const usePost = () => {
 
   const getPost = async (postSlug: string) => {
     try {
-      const response = await axios.get<IPost>(`posts/${postSlug}/`)
+      const response = await instance.get<IPost>(`posts/${postSlug}/`)
       return response.data
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
+  const deletePost = async (postSlug: string) => {
+    try {
+      const response = await instance.delete<IPost>(`posts/${postSlug}/`)
+      return response.status === 204
     } catch (error) {
       console.log(error)
       return null
@@ -49,7 +59,7 @@ export const usePost = () => {
 
   const getUserPosts = async (userId: string, page: number = 1) => {
     try {
-      const response = await axios.get<IPaginatedPosts>(`profiles/${userId}/posts/`, {
+      const response = await instance.get<IPaginatedPosts>(`profiles/${userId}/posts/`, {
         params: { page }
       });
       return response.data
@@ -66,6 +76,7 @@ export const usePost = () => {
   return {
     setPost,
     getPost,
+    deletePost,
     getUserPosts,
     // getOtherUserPosts,
   }

@@ -1,6 +1,7 @@
 export * from './useAuth'
 export * from './useProfile'
 export * from './useComment'
+export * from './useDownload'
 export * from './usePost'
 export * from './useFollow'
 export * from './useLike'

@@ -1,15 +1,13 @@
-import { storeToRefs } from 'pinia'
-import { useUserStore, usePostStore, useCommentStore } from '@/stores'
-import type { ICommentLike, IPostLike, IReplyLike, IUser, IPaginatedUsers } from '@/types'
-import axios from 'axios'
-import { useUser } from '.'
+import { usePostStore, useCommentStore } from '@/stores'
+import type { IPaginatedProfiles } from '@/types'
+import instance from '@/libs/axios/instance'
 
 
 export const useLike = () => {
   const getLikedUsers = async (findId: string | number, type: 'post' | 'comment') => {
 
     try {
-      const response = await axios.get<IPaginatedUsers>(`${type}s/${findId}/likes/`)
+      const response = await instance.get<IPaginatedProfiles>(`${type}s/${findId}/likes/`)
       return response.data
     } catch (error) {
       console.log(error)
@@ -70,7 +68,7 @@ export const useLike = () => {
     const like_message = 'Post liked successfully'
 
     try {
-      const response = await axios.post(`posts/${postSlug}/like/`)
+      const response = await instance.post(`posts/${postSlug}/like/`)
       return response.data.message === like_message
     } catch (error) {
       isLiked ? usePostStore().increaseLikeCount() : usePostStore().decreaseLikeCount()
@@ -131,7 +129,7 @@ export const useLike = () => {
 
     const like_message = 'Comment liked successfully'
     try {
-      const response = await axios.post(`comments/${commentId}/like/`)
+      const response = await instance.post(`comments/${commentId}/like/`)
       return response.data
     } catch (error) {
       isLiked ? useCommentStore().increaseLikeCount(commentId) : useCommentStore().decreaseLikeCount(commentId)

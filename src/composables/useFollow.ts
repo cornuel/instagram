@@ -1,12 +1,10 @@
-import { useProfile } from '@/composables'
-import { useProfileStore } from '@/stores'
-import axios from 'axios'
-import type { IPaginatedProfiles, IProfile } from '@/types'
+import type { IPaginatedProfiles } from '@/types'
+import instance from '@/libs/axios/instance'
 
 export const useFollow = () => {
   const isFollowing = async (userSlug: string) => {
     try {
-      const response = await axios.get(`
+      const response = await instance.get(`
         profiles/${userSlug}/isFollowing/`
       )
 
@@ -19,7 +17,7 @@ export const useFollow = () => {
 
   const setFollow = async (userSlug: string) => {
     try {
-      const response = await axios.get(
+      const response = await instance.post(
         `profiles/${userSlug}/follow/`
       )
 
@@ -32,7 +30,7 @@ export const useFollow = () => {
 
   const getFollows = async (userSlug: string, followType: 'followers' | 'following', page: number = 1) => {
     try {
-      const response = await axios.get<IPaginatedProfiles>(`profiles/${userSlug}/${followType}/`, {
+      const response = await instance.get<IPaginatedProfiles>(`profiles/${userSlug}/${followType}/`, {
         params: { page }
       });
       return response.data

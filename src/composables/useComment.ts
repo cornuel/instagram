@@ -1,13 +1,13 @@
 import { usePostStore, useCommentStore } from '@/stores'
 import type { IComment, IPaginatedComments } from '@/types'
-import axios from 'axios'
+import instance from '@/libs/axios/instance'
 
 export const useComment = () => {
   const addCommentPost = async (postId: number, parent: number | null, body: string) => {
     // Optimistically update comment count on post
     usePostStore().increaseCommentCount()
     try {
-      const response = await axios.post<IComment>('comments/', {
+      const response = await instance.post<IComment>('comments/', {
         post: postId,
         parent: parent,
         body: body
@@ -25,7 +25,7 @@ export const useComment = () => {
 
   const getCommentsPost = async (postSlug: string, page: number = 1) => {
     try {
-      const response = await axios.get<IPaginatedComments>(`posts/${postSlug}/comments/`, { params: { page } });
+      const response = await instance.get<IPaginatedComments>(`posts/${postSlug}/comments/`, { params: { page } });
       return response.data
     } catch (error) {
       console.log(error)
@@ -35,7 +35,7 @@ export const useComment = () => {
 
   const getReplies = async (postSlug: string, commentId: number, page: number = 1) => {
     try {
-      const response = await axios.get<IPaginatedComments>(`posts/${postSlug}/comment/${commentId}/`, { params: { page } });
+      const response = await instance.get<IPaginatedComments>(`posts/${postSlug}/comment/${commentId}/`, { params: { page } });
       return response.data
     } catch (error) {
       console.log(error)
@@ -45,7 +45,7 @@ export const useComment = () => {
 
   const deleteCommentPost = async (commentId: number) => {
     try {
-      await axios.delete<IComment>(`comments/${commentId}/`)
+      await instance.delete<IComment>(`comments/${commentId}/`)
       useCommentStore().deleteComment(commentId)
       // should return 204 no content
     } catch (error) {
