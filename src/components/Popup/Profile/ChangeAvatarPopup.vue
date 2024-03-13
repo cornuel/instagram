@@ -13,24 +13,32 @@ withDefaults(
 
 <template>
   <Modal isPopup isShow @click-outside="onClose">
-    <div class="w-screen max-w-[400px] bg-modal rounded-xl text-center overflow-hidden">
+    <div
+      class="w-screen max-w-[400px] bg-modal rounded-xl text-center
+        overflow-hidden"
+    >
       <div class="p-6">
-        <span class="text-xl">Thay đổi ảnh đại diện</span>
+        <span class="text-xl">Change Profile Picture</span>
       </div>
       <span
-        class="block p-[13px] border-t border-separator-modal active:bg-[#e5e5e5] cursor-pointer select-none font-bold text-buttonColor-primary"
+        class="block p-[13px] border-t border-separator-modal
+          active:bg-[#e5e5e5] cursor-pointer select-none font-bold
+          text-buttonColor-primary"
         @click="onUploadAvatar"
-        >Tải ảnh lên
+        >Upload new picture
       </span>
       <span
-        class="block p-[13px] border-t border-separator-modal active:bg-[#e5e5e5] cursor-pointer select-none font-bold text-error"
+        class="block p-[13px] border-t border-separator-modal
+          active:bg-[#e5e5e5] cursor-pointer select-none font-bold
+          text-error"
         @click="onDeleteAvatar"
-        >Gỡ ảnh hiện tại
+        >Remove current picture
       </span>
       <span
-        class="block p-[13px] border-t border-separator-modal active:bg-[#e5e5e5] cursor-pointer select-none"
+        class="block p-[13px] border-t border-separator-modal
+          active:bg-[#e5e5e5] cursor-pointer select-none"
         @click="onClose"
-        >Hủy
+        >Cancel
       </span>
     </div>
   </Modal>

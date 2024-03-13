@@ -9,6 +9,7 @@ import RestrictionPopup from '@/components/Popup/Profile/RestrictionPopup.vue'
 import ChangeAvatarPopup from '@/components/Popup/Profile/ChangeAvatarPopup.vue'
 // import Stories from '@/components/Molecules/Stories/Stories.vue'
 import GeneralMobile from '@/components/Pages/Profile/GeneralMobile.vue'
+import { useRouter } from 'vue-router'
 
 import { ref, computed, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -25,6 +26,7 @@ defineProps<{
 const { viewedProfile, authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
+const router = useRouter()
 const { dimensions } = storeToRefs(useResizeStore())
 const isLoadingFollow = ref(false)
 const followActionsPopupActive = ref(false)
@@ -111,10 +113,11 @@ const unfollow = async () => {
 }
 
 const hanldeClickChangeAvatar = () => {
-  // if (user.value!.avatar == '') inputAvatar.value?.click()
-  // else {
-  //   avatarPopupActive.value = true
-  // }
+  if (authenticatedProfile.value!.profile_pic == '')
+    inputAvatar.value?.click()
+  else {
+    avatarPopupActive.value = true
+  }
 }
 
 const getInputAvatar = async (event: Event) => {
@@ -167,7 +170,7 @@ const deleteAvatar = async () => {
             :width="isGeneralMobile ? '77' : '150'"
             :avatar-url="viewedProfile!.profile_pic"
             class="cursor-pointer"
-            title="Thay đổi ảnh đại diện"
+            title="Change profile picture"
             @click="hanldeClickChangeAvatar"
           />
           <ChangeAvatarPopup
@@ -224,7 +227,16 @@ const deleteAvatar = async () => {
             </div>
           </div>
           <div class="flex flex-wrap ml-0 min-[736px]:ml-4">
-            <UiButton v-if="isCurrentUser" secondary
+            <UiButton
+              v-if="isCurrentUser"
+              @click="
+                () => {
+                  router.push({
+                    name: 'EditProfile'
+                  })
+                }
+              "
+              secondary
               >Edit profile</UiButton
             >
             <template v-else>
@@ -284,11 +296,15 @@ const deleteAvatar = async () => {
               <span
                 class="font-semibold"
                 :title="
-                  viewedProfile?.posts_count?.toString()
+                  authenticatedProfile.posts_count?.toString() ||
+                  viewedProfile.posts_count?.toString()
                 "
                 >{{
                   formatNumberToSuffix(
-                    viewedProfile?.posts_count
+                    authenticatedProfile.username ===
+                      viewedProfile.username
+                      ? authenticatedProfile.posts_count
+                      : viewedProfile.posts_count
                   )
                 }}</span
               >

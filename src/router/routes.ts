@@ -28,6 +28,27 @@ export default [
       next()
     }
   },
+  {
+    path: '/accounts/edit',
+    name: 'EditProfile',
+    component: () => import('@/views/editProfile.vue'),
+    meta: { title: 'Edit profile • Instagram', requiresAuth: true },
+    beforeEnter: async (
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) => {
+      const profileStore = useProfileStore()
+      const authenticatedProfile = profileStore.getAuthenticatedProfile()
+
+      console.log(authenticatedProfile)
+
+      if (authenticatedProfile) to.meta.layout = DashboardLayout
+      else to.meta.layout = AuthLayout
+
+      next()
+    }
+  },
   post,
   profile,
   {
