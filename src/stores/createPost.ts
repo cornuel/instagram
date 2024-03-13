@@ -16,6 +16,7 @@ interface IState {
   filter: IFilters
   name: string
   caption: string
+  tags: string[]
 }
 
 const defaultMedia = {
@@ -61,7 +62,8 @@ export const useCreatePostStore = defineStore('createPost', {
     },
     filter: {} as IFilters,
     name: '',
-    caption: ''
+    caption: '',
+    tags: []
   }),
   actions: {
     setTitle(title: string) {
@@ -116,6 +118,9 @@ export const useCreatePostStore = defineStore('createPost', {
     },
     setCaption(caption: string) {
       this.caption = caption
+    },
+    setTags(tags: string[]) {
+      this.tags = tags
     },
     nextTab() {
       const tabs = this.tabs
@@ -218,6 +223,7 @@ export const useCreatePostStore = defineStore('createPost', {
       this.currentRatio = '1:1'
       this.name = ''
       this.caption = ''
+      this.tags = []
       this.filter = {} as IFilters
     }
   }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Loading from '@/components/Utils/Loading.vue'
+import Tag from '@/components/Atom/Tag.vue'
 import Comment from '@/components/Molecules/Comment/Comment.vue'
 import CommentItem from '@/components/Molecules/Comment/CommentItem.vue'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
@@ -61,6 +62,13 @@ onBeforeMount(async () => {
     >
       <div class="w-full italic font-semibold py-2 px-2">
         {{ post?.title }}
+      </div>
+      <div class="w-full flex flex-wrap z-10 bg-opacity-50">
+        <div v-for="tag in post?.tags" :key="tag">
+          <Tag size="medium">
+            <span> {{ tag }} </span>
+          </Tag>
+        </div>
       </div>
       <CommentItem v-bind="captionComp" isCaption />
       <Loading v-if="loading" class="mt-10" />

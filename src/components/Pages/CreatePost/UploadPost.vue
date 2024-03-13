@@ -8,6 +8,7 @@ import {
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
+  useProfileStore,
   usePostStore,
   useCreatePostStore,
   useModalStore
@@ -19,6 +20,11 @@ import { nextTick } from 'vue'
 const { title } = storeToRefs(useCreatePostStore())
 const { modalCreatePostShow } = storeToRefs(useModalStore())
 const { userPosts } = storeToRefs(usePostStore())
+const { authenticatedProfile, viewedProfile } = storeToRefs(
+  useProfileStore()
+)
+const profileStore = useProfileStore()
+
 const isUploadding = ref(true)
 
 const gifStyle = computed(() => {
@@ -46,7 +52,16 @@ onMounted(async () => {
     nextTick(() => {
       setTimeout(() => {
         modalCreatePostShow.value = false
-        userPosts.value.results.unshift(response)
+        authenticatedProfile.value.posts_count += 1
+        if (
+          authenticatedProfile.value.username ==
+          viewedProfile.value.username
+        ) {
+          userPosts.value.results.unshift(response)
+          profileStore.setAuthenticatedProfile(
+            authenticatedProfile.value
+          )
+        }
         resetCreatePost()
       }, 1000)
     })

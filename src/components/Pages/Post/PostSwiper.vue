@@ -70,21 +70,6 @@ const isMultipleImages = computed(() => {
           />
         </div>
       </SwiperSlide>
-      <div
-        class="absolute bottom-0 w-full flex flex-wrap justify-center z-10
-          bg-black bg-opacity-50"
-      >
-        <div
-          v-for="tag in post?.tags"
-          :key="tag"
-          class="text-white font-semibold text-xs
-            dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]
-            drop-shadow-[0_0_10px_rgba(0,0,0,0.2)] rounded-full px-1
-            mt-0.5 whitespace-normal"
-        >
-          <span class="opacity-100"> #{{ tag }} </span>
-        </div>
-      </div>
     </Swiper>
 
     <div v-if="isMultipleImages">

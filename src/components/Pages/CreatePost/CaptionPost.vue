@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import EmojiIcon from '@icons/emoji.svg'
-import LocationIcon from '@icons/location.svg'
+import HashtagIcon from '@icons/hashtag.svg'
+import CrossMarkIcon from '@icons/cross.svg'
 
+import Tag from '@/components/Atom/Tag.vue'
+import UiButton from '@/components/Atom/UiButton.vue'
 import Avatar from '@/components/Atom/Avatar.vue'
 import EmojiPicker from '@/components/Molecules/Emoji/EmojiPicker.vue'
 
@@ -15,14 +18,50 @@ import {
 const { authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
-const { name, caption, medias } = storeToRefs(
+const { name, caption, tags, medias } = storeToRefs(
   useCreatePostStore()
 )
 const captionInputRef =
   ref<Nullable<HTMLTextAreaElement>>(null)
 const activeEmojiTooltip = ref(false)
-const activeCharactersTooltip = ref(false)
+const activeNameCharactersTooltip = ref(false)
+const activeCaptionCharactersTooltip = ref(false)
 const activeAccessibility = ref(false)
+
+const currentTag = ref('')
+
+const validateTag = (tag: string): boolean => {
+  const regex = /^[a-zA-Z0-9-]*$/
+
+  return (
+    tag.trim().length > 2 &&
+    regex.test(tag) &&
+    !tags.value.some(
+      (t) =>
+        t.toLowerCase().includes(tag.toLowerCase()) ||
+        t.toUpperCase().includes(tag.toUpperCase())
+    )
+  )
+}
+
+const addTag = () => {
+  if (validateTag(currentTag.value)) {
+    tags.value.push(currentTag.value.trim())
+    currentTag.value = ''
+  } else {
+    currentTag.value = ''
+  }
+}
+
+const addTagOnEnter = (event) => {
+  if (event.key === 'Enter') {
+    addTag()
+    event.preventDefault()
+  }
+}
+const removeTag = (index: number) => {
+  tags.value.splice(index, 1)
+}
 
 const nameCharacterCount = computed(() => {
   return name.value.length
@@ -89,15 +128,14 @@ watch(name, (newName, oldName) => {
         ></textarea>
       </div>
       <div
-        class="flex items-center justify-between px-2 flex-shrink-0"
+        class="flex items-center justify-end px-2 flex-shrink-0"
       >
-        <div></div>
         <div
           class="maximum-characters relative mr-2"
-          :class="{ active: activeCharactersTooltip }"
+          :class="{ active: activeNameCharactersTooltip }"
           v-click-outside.short="
             () => {
-              activeCharactersTooltip = false
+              activeNameCharactersTooltip = false
             }
           "
         >
@@ -105,22 +143,71 @@ watch(name, (newName, oldName) => {
             class="text-xs text-textColor-secondary cursor-pointer
               parent-[.maximum-characters.active]:text-textColor-primary"
             @click="
-              activeCharactersTooltip =
-                !activeCharactersTooltip
+              activeNameCharactersTooltip =
+                !activeNameCharactersTooltip
             "
             >{{ nameCharacterCount }}/36</span
           >
           <div
-            v-if="activeCharactersTooltip"
+            v-if="activeNameCharactersTooltip"
             class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full
               right-0 w-[291px] text-center text-white bg-black rounded-lg
               drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
           >
-            <span
-              >Chú thích dài hơn 125 ký tự sẽ bị cắt bớt
-              trên bảng feed.</span
-            >
+            <span>36 characters maximum.</span>
           </div>
+        </div>
+      </div>
+      <div
+        class="h-[50px] flex items-center justify-between py-0 border-t
+          border-separator-modal"
+      >
+        <textarea
+          class="w-full h-full px-4 text-base resize-none
+            placeholder:text-placeholder"
+          v-model="currentTag"
+          ref="nameInputRef"
+          @keydown.enter="addTagOnEnter"
+          placeholder="Choose your tags"
+        ></textarea>
+        <UiButton
+          type="submit"
+          primary
+          class="my-8"
+          size="small"
+          @click="addTag"
+          >+
+        </UiButton>
+        <div class="ml-2">
+          <HashtagIcon
+            v-if="true"
+            class="text-textColor-primary fill-textColor-primary mr-2"
+          />
+          <fa v-else :icon="['far', 'circle-xmark']" />
+        </div>
+      </div>
+      <div
+        class="flex py-1"
+        :style="{ flexWrap: 'wrap' }"
+        v-if="tags.length > 0"
+      >
+        <div
+          v-for="(tag, index) in tags"
+          :key="index"
+          class="flex items-center px-1.5 pb-0.5 mx-1 border
+            border-borderColor transition ease-in-out delay-80
+            duration-300 bg-bgColor-primary
+            hover:border-buttonColor-primary text-buttonColor-primary
+            rounded-full"
+        >
+          <span>{{ tag }}</span>
+          <CrossMarkIcon
+            class="transition ease-in-out delay-80 duration-300
+              hover:cursor-pointer hover:text-red-500
+              animate-[0.45s_like-button-animation_ease-in-out]
+              text-textColor-primary fill-textColor-primary mx-0.5"
+            @click="removeTag(index)"
+          />
         </div>
       </div>
       <div
@@ -166,10 +253,12 @@ watch(name, (newName, oldName) => {
         </div>
         <div
           class="maximum-characters relative mr-2"
-          :class="{ active: activeCharactersTooltip }"
+          :class="{
+            active: activeCaptionCharactersTooltip
+          }"
           v-click-outside.short="
             () => {
-              activeCharactersTooltip = false
+              activeCaptionCharactersTooltip = false
             }
           "
         >
@@ -177,26 +266,23 @@ watch(name, (newName, oldName) => {
             class="text-xs text-textColor-secondary cursor-pointer
               parent-[.maximum-characters.active]:text-textColor-primary"
             @click="
-              activeCharactersTooltip =
-                !activeCharactersTooltip
+              activeCaptionCharactersTooltip =
+                !activeCaptionCharactersTooltip
             "
             >{{ captionCharacterCount }}/2.200</span
           >
           <div
-            v-if="activeCharactersTooltip"
+            v-if="activeCaptionCharactersTooltip"
             class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full
               right-0 w-[291px] text-center text-white bg-black rounded-lg
               drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
           >
-            <span
-              >Chú thích dài hơn 125 ký tự sẽ bị cắt bớt
-              trên bảng feed.</span
-            >
+            <span>2.200 characters maximum.</span>
           </div>
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       class="flex items-center justify-between relative w-full px-4
         text-base border-t border-separator-modal"
     >
@@ -280,7 +366,7 @@ watch(name, (newName, oldName) => {
           <fa v-else :icon="['fas', 'chevron-up']" />
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -310,4 +396,9 @@ watch(name, (newName, oldName) => {
   transform: rotateZ(45deg);
   z-index: -1;
 }
+
+/* .cross-mark {
+  width: 10px;
+  height: 10px;
+} */
 </style>
