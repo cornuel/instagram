@@ -55,10 +55,12 @@ const commentCountComp = computed(() => {
           group-hover/review:opacity-100 transition-opacity z-10"
       >
         <div class="text-center">
-          <div class="text-white text-xl">
+          <div
+            class="text-white font-semibold text-sm md:text-lg px-4 my-2"
+          >
             {{ post.title }}
           </div>
-          <div class="flex">
+          <div class="flex justify-center">
             <div class="flex items-center mr-7">
               <LikeIcon
                 class="w-5 h-5 text-white fill-white"
