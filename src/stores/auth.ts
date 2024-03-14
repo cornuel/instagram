@@ -30,8 +30,10 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('access', newToken);
     },
     setRefreshToken(newToken: string) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 7);
       $cookies.set('refresh', newToken,
-        '1w', // set expiration time to one week
+        expirationDate, // set expiration time to one week
         '/',
         undefined,
         true, // only send over HTTPS
