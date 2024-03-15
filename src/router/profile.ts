@@ -2,6 +2,7 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { useProfile } from '@/composables'
+import { useProfileStore } from '@/stores'
 
 const guardProfile = (
   to: RouteLocationNormalized,
@@ -27,6 +28,7 @@ const guardProfile = (
     }
   })
 }
+
 
 const handleFollowModal = (
   to: RouteLocationNormalized,
@@ -82,6 +84,17 @@ export default {
     {
       path: 'saved',
       name: 'Saved',
+      beforeEnter: (
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalized,
+        next: NavigationGuardNext) => {
+        const { viewedProfile, authenticatedProfile } = useProfileStore()
+        if (viewedProfile?.id === authenticatedProfile?.id) {
+          next()
+        } else {
+          next({ name: 'Posts', params: { username: viewedProfile?.username } })
+        }
+      },
       component: () => import('../views/profile/saved.vue')
     },
     {

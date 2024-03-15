@@ -1,6 +1,7 @@
 import { usePostStore, useCreatePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
 import instance from '@/libs/axios/instance'
+import type { AxiosResponse } from 'axios';
 
 export const usePost = () => {
   const setPost = async () => {
@@ -49,6 +50,16 @@ export const usePost = () => {
     }
   }
 
+  const makePostFavorite = async (postSlug: string) => {
+    try {
+      const response = await instance.post(`posts/${postSlug}/favorite/`)
+      return response.data.message === 'Post added to favorites successfully'
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
   const deletePost = async (postSlug: string) => {
     try {
       const response = await instance.delete<IPost>(`posts/${postSlug}/`)
@@ -71,6 +82,18 @@ export const usePost = () => {
     }
   }
 
+  const getFavoritedPosts = async (page: number = 1) => {
+    try {
+      const response = await instance.get<IPaginatedPosts>(`posts/favorited/`, {
+        params: { page }
+      });
+      return response.data
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
   // const getOtherUserPosts = async (userId: string, postId: string) => {
   // todo
   // }
@@ -78,8 +101,10 @@ export const usePost = () => {
   return {
     setPost,
     getPost,
+    makePostFavorite,
     deletePost,
     getUserPosts,
+    getFavoritedPosts,
     // getOtherUserPosts,
   }
 }

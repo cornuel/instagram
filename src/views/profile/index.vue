@@ -163,6 +163,10 @@ onBeforeUnmount(() => {
           >
         </router-link>
         <router-link
+          v-if="
+            viewedProfile!.username ===
+            authenticatedProfile!.username
+          "
           :to="{ name: 'Saved' }"
           class="flex flex-center flex-[1_1_0%] min-[736px]:flex-none
             h-[52px] text-textColor-secondary border-t

@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 interface IState {
   post: Nullable<IPost>
   userPosts: Nullable<IPaginatedPosts>
+  favoritedPosts: Nullable<IPaginatedPosts>
   likedListModal: boolean
   isLoadingLikedList: boolean
   likedList: Nullable<IProfile[]>
@@ -13,6 +14,7 @@ export const usePostStore = defineStore('post', {
   state: (): IState => ({
     post: null,
     userPosts: null,
+    favoritedPosts: null,
     likedListModal: false,
     isLoadingLikedList: false,
     likedList: null
@@ -38,6 +40,12 @@ export const usePostStore = defineStore('post', {
     },
     setPosts(posts: Nullable<IPaginatedPosts>) {
       this.userPosts = posts
+    },
+    getFavoritedPosts(): Nullable<IPaginatedPosts> {
+      return this.favoritedPosts
+    },
+    setFavoritedPosts(posts: Nullable<IPaginatedPosts>) {
+      this.favoritedPosts = posts
     },
     setLikedListModal(value: boolean) {
       this.likedListModal = value

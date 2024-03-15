@@ -9,7 +9,7 @@ import BookmarkActiveIcon from '@icons/bookmark-active.svg'
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePostStore, useCommentStore } from '@/stores'
-import { useLike } from '@/composables'
+import { useLike, usePost } from '@/composables'
 import {
   dateDistanceToNow,
   convertToFullDate
@@ -20,7 +20,9 @@ const { post } = storeToRefs(usePostStore())
 const { commentRef } = storeToRefs(useCommentStore())
 const like = ref<Nullable<IPostLike>>(null)
 const isLike = ref(false)
+const isFavorited = ref(false)
 const isLoadingLike = ref(false)
+const isLoadingFavorited = ref(false)
 
 const disabledLikeButtonComp = computed(() => {
   return isLoadingLike.value
@@ -46,6 +48,18 @@ const handleLikePost = async () => {
   isLoadingLike.value = false
 }
 
+const handleFavoritePost = async () => {
+  const { makePostFavorite } = usePost()
+  isLoadingFavorited.value = true
+  isFavorited.value = !isFavorited.value
+  try {
+    await makePostFavorite(post.value!.slug)
+  } catch (error) {
+    isFavorited.value = !isFavorited.value
+  }
+  isLoadingFavorited.value = false
+}
+
 const commentIconClick = () => {
   commentRef.value?.focus()
 }
@@ -69,9 +83,8 @@ const handleClickLikedPost = async () => {
 }
 
 onMounted(async () => {
-  const { getPostLike } = useLike()
-  // like.value = await getPostLike(post.value!.id)
   isLike.value = post.value.is_liked
+  isFavorited.value = post.value.is_favorited
 })
 </script>
 
@@ -109,12 +122,14 @@ onMounted(async () => {
       </div>
       <div class="p-2 cursor-pointer select-none">
         <BookmarkIcon
-          v-if="true"
+          v-if="!isFavorited"
           class="w-6 h-6 fill-textColor-primary text-textColor-primary"
+          @click="handleFavoritePost"
         />
         <BookmarkActiveIcon
           v-else
           class="w-6 h-6 fill-textColor-primary text-textColor-primary"
+          @click="handleFavoritePost"
         />
       </div>
     </div>
