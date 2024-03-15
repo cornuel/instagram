@@ -16,6 +16,16 @@ export const useProfile = () => {
     }
   }
 
+  const updateProfile = async (userSlug: string, bio: string, fullName: string): Promise<IProfile | null> => {
+    try {
+      const response = await instance.put(`profiles/${userSlug}/`, { bio: bio, full_name: fullName })
+      return response.data
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
   const getViewedProfile = async (userSlug: string): Promise<IProfile | null> => {
     const profile = await getProfile(userSlug)
 
@@ -46,6 +56,7 @@ export const useProfile = () => {
 
   return {
     getProfile,
+    updateProfile,
     getViewedProfile,
     getAuthenticatedProfile,
   }
