@@ -65,9 +65,16 @@ onBeforeMount(async () => {
       </div>
       <div class="w-full flex flex-wrap z-10 bg-opacity-50">
         <div v-for="tag in post?.tags" :key="tag">
-          <Tag size="medium">
-            <span> {{ tag }} </span>
-          </Tag>
+          <RouterLink
+            :to="{
+              name: 'Tag',
+              params: { tagname: tag.toLowerCase() }
+            }"
+          >
+            <Tag size="medium">
+              <span> {{ tag }} </span>
+            </Tag>
+          </RouterLink>
         </div>
       </div>
       <CommentItem v-bind="captionComp" isCaption />

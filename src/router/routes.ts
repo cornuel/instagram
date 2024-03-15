@@ -5,6 +5,7 @@ import { useProfileStore } from '@/stores'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import post from './post'
 import profile from './profile'
+import tag from './tag'
 
 export default [
   {
@@ -51,6 +52,7 @@ export default [
   },
   post,
   profile,
+  tag,
   {
     path: '/accounts/login',
     name: 'Login',

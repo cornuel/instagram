@@ -1,4 +1,6 @@
 export * from './useAuth'
+export * from './useSearch'
+export * from './useTag'
 export * from './useProfile'
 export * from './useComment'
 export * from './useDownload'

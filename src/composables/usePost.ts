@@ -5,12 +5,14 @@ import instance from '@/libs/axios/instance'
 export const usePost = () => {
   const setPost = async () => {
     try {
-      const { medias, name, caption, cropperSize } = useCreatePostStore();
+      const { medias, name, caption, tags, cropperSize } = useCreatePostStore();
 
       const formData = new FormData();
       formData.append('title', name);
       formData.append('body', caption);
-      // formData.append('tags', JSON.stringify(tags));
+      for (const tag of tags) {
+        formData.append('tags', tag);
+      }
 
       console.log(medias)
       // console.log(medias[0])
