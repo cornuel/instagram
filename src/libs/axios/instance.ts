@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useProfile } from '@/composables'
 import { useAuthStore } from '@/stores'
 
 const IS_DEV: boolean = import.meta.env.VITE_ENV === 'dev' ? true : false;
@@ -43,10 +44,14 @@ instance.interceptors.response.use(
           // Store the new token in localStorage
           localStorage.setItem("access", newToken);
 
+
           // Add the new token to the original request header
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
           instance.defaults.headers.Authorization = `Bearer ${newToken}`;
+
+          // update the authenticatedProfile
+          await useProfile().getAuthenticatedProfile()
 
           // Retry the original request with the new token
           return axios(originalRequest);
