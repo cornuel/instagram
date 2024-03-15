@@ -66,7 +66,8 @@ onMounted(() => {
       class="slider-wrapper relative flex flex-grow mr-3 overflow-hidden"
     >
       <draggable
-        class="slider-list flex items-center transition-all duration-200"
+        class="slider-list flex items-center transition-all duration-200
+          cursor-pointer"
         v-model="medias"
         v-bind="dragOptions"
         item-key="url"

@@ -10,7 +10,8 @@ const { authenticatedProfile } = storeToRefs(
 
 <template>
   <section
-    class="dashboard w-full h-screen bg-bgColor-primary"
+    class="dashboard overflow-x-hidden w-full h-screen
+      bg-bgColor-primary"
   >
     <Nav v-if="authenticatedProfile" />
     <main

@@ -194,7 +194,7 @@ watch(name, (newName, oldName) => {
         <div
           v-for="(tag, index) in tags"
           :key="index"
-          class="flex items-center px-1.5 pb-0.5 mx-1 border
+          class="flex items-center px-1.5 pb-0.5 mx-1 mb-1 border
             border-borderColor transition ease-in-out delay-80
             duration-300 bg-bgColor-primary
             hover:border-buttonColor-primary text-buttonColor-primary

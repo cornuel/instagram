@@ -17,6 +17,7 @@ import {
 import {
   useFollow,
   usePost,
+  useProfile,
   useDownload
 } from '@/composables'
 import type { IAction } from '@/types'
@@ -41,6 +42,17 @@ const deletePost = async () => {
   if (authenticatedProfile) {
     const { deletePost } = usePost()
     if (await deletePost(post.value?.slug)) {
+      const { setAuthenticatedProfile } = useProfileStore()
+
+      // update the post_count of the user
+      const postCount =
+        authenticatedProfile.value!.posts_count - 1
+
+      setAuthenticatedProfile({
+        ...authenticatedProfile.value!,
+        posts_count: postCount
+      })
+
       router.push({
         name: 'Profile',
         params: {
