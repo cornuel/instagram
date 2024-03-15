@@ -1,3 +1,5 @@
+import { type IPaginated } from './common'
+
 export interface IComment {
 	id: number
 	profile: string
@@ -12,9 +14,6 @@ export interface IComment {
 	url: string
 }
 
-export interface IPaginatedComments {
-	count: number
-	next: string
-	previous: string
+export interface IPaginatedComments extends IPaginated {
 	results: IComment[]
 }

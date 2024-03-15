@@ -1,3 +1,5 @@
+import { type IPaginated } from './common'
+
 export interface IProfile {
   id: number
   username: string
@@ -13,9 +15,6 @@ export interface IProfile {
   updated_at?: string
 }
 
-export interface IPaginatedProfiles {
-  count: number
-  next: string
-  previous: string
+export interface IPaginatedProfiles extends IPaginated {
   results: IProfile[]
 }

@@ -1,3 +1,5 @@
+import { type IPaginated } from './common'
+
 export interface IImages {
   id: number
   image: string
@@ -24,9 +26,6 @@ export interface IPost {
   is_private?: boolean
 }
 
-export interface IPaginatedPosts {
-  count: number
-  next: string
-  previous: string
-  results: IPost[]
+export interface IPaginatedPosts extends IPaginated {
+  results?: IPost[]
 }

@@ -13,3 +13,9 @@ export interface IAction {
   classes?: any
   action?: () => void
 }
+
+export interface IPaginated {
+  count: number
+  next: string
+  previous: string
+}
