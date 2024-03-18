@@ -40,7 +40,6 @@ router.beforeEach(async (to, from) => {
     // } else {
     //   return
     // }
-    console.log('else')
   }
 })
 

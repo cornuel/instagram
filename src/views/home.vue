@@ -6,14 +6,6 @@ import { storeToRefs } from 'pinia'
 
 const { authenticatedUsername, authenticatedProfile } =
   storeToRefs(useProfileStore())
-
-console.log(
-  'authenticatedUsername is ' + authenticatedUsername.value
-)
-
-console.log(
-  'authenticatedProfile is ' + authenticatedProfile.value
-)
 </script>
 
 <template>

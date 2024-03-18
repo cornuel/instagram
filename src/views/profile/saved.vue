@@ -62,10 +62,7 @@ onBeforeMount(async () => {
   <div>
     <Loading v-if="isLoading" class="mt-10" />
     <template v-else>
-      <div
-        v-if="favoritedPosts"
-        class="flex flex-wrap -mx-[2px]"
-      >
+      <div v-if="favoritedPosts" class="flex flex-wrap">
         <PostReviewItem
           class="w-1/3 px-[2px] mb-1"
           v-for="post in favoritedPosts.results"

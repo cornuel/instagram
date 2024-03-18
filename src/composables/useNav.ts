@@ -42,7 +42,7 @@ export const useNav = () => {
       title: 'Explore',
       icon: Explore,
       iconActive: ExploreActive,
-      path: '/explore'
+      path: '/'
     },
     {
       name: NavTabEnum.Reels,
@@ -90,7 +90,7 @@ export const useNav = () => {
       title: 'Explore',
       icon: Explore,
       iconActive: ExploreActive,
-      path: '/explore'
+      path: '/'
     },
     {
       name: NavTabEnum.Reels,

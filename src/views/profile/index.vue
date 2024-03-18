@@ -12,7 +12,6 @@ import {
   computed,
   ComputedRef,
   onBeforeMount,
-  onBeforeUnmount,
   nextTick
 } from 'vue'
 import type { IUser } from '@/types'
@@ -28,16 +27,10 @@ import { useProfileStore } from '@/stores'
 import { useProfile } from '@/composables'
 
 const router = useRouter()
-console.log('profile/index.vue')
-// const { user, currentUser } = storeToRefs(useUserStore())
 
-const viewedProfile: ComputedRef<IUser | null> = computed(
-  () => useProfileStore().getViewedProfile()
+const { viewedProfile, authenticatedProfile } = storeToRefs(
+  useProfileStore()
 )
-const authenticatedProfile: ComputedRef<IUser | null> =
-  computed(() =>
-    useProfileStore().getAuthenticatedProfile()
-  )
 
 const isCurrentUser: ComputedRef<boolean> = computed(() => {
   const currentUser = authenticatedProfile.value
@@ -55,7 +48,6 @@ onBeforeRouteUpdate(
     from: RouteLocationNormalized,
     next: NavigationGuardNext
   ) => {
-    console.log('onBeforeRouteUpdate profile/index.vue')
     if (from.params.username !== to.params.username) {
       const viewedProfile = await useProfile()
         .getViewedProfile(to.params.username as string)
@@ -83,14 +75,9 @@ onBeforeRouteUpdate(
 onBeforeMount(async () => {
   // const { watchUserChange } = useUser()
   // unsubscribe = watchUserChange(user.value!.id)
-  console.log('onbeforemount profile/index.vue')
   nextTick(() => {
     document.title = `${viewedProfile?.value?.full_name} (@${viewedProfile?.value?.username}) | Instagram`
   })
-})
-
-onBeforeUnmount(() => {
-  // unsubscribe()
 })
 </script>
 

@@ -152,17 +152,6 @@ const handleComment = async () => {
             Post
           </button>
         </div>
-        <div
-          v-else
-          class="py-2 px-4 text-textColor-secondary"
-        >
-          <RouterLink
-            :to="{ name: 'Login' }"
-            class="text-buttonColor-primary hover:text-link"
-            >Đăng nhập</RouterLink
-          >
-          <span> để thích hoặc bình luận.</span>
-        </div>
       </div>
     </div>
     <UsersWhoLikedModel v-if="likedListModal" />

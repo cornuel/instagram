@@ -20,9 +20,6 @@ const guardProfile = (
         hash: to.hash
       })
     } else {
-      console.log('User found')
-      // const { initUserWithFollow } = useUserStore()
-      // await initUserWithFollow(user)
 
       next()
     }

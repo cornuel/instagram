@@ -1,7 +1,6 @@
 import { usePostStore, useCreatePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
 import instance from '@/libs/axios/instance'
-import type { AxiosResponse } from 'axios';
 
 export const usePost = () => {
   const setPost = async () => {

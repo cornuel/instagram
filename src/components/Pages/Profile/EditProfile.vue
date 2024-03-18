@@ -4,8 +4,7 @@ import { useProfile } from '@/composables'
 import Avatar from '@/components/Atom/Avatar.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
-import { RefSymbol } from '@vue/reactivity'
+import { computed, ref } from 'vue'
 
 const { authenticatedProfile } = storeToRefs(
   useProfileStore()
@@ -91,11 +90,7 @@ const submitUpdateProfile = async () => {
               {{ authenticatedProfile?.full_name }}
             </div>
           </div>
-          <UiButton
-            type="submit"
-            primary
-            class="m-4"
-            :isLoading="loading"
+          <UiButton type="submit" primary class="m-4"
             >Change photo
           </UiButton>
         </div>
@@ -200,7 +195,6 @@ const submitUpdateProfile = async () => {
       primary
       class="my-8"
       :disabled="isDisable"
-      :isLoading="loading"
       @click="submitUpdateProfile"
       >Submit
     </UiButton>

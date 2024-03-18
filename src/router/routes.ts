@@ -21,8 +21,6 @@ export default [
       const profileStore = useProfileStore()
       const authenticatedProfile = profileStore.getAuthenticatedProfile()
 
-      console.log(authenticatedProfile)
-
       if (authenticatedProfile) to.meta.layout = DashboardLayout
       else to.meta.layout = AuthLayout
 
@@ -41,8 +39,6 @@ export default [
     ) => {
       const profileStore = useProfileStore()
       const authenticatedProfile = profileStore.getAuthenticatedProfile()
-
-      console.log(authenticatedProfile)
 
       if (authenticatedProfile) to.meta.layout = DashboardLayout
       else to.meta.layout = AuthLayout
@@ -68,7 +64,20 @@ export default [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: () => import('@/components/Pages/Auth/SignUp.vue'),
-    meta: { title: 'Not found - Instagram', layout: AuthLayout }
+    component: () => import('@/views/notFound.vue'),
+    meta: { title: 'Not found - Instagram', requiresAuth: true },
+    beforeEnter: async (
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) => {
+      const profileStore = useProfileStore()
+      const authenticatedProfile = profileStore.getAuthenticatedProfile()
+
+      if (authenticatedProfile) to.meta.layout = DashboardLayout
+      else to.meta.layout = AuthLayout
+
+      next()
+    }
   }
 ] as readonly RouteRecordRaw[]
