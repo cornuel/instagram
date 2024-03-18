@@ -24,8 +24,8 @@ const classes = computed(() => {
   return [
     sizeClasses[props.size] || sizeClasses.medium,
     'rounded-full transition ease-in-out delay-50 duration-100',
-    'border border-borderColor hover:bg-gradient-to-r from-buttonColor-primary to-buttonColor-primary-hover ',
-    'hover:cursor-pointer hover:text-buttonColor-secondary hover:border-buttonColor-primary',
+    'border border-borderColor hover:bg-gradient-to-r from-[#c128be] via-[#ea3469] to-[#ee8131]',
+    'hover:cursor-pointer hover:text-white hover:border-[#c128be]',
     'hover:shadow-sm'
   ]
 })

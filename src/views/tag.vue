@@ -95,10 +95,10 @@ const isGeneralMobile = computed(() => {
         >
           <div
             class="text-transparent bg-clip-text bg-gradient-to-r
-              from-buttonColor-primary to-buttonColor-primary-hover"
+              from-[#c128be] via-[#ea3469] to-[#ee8131]"
           >
             <div
-              class="text-3xl min-[736px]:text-4xl font-semibold"
+              class="text-3xl min-[736px]:text-4xl font-light"
             >
               {{ currentTag?.name }}
             </div>
