@@ -1,43 +1,57 @@
-import { usePostStore, useCreatePostStore } from '@/stores'
+import { useCreatePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
 import instance from '@/libs/axios/instance'
 
 export const usePost = () => {
   const setPost = async () => {
     try {
-      const { medias, name, caption, tags, cropperSize } = useCreatePostStore();
+      const { medias, name, caption, tags, cropperSize } =
+        useCreatePostStore()
 
-      const formData = new FormData();
-      formData.append('title', name);
-      formData.append('body', caption);
+      const formData = new FormData()
+      formData.append('title', name)
+      formData.append('body', caption)
       for (const tag of tags) {
-        formData.append('tags', tag);
+        formData.append('tags', tag)
       }
 
-      console.log(medias)
-      // console.log(medias[0])
-      // console.log(medias[0].canvas)
       // Convert the canvas to a Blob and append it to the FormData
       for (let i = 0; i < medias.length; i++) {
-        const blob = await new Promise<Blob>((resolve) => {
-          medias[i].canvas.toBlob((blob) => {
-            resolve(blob);
-          }, 'image/png'); // You can choose the format and quality (e.g., 'image/png')
-        });
-        formData.append('uploaded_images', blob, 'image.png');
+        const blob = await new Promise<Blob | null>(
+          (resolve) => {
+            medias[i].canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(blob)
+              } else {
+                resolve(null)
+              }
+            }, 'image/png')
+          }
+        )
+        if (blob) {
+          formData.append(
+            'uploaded_images',
+            blob,
+            'image.png'
+          )
+        }
       }
 
-      const response = await instance.post<IPost>('posts/', formData, {
-        headers: {
-          // 'Content-Type': 'multipart/form-data' // This header is set automatically by axios when you use FormData
+      const response = await instance.post<IPost>(
+        'posts/',
+        formData,
+        {
+          headers: {
+            // 'Content-Type': 'multipart/form-data' // This header is set automatically by axios when you use FormData
+          }
         }
-      });
-      return response.data;
+      )
+      return response.data
     } catch (error) {
-      console.log(error);
-      return null;
+      console.log(error)
+      return null
     }
-  };
+  }
 
   const getPost = async (postSlug: string) => {
     try {
@@ -104,6 +118,5 @@ export const usePost = () => {
     deletePost,
     getUserPosts,
     getFavoritedPosts,
-    // getOtherUserPosts,
   }
 }

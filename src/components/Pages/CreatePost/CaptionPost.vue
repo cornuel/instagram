@@ -3,7 +3,6 @@ import EmojiIcon from '@icons/emoji.svg'
 import HashtagIcon from '@icons/hashtag.svg'
 import CrossMarkIcon from '@icons/cross.svg'
 
-import Tag from '@/components/Atom/Tag.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import Avatar from '@/components/Atom/Avatar.vue'
 import EmojiPicker from '@/components/Molecules/Emoji/EmojiPicker.vue'
@@ -18,7 +17,7 @@ import {
 const { authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
-const { name, caption, tags, medias } = storeToRefs(
+const { name, caption, tags } = storeToRefs(
   useCreatePostStore()
 )
 const captionInputRef =
@@ -26,7 +25,6 @@ const captionInputRef =
 const activeEmojiTooltip = ref(false)
 const activeNameCharactersTooltip = ref(false)
 const activeCaptionCharactersTooltip = ref(false)
-const activeAccessibility = ref(false)
 
 const currentTag = ref('')
 
@@ -53,12 +51,13 @@ const addTag = () => {
   }
 }
 
-const addTagOnEnter = (event) => {
+const addTagOnEnter = (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     addTag()
     event.preventDefault()
   }
 }
+
 const removeTag = (index: number) => {
   tags.value.splice(index, 1)
 }

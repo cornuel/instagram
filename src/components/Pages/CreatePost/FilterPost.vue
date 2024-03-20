@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import AdjustInput from './AdjustInput.vue'
 
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { FILTER_TEMPLATES, DEFAULT_FILTER, DEFAULT_ADJUST } from '@/constants'
 import type { IAdjust, IMedia } from '@/types'
 import { storeToRefs } from 'pinia'
@@ -102,9 +102,8 @@ const convertToFilter = (adjust: IAdjust) => {
   //Filter
   const filter = adjustOptions.map((adjustOption) => {
     const adjustName = adjustOption.name as keyof IAdjust
-    return `${adjustOption.name}(${
-      filterTemplate.value[adjustName]! + adjust[adjustName]! / adjustOption.divid
-    }${adjustOption.unit || ''})`
+    return `${adjustOption.name}(${filterTemplate.value[adjustName]! + (adjust[adjustName] ?? 0) / adjustOption.divid
+      }${adjustOption.unit || ''})`
   })
 
   //Background cover
@@ -113,14 +112,14 @@ const convertToFilter = (adjust: IAdjust) => {
   let backgroundValues = []
   let vignetteCSS: string = '';
 
-  if (adjust.temperature > 0) {
+  if (adjust.temperature && adjust.temperature > 0) {
     backgroundValues.push(`rgba(255,200,0,${adjust.temperature / 2000})`);
-  } else if (adjust.temperature !== 0) {
+  } else if (adjust.temperature !== undefined && adjust.temperature < 0) {
     backgroundValues.push(`rgba(0,110,255,${-adjust.temperature / 2000})`);
   }
 
 
-  if (adjust.vignette! > 0) {
+  if (adjust.vignette && adjust.vignette > 0) {
     let vignette: number
     if (adjust.vignette >= 80) {
       vignette = 79
@@ -141,6 +140,7 @@ const convertToFilter = (adjust: IAdjust) => {
   setFilter(filters)
   updateMediaFilter()
 }
+
 
 const chooseTemplate = (template: IFilterTemplate) => {
   filterTemplate.value = {

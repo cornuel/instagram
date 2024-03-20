@@ -43,12 +43,13 @@ export function getRatioCrop(realImageSize: ISize, cropperSize: ISize, scale: nu
 export function drawInitCanvas(
   canvas: HTMLCanvasElement,
   img: HTMLImageElement,
-  cropperSize: ISize
+  cropperSize: ISize,
+  ratio: string
 ) {
   const reviewImageSize = {
     ...getReviewImageSize(img, cropperSize)
   }
-  const ratioCrop = getRatioCrop(img, cropperSize, 1)
+  const ratioCrop = getRatioCrop(img, cropperSize, 1, ratio)
 
   canvas.width = cropperSize.width * ratioCrop
   canvas.height = cropperSize.height * ratioCrop

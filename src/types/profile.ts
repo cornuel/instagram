@@ -16,5 +16,5 @@ export interface IProfile {
 }
 
 export interface IPaginatedProfiles extends IPaginated {
-  results: IProfile[]
+  results: IProfile[] | null
 }

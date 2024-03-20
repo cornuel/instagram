@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 import Avatar from '@/components/Atom/Avatar.vue'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
-
 import { ref, computed } from 'vue'
-
-import {
-  onBeforeRouteUpdate,
-  useRouter,
-  useRoute
-} from 'vue-router'
-
 import { storeToRefs } from 'pinia'
+import { type IPaginatedPosts } from '@/types'
 
 import {
   useSearchStore,
@@ -33,19 +26,27 @@ const page = ref(1)
 
 async function load({ loaded }: LoadAction): Promise<void> {
   const { fetchPostsByTagQuery } = useSearch()
-  if (searchedPosts.value.next) {
+  let loadedPosts: IPaginatedPosts | null = null
+
+  if (
+    searchedPosts.value?.results &&
+    searchedPosts.value?.next
+  ) {
     page.value += 1
-    const loadedPosts = await fetchPostsByTagQuery(
+
+    loadedPosts = (await fetchPostsByTagQuery(
       query.value,
       page.value
-    )
+    )) as IPaginatedPosts
 
-    searchedPosts.value.next = loadedPosts.next
-    searchedPosts.value.results.push(
-      ...loadedPosts.results.posts
-    )
-    useSearchStore().setSearchedPosts(searchedPosts.value)
-    loaded(searchedPosts.value.results.length, 9)
+    if (loadedPosts) {
+      searchedPosts.value.next = loadedPosts.next
+      searchedPosts.value.results.push(
+        ...loadedPosts.results!
+      )
+      useSearchStore().setSearchedPosts(searchedPosts.value)
+      loaded(searchedPosts.value.results.length, 9)
+    }
   } else {
     loaded(0, 0)
   }
@@ -81,10 +82,10 @@ const isGeneralMobile = computed(() => {
           <Avatar
             :width="isGeneralMobile ? '77' : '150'"
             :avatar-url="
-              searchedPosts!.results[0]?.images[0]
+              searchedPosts?.results?.[0]?.images?.[0]
                 ?.thumbnail
             "
-            :title="currentTag.name"
+            :title="currentTag?.name"
           />
         </div>
       </div>

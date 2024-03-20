@@ -77,57 +77,12 @@ export const useLike = () => {
     }
   }
 
-  const unlikePost = async (like: IPostLike) => {
-    // likePost does both like/unlike
-
-    // try {
-    //   const { decreaseLikeCount } = usePostStore()
-
-    //   decreaseLikeCount()
-    //   await Promise.all([
-    //     deleteDoc(doc(db, 'postLikes', like.id)),
-    //     updateDoc(doc(db, 'posts', like.postId), {
-    //       likeCount: increment(-1)
-    //     })
-    //   ])
-    // } catch (error) {
-    //   console.log(error)
-    // }
-  }
 
   const getPostLike = async (postId: string) => {
-    // already comes with the post data
-
-    // try {
-    //   const { currentUser } = storeToRefs(useUserStore())
-
-    //   const querySnapshot = await getDocs(
-    //     query(
-    //       collection(db, 'postLikes'),
-    //       where('postId', '==', postId),
-    //       where('userId', '==', currentUser.value?.id)
-    //     )
-    //   )
-
-    //   if (querySnapshot.empty) {
-    //     return null
-    //   } else {
-    //     return {
-    //       id: querySnapshot.docs[0].id,
-    //       ...querySnapshot.docs[0].data()
-    //     } as IPostLike
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    //   return null
-    // }
+    // todo
   }
 
   const likeComment = async (commentId: number, isLiked: boolean) => {
-    // isLiked ? useCommentStore().decreaseLikeCount(commentId) : useCommentStore().increaseLikeCount(commentId)
-    // console.log(isLiked)
-
-    const like_message = 'Comment liked successfully'
     try {
       const response = await instance.post(`comments/${commentId}/like/`)
       return response.data
@@ -138,113 +93,15 @@ export const useLike = () => {
     }
   }
 
-  const unlikeComment = async (like: ICommentLike) => {
-    // same as likeComment
-
-    // try {
-    //   const { decreaseLikeCount } = useCommentStore()
-
-    //   decreaseLikeCount(like.commentId)
-    //   await Promise.all([
-    //     deleteDoc(doc(db, 'commentLikes', like.id)),
-    //     updateDoc(doc(db, 'comments', like.commentId), {
-    //       likeCount: increment(-1)
-    //     })
-    //   ])
-    // } catch (error) {
-    //   console.log(error)
-    // }
-  }
-
   const getCommentLike = async (commentId: string) => {
-    // comes in with the comment data
-  }
-
-  // Reply Likes
-  const likeReply = async (replyId: string) => {
-    // same as likeComment
-
-    // try {
-    //   const { currentUser } = storeToRefs(useUserStore())
-
-    //   const likeData = {
-    //     replyId,
-    //     userId: currentUser.value?.id,
-    //     createdAt: Timestamp.fromDate(new Date())
-    //   }
-
-    //   let likeDoc
-    //   await Promise.all([
-    //     (likeDoc = addDoc(collection(db, 'replyLikes'), likeData)),
-    //     updateDoc(doc(db, 'replies', replyId), {
-    //       likeCount: increment(1)
-    //     })
-    //   ])
-
-    //   likeDoc = await likeDoc
-    //   return {
-    //     ...likeData,
-    //     id: likeDoc.id
-    //   } as IReplyLike
-    // } catch (error) {
-    //   console.log(error)
-    //   return null
-    // }
-  }
-
-  const unlikeReply = async (like: IReplyLike) => {
-    // same as likeComment
-
-    // try {
-    //   await Promise.all([
-    //     deleteDoc(doc(db, 'replyLikes', like.id)),
-    //     updateDoc(doc(db, 'replies', like.replyId), {
-    //       likeCount: increment(-1)
-    //     })
-    //   ])
-    // } catch (error) {
-    //   console.log(error)
-    // }
-  }
-
-  const getReplyLike = async (replyId: string) => {
-    // like count comes with comment data 
-
-    // try {
-    //   const { currentUser } = storeToRefs(useUserStore())
-
-    //   const querySnapshot = await getDocs(
-    //     query(
-    //       collection(db, 'replyLikes'),
-    //       where('replyId', '==', replyId),
-    //       where('userId', '==', currentUser.value?.id)
-    //     )
-    //   )
-
-    //   if (querySnapshot.empty) {
-    //     return null
-    //   } else {
-    //     return {
-    //       id: querySnapshot.docs[0].id,
-    //       ...querySnapshot.docs[0].data()
-    //     } as IReplyLike
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    //   return null
-    // }
+    // todo
   }
 
   return {
     getLikedUsers,
     likePost,
-    unlikePost,
     getPostLike,
     likeComment,
-    unlikeComment,
     getCommentLike,
-    likeReply,
-    unlikeReply,
-    getReplyLike,
   }
 }

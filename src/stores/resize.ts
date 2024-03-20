@@ -35,16 +35,16 @@ export const useResizeStore = defineStore('resize', {
         this.screen = 'desktop'
       }
 
-      // //Debounced
-      // if (this.timeout.width) clearTimeout(this.timeout.width)
-      // this.timeout.width = setTimeout(() => {
-      //   this.dimensions.width = width
-      // }, 300)
+      //Debounced
+      if (this.timeout.width) clearTimeout(this.timeout.width)
+      this.timeout.width = setTimeout(() => {
+        this.dimensions.width = width
+      }, 300)
 
-      // if (this.timeout.height) clearTimeout(this.timeout.height)
-      // this.timeout.height = setTimeout(() => {
-      //   this.dimensions.height = height
-      // }, 300)
+      if (this.timeout.height) clearTimeout(this.timeout.height)
+      this.timeout.height = setTimeout(() => {
+        this.dimensions.height = height
+      }, 300)
     }
   }
 })

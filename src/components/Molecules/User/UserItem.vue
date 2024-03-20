@@ -16,24 +16,14 @@ const isLoadingFollow = ref(false)
 const unfollowPopupActive = ref(false)
 
 const follow = async () => {
-  // if (props.currentUser) {
-  //   const { setFollow } = useFollow()
-  //   isLoadingFollow.value = true
-  //   await setFollow(props.currentUser.id, props.user.id)
-  //   isLoadingFollow.value = false
-  //   props.user!.isCurrentUserFollowing = true
-  // }
-}
-
-const unfollow = async () => {
-  // if (props.currentUser) {
-  //   const { deleteFollow } = useFollow()
-  //   unfollowPopupActive.value = false
-  //   isLoadingFollow.value = true
-  //   await deleteFollow(props.currentUser.id, props.user.id)
-  //   isLoadingFollow.value = false
-  //   props.user!.isCurrentUserFollowing = false
-  // }
+  if (props.authenticatedProfile) {
+    const { setFollow } = useFollow()
+    isLoadingFollow.value = true
+    await setFollow(props.viewedProfile.username)
+    isLoadingFollow.value = false
+    props.viewedProfile!.is_following =
+      !props.viewedProfile!.is_following
+  }
 }
 </script>
 
@@ -94,7 +84,7 @@ const unfollow = async () => {
       <UnfollowPopup
         v-if="unfollowPopupActive"
         :user="viewedProfile"
-        :onConfirm="unfollow"
+        :onConfirm="follow"
         :onCancel="
           () => {
             unfollowPopupActive = false

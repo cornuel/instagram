@@ -27,5 +27,5 @@ export interface IPost {
 }
 
 export interface IPaginatedPosts extends IPaginated {
-  results?: IPost[]
+  results?: IPost[] | null
 }

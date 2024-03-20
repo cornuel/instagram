@@ -33,7 +33,7 @@ onMounted(() => {
 })
 
 watch(stopScroll, (active) => {
-  document.documentElement.style.overflow = active ? 'hidden' : 'visible'
+  // document.documentElement.style.overflow = active ? 'hidden' : 'visible'
 })
 
 const accessToken = useAuthStore().getAccessToken();

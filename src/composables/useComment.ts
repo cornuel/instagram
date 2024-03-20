@@ -12,7 +12,6 @@ export const useComment = () => {
         parent: parent,
         body: body
       })
-      console.log(response.data)
       useCommentStore().addComment(response.data)
       // return response.data
     } catch (error) {

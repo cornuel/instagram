@@ -34,11 +34,13 @@ const getRepliesFn = async () => {
   const { getReplies } = useComment()
 
   loadingReply.value = true
-  replies.value = await getReplies(
-    post.value.slug,
-    props.comment.id,
-    page.value
-  )
+  if (post.value) {
+    replies.value = await getReplies(
+      post.value.slug,
+      props.comment.id,
+      page.value
+    )
+  }
   loadingReply.value = false
 }
 
@@ -82,7 +84,7 @@ watch(
           width="16px"
         />
       </div>
-      <div v-if="renderReplies" class="mt-3">
+      <div v-if="renderReplies && replies" class="mt-3">
         <CommentItem
           v-for="reply in replies.results"
           :key="reply.id"

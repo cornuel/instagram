@@ -8,13 +8,8 @@ import DownIcon from '@icons/down.svg'
 import MoreUserIcon from '@icons/more-user.svg'
 import General from '@/components/Pages/Profile/General.vue'
 
-import {
-  computed,
-  ComputedRef,
-  onBeforeMount,
-  nextTick
-} from 'vue'
-import type { IUser } from '@/types'
+import { computed, onBeforeMount, nextTick } from 'vue'
+
 import { storeToRefs } from 'pinia'
 import {
   useRouter,
@@ -32,7 +27,7 @@ const { viewedProfile, authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
 
-const isCurrentUser: ComputedRef<boolean> = computed(() => {
+const isCurrentUser = computed(() => {
   const currentUser = authenticatedProfile.value
   const profileUser = viewedProfile.value
   return (

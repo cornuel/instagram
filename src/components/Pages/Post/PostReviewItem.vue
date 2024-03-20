@@ -5,7 +5,7 @@ import MultipleIcon from '@icons/multiple-active.svg'
 import ReelIcon from '@icons/reel-active.svg'
 import PlayIcon from '@icons/play.svg'
 
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import type { IPost } from '@/types'
 import { formatNumberToSuffix } from '@/helpers'
 
@@ -82,13 +82,10 @@ const commentCountComp = computed(() => {
           </div>
         </div>
       </div>
-      <div
-        v-if="post.type != 'image'"
-        class="absolute top-2 right-2"
-      >
+      <div class="absolute top-2 right-2">
         <MultipleIcon v-if="post.images.length > 1" />
-        <ReelIcon v-if="post.type == 'reel'" />
-        <PlayIcon v-if="post.type == 'video'" />
+        <!-- <ReelIcon v-if="post.type == 'reel'" />
+        <PlayIcon v-if="post.type == 'video'" /> -->
       </div>
     </div>
   </RouterLink>

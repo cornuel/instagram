@@ -11,28 +11,23 @@ import {
   onBeforeMount,
   onMounted
 } from 'vue'
+
 import {
   useComment,
   useLike,
   useProfile
 } from '@/composables'
+
 import { storeToRefs } from 'pinia'
-import {
-  useCommentStore,
-  usePostStore,
-  useProfileStore
-} from '@/stores'
+import { useCommentStore, useProfileStore } from '@/stores'
+
 import {
   dateDistanceToNow,
   convertToFullDate,
   convertTagUser
 } from '@/helpers'
-import type {
-  IAction,
-  ICommentLike,
-  IReplyLike,
-  IUser
-} from '@/types'
+
+import type { IAction, IProfile } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -61,8 +56,7 @@ const { authenticatedProfile } = storeToRefs(
 
 const { commentProfiles } = storeToRefs(useCommentStore())
 
-const user = ref<Nullable<IUser>>(null)
-const like = ref<Nullable<ICommentLike | IReplyLike>>(null)
+const user = ref<Nullable<IProfile>>(null)
 const isLike = ref(false)
 const isLoadingLike = ref(false)
 const loading = ref(true)
@@ -126,25 +120,30 @@ const handleLike = async () => {
   const { likeComment } = useLike()
   isLoadingLike.value = true
   isLike.value = !isLike.value
+
   try {
     // console.log(isLike.value)
     const response = await likeComment(
-      props.id!,
+      Number(props.id!),
       !isLike.value
     )
     console.log(response.message)
   } catch (error) {
     isLike.value = !isLike.value
   }
-  isLike.value
-    ? (likeCount.value += 1)
-    : (likeCount.value -= 1)
+
+  if (likeCount.value) {
+    isLike.value
+      ? (likeCount.value += 1)
+      : (likeCount.value -= 1)
+  }
+
   isLoadingLike.value = false
 }
 
 const deleteItem = async () => {
   const { deleteCommentPost } = useComment()
-  await deleteCommentPost(props.id!)
+  await deleteCommentPost(Number(props.id!))
 }
 
 const handleClickLikeCount = async () => {
@@ -161,8 +160,11 @@ const handleClickLikeCount = async () => {
 onBeforeMount(async () => {
   if (!commentProfiles.value[props.profile]) {
     const { getProfile } = useProfile()
-    user.value = await getProfile(props.profile)
-    commentProfiles.value[props.profile] = user.value
+    const profile = await getProfile(props.profile)
+    if (profile) {
+      commentProfiles.value[props.profile] = profile
+      user.value = profile
+    }
   } else {
     user.value = commentProfiles.value[props.profile]
   }

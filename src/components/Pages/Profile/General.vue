@@ -5,19 +5,16 @@ import SettingIcon from '@icons/setting.svg'
 import UiButton from '@/components/Atom/UiButton.vue'
 import Avatar from '@/components/Atom/Avatar.vue'
 import FollowActionsPopup from '@/components/Popup/Profile/FollowActionsPopup.vue'
-import RestrictionPopup from '@/components/Popup/Profile/RestrictionPopup.vue'
 import ChangeAvatarPopup from '@/components/Popup/Profile/ChangeAvatarPopup.vue'
 // import Stories from '@/components/Molecules/Stories/Stories.vue'
-import GeneralMobile from '@/components/Pages/Profile/GeneralMobile.vue'
 import { useRouter } from 'vue-router'
 
 import { ref, computed, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProfileStore, useResizeStore } from '@/stores'
-import { useFollow, useProfile } from '@/composables'
+import { useFollow } from '@/composables'
 import { formatNumberToSuffix } from '@/helpers'
 import { Navigation } from 'swiper/modules'
-import { viewDepthKey } from 'vue-router'
 
 defineProps<{
   isCurrentUser: boolean
@@ -30,7 +27,6 @@ const router = useRouter()
 const { dimensions } = storeToRefs(useResizeStore())
 const isLoadingFollow = ref(false)
 const followActionsPopupActive = ref(false)
-const restrictionPopupActive = ref(false)
 const avatarPopupActive = ref(false)
 
 const inputAvatar = ref<Nullable<HTMLInputElement>>(null)
@@ -89,7 +85,7 @@ const follow = async () => {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
     const res: string = await setFollow(
-      viewedProfile.value?.username
+      viewedProfile.value?.username!
     )
     isLoadingFollow.value = false
     if (res.includes('following')) {
@@ -103,7 +99,7 @@ const unfollow = async () => {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
     const res: string = await setFollow(
-      viewedProfile.value?.username
+      viewedProfile.value?.username!
     )
     isLoadingFollow.value = false
     if (res.includes('unfollowed')) {
@@ -127,7 +123,7 @@ const getInputAvatar = async (event: Event) => {
     const fileName = file.name
     console.log(file, fileName)
 
-    const { updateAvatar } = useProfile()
+    // const { updateAvatar } = useProfile()
 
     avatarPopupActive.value = false
     isLoadingAvatar.value = true
@@ -139,7 +135,7 @@ const getInputAvatar = async (event: Event) => {
 
 const deleteAvatar = async () => {
   if (authenticatedProfile.value) {
-    const { updateAvatar } = useProfile()
+    // const { updateAvatar } = useProfile()
 
     avatarPopupActive.value = false
     isLoadingAvatar.value = true
@@ -296,15 +292,15 @@ const deleteAvatar = async () => {
               <span
                 class="font-semibold"
                 :title="
-                  authenticatedProfile.posts_count?.toString() ||
-                  viewedProfile.posts_count?.toString()
+                  authenticatedProfile?.posts_count?.toString() ||
+                  viewedProfile?.posts_count?.toString()
                 "
                 >{{
                   formatNumberToSuffix(
-                    authenticatedProfile.username ===
-                      viewedProfile.username
-                      ? authenticatedProfile.posts_count
-                      : viewedProfile.posts_count
+                    authenticatedProfile?.username ===
+                      viewedProfile?.username
+                      ? authenticatedProfile?.posts_count
+                      : viewedProfile?.posts_count
                   )
                 }}</span
               >
@@ -369,20 +365,17 @@ const deleteAvatar = async () => {
             v-if="user?.mutualFollowers && mutualFollowersComp"
             class="mt-4 text-xs text-textColor-secondary"
           >
-            <RouterLink :to="{ name: 'MutualFollowers' }"
-              >Có
-              <span class="text-textColor-primary font-medium">{{ mutualFollowersComp }}</span>
+            <RouterLink :to="{ name: 'MutualFollowers' }">
+              You are following {{ mutualFollowersComp }}
               <span v-if="user.mutualFollowers && user.mutualFollowers.length > 3">
-                và {{ user.mutualFollowers.length - 3 }} người khác theo dõi</span
+                and {{ user.mutualFollowers.length - 3 }} other people</span
               >
-              theo dõi
+              in common
             </RouterLink>
           </div> -->
         </template>
       </div>
     </div>
-
-    <!-- <GeneralMobile v-if="isGeneralMobile" :mutual-followers-comp="mutualFollowersComp" /> -->
 
     <!-- <Stories
       class="mb-5 min-[736px]:mb-11"
@@ -408,22 +401,6 @@ const deleteAvatar = async () => {
       :onClickOutside="
         () => {
           followActionsPopupActive = false
-        }
-      "
-      @open-restriction-popup="
-        () => {
-          followActionsPopupActive = false
-          restrictionPopupActive = true
-        }
-      "
-    />
-
-    <RestrictionPopup
-      v-if="restrictionPopupActive"
-      :user="viewedProfile!"
-      :onClose="
-        () => {
-          restrictionPopupActive = false
         }
       "
     />

@@ -31,12 +31,18 @@ async function load({ loaded }: LoadAction): Promise<void> {
       post.value!.slug,
       page.value
     )
-    // update next value
-    comments.value.next = loadedComments.next
-    // push new comments
-    comments.value.results.push(...loadedComments.results)
-    useCommentStore().setComments(comments.value)
-    loaded(comments.value.results.length, 9)
+    if (loadedComments && loadedComments.results) {
+      // update next value
+      comments.value.next = loadedComments.next
+      // push new comments
+      if (comments.value.results) {
+        comments.value.results.push(
+          ...loadedComments.results
+        )
+      }
+      useCommentStore().setComments(comments.value)
+      loaded(comments.value.results?.length ?? 0, 9)
+    }
   } else {
     loaded(0, 0)
   }
@@ -49,7 +55,9 @@ onBeforeMount(async () => {
     post.value!.slug,
     page.value
   )
-  useCommentStore().setComments(comments.value)
+  if (comments.value?.results) {
+    useCommentStore().setComments(comments.value)
+  }
   loading.value = false
 })
 </script>
@@ -81,7 +89,7 @@ onBeforeMount(async () => {
       <Loading v-if="loading" class="mt-10" />
       <Comment
         v-else
-        v-for="comment in comments.results"
+        v-for="comment in comments?.results"
         :key="comment.id"
         :comment="comment"
       />

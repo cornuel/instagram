@@ -4,8 +4,9 @@ import EditProfile from '@/components/Pages/Profile/EditProfile.vue'
 import { useProfileStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 
-const { authenticatedUsername, authenticatedProfile } =
-  storeToRefs(useProfileStore())
+const { authenticatedUsername } = storeToRefs(
+  useProfileStore()
+)
 </script>
 
 <template>

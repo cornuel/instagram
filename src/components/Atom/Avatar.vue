@@ -48,6 +48,7 @@ const sizeAvatar = computed(() => {
       ></div>
       <img
         v-if="avatarUrl != ''"
+        class="w-full h-full object-contain"
         v-show="!loading"
         :src="avatarUrl"
         alt=""

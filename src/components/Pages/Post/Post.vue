@@ -8,7 +8,7 @@ import PostComments from './PostComments.vue'
 import PostActions from './PostActions.vue'
 import UsersWhoLikedModel from '@/components/Modal/UsersWhoLikedModal.vue'
 
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
   useProfileStore,
@@ -16,26 +16,25 @@ import {
   useCommentStore
 } from '@/stores'
 import { useComment } from '@/composables'
-import type { IComment } from '@/types'
 
 const { authenticatedProfile } = storeToRefs(
   useProfileStore()
 )
 const { post, likedListModal } = storeToRefs(usePostStore())
-const { comment, commentRef, replyTo } = storeToRefs(
+const { comment, commentRef } = storeToRefs(
   useCommentStore()
 )
 const emojiPickerActive = ref(false)
 const loadingComment = ref(false)
 
-const postContainerWidth = computed(() => {
-  if (post.value!.ratio >= 1) {
-    return { maxWidth: '935px' }
-  } else {
-    const widthTemp = 600 * post.value!.ratio + 335
-    return { maxWidth: Math.max(widthTemp, 480) + 'px' }
-  }
-})
+// const postContainerWidth = computed(() => {
+//   if (post.value!.ratio >= 1) {
+//     return { maxWidth: '935px' }
+//   } else {
+//     const widthTemp = 600 * post.value!.ratio + 335
+//     return { maxWidth: Math.max(widthTemp, 480) + 'px' }
+//   }
+// })
 
 const handleClickEmoji = (emoji: string) => {
   if (commentRef.value) {
@@ -76,10 +75,7 @@ const handleComment = async () => {
 </script>
 
 <template>
-  <div
-    class="py-4 px-5 mx-auto box-content"
-    :style="postContainerWidth"
-  >
+  <div class="py-4 px-5 mx-auto box-content">
     <div
       class="flex flex-col min-[736px]:flex-row w-full mx-auto
         min-h-[480px] max-h-none min-[736px]:max-h-[600px]

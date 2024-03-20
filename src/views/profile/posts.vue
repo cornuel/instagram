@@ -3,13 +3,12 @@ import Loading from '@/components/Utils/Loading.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import ImageIcon from '@icons/image.svg'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
+import { type IPaginatedPosts } from '@/types'
 
-import { ref, onBeforeMount, onMounted } from 'vue'
-import {
-  onBeforeRouteUpdate,
-  useRouter,
-  useRoute
-} from 'vue-router'
+import { ref, onBeforeMount } from 'vue'
+
+import { onBeforeRouteUpdate } from 'vue-router'
+
 import { storeToRefs } from 'pinia'
 import { usePostStore, useProfileStore } from '@/stores'
 import { usePost } from '@/composables'
@@ -21,15 +20,16 @@ const { viewedProfile, authenticatedProfile } = storeToRefs(
 )
 const { userPosts } = storeToRefs(usePostStore())
 const isLoading = ref(true)
-const route = useRoute()
 
 const getPosts = async () => {
   const { getUserPosts } = usePost()
   isLoading.value = true
-  userPosts.value = await getUserPosts(
-    viewedProfile.value.username,
-    page.value
-  )
+  if (viewedProfile.value) {
+    userPosts.value = await getUserPosts(
+      viewedProfile.value.username,
+      page.value
+    )
+  }
   isLoading.value = false
 }
 
@@ -37,16 +37,21 @@ const page = ref(1)
 
 async function load({ loaded }: LoadAction): Promise<void> {
   const { getUserPosts } = usePost()
-  if (userPosts.value.next) {
+  let loadedPosts: IPaginatedPosts | null = null
+
+  if (userPosts.value?.results) {
     page.value += 1
-    const loadedPosts = await getUserPosts(
-      viewedProfile.value.username,
-      page.value
-    )
-    userPosts.value.next = loadedPosts.next
-    userPosts.value.results.push(...loadedPosts.results)
-    usePostStore().setPosts(userPosts.value)
-    loaded(userPosts.value.results.length, 9)
+    if (viewedProfile.value) {
+      loadedPosts = await getUserPosts(
+        viewedProfile.value.username,
+        page.value
+      )
+    }
+    if (loadedPosts) {
+      userPosts.value.results.push(...loadedPosts.results!)
+      usePostStore().setPosts(userPosts.value)
+      loaded(userPosts.value.results.length, 9)
+    }
   } else {
     loaded(0, 0)
   }

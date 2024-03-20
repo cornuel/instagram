@@ -160,16 +160,19 @@ export const useCreatePostStore = defineStore('createPost', {
         const promise = getImage(url).then((img) => {
           const canvas = document.createElement('canvas')
 
-          // drawInitCanvas(canvas, img, this.containerSize)
-
           const media = {
             ...defaultMedia,
             url,
             image: img,
-            canvas: drawInitCanvas(canvas, img, this.containerSize),
+            canvas: drawInitCanvas(canvas, img, this.containerSize, this.currentRatio),
             size: {
               width: img.width,
               height: img.height
+            },
+            filters: {
+              background: '',
+              filter: '',
+              vignette: ''
             }
           }
           medias.push(media)
@@ -195,17 +198,21 @@ export const useCreatePostStore = defineStore('createPost', {
         const promise = getImage(url).then((img) => {
           const canvas = document.createElement('canvas')
 
-          // drawInitCanvas(canvas, img, this.containerSize)
-
           const media = {
             ...defaultMedia,
             url,
             image: img,
-            canvas: drawInitCanvas(canvas, img, this.containerSize),
+            canvas: drawInitCanvas(canvas, img, this.containerSize, this.currentRatio),
             size: {
               width: img.width,
               height: img.height
+            },
+            filters: {
+              background: '',
+              filter: '',
+              vignette: ''
             }
+
           }
           this.medias.push(media)
         })

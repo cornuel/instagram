@@ -14,35 +14,36 @@ const { setAuthenticatedProfile } = useProfileStore()
 
 const { updateProfile } = useProfile()
 
-const bio = ref(authenticatedProfile.value.bio)
-const fullName = ref(authenticatedProfile.value.full_name)
+const bio = ref(authenticatedProfile.value?.bio)
+const fullName = ref(authenticatedProfile.value?.full_name)
 
 const activeFullNameCharactersTooltip = ref(false)
 const activeBioCharactersTooltip = ref(false)
 
 const bioCharacterCount = computed(() => {
-  return bio.value.length
+  return bio.value?.length
     .toLocaleString('en-US')
     .replace(',', '.')
 })
 
 const fullNameCharacterCount = computed(() => {
-  return fullName.value.length
+  return fullName.value?.length
     .toLocaleString('en-US')
     .replace(',', '.')
 })
 
 const isDisable = computed(() => {
-  return !(fullName.value.length >= 3)
+  return !(fullName.value?.length! >= 3)
 })
 
 const submitUpdateProfile = async () => {
   const res = await updateProfile(
-    authenticatedProfile.value.username,
-    bio.value,
-    fullName.value
+    authenticatedProfile.value?.username!,
+    bio.value!,
+    fullName.value!
   )
-  if (res) {
+
+  if (res && authenticatedProfile.value) {
     authenticatedProfile.value.bio = bio.value
     authenticatedProfile.value.full_name = fullName.value
     setAuthenticatedProfile(authenticatedProfile.value)

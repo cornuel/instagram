@@ -2,13 +2,14 @@
 import Loading from '@/components/Utils/Loading.vue'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
 import { usePost } from '@/composables'
-import { usePostStore, useProfileStore } from '@/stores'
+import { usePostStore } from '@/stores'
 import BookmarkIcon from '@icons/bookmark.svg'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
+import { type IPaginatedPosts } from '@/types'
 
 const { favoritedPosts } = storeToRefs(usePostStore())
 const isLoading = ref(true)
@@ -24,15 +25,22 @@ const page = ref(1)
 
 async function load({ loaded }: LoadAction): Promise<void> {
   const { getFavoritedPosts } = usePost()
-  if (favoritedPosts.value.next) {
+  let loadedPosts: IPaginatedPosts | null = null
+
+  if (
+    favoritedPosts.value?.results &&
+    favoritedPosts.value?.next
+  ) {
     page.value += 1
-    const loadedPosts = await getFavoritedPosts(page.value)
-    favoritedPosts.value.next = loadedPosts.next
-    favoritedPosts.value.results.push(
-      ...loadedPosts.results
-    )
-    usePostStore().setFavoritedPosts(favoritedPosts.value)
-    loaded(favoritedPosts.value.results.length, 9)
+    loadedPosts = await getFavoritedPosts(page.value)
+
+    if (loadedPosts) {
+      favoritedPosts.value.results.push(
+        ...loadedPosts.results!
+      )
+      usePostStore().setFavoritedPosts(favoritedPosts.value)
+      loaded(favoritedPosts.value.results.length, 9)
+    }
   } else {
     loaded(0, 0)
   }

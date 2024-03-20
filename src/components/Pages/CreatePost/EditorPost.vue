@@ -11,7 +11,7 @@ import ListPost from './ListPost.vue'
 import FilterPost from './FilterPost.vue'
 import CaptionPost from './CaptionPost.vue'
 
-import { ref, computed, watch, onMounted, Ref } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCreatePostStore } from '@/stores'
 import { getReviewImageSize, getRatioCrop } from '@/helpers'
@@ -224,7 +224,9 @@ const drawCanvasforMedia = (media: IMedia) => {
 
     const ctx = media.canvas.getContext('2d')
     if (ctx) {
-      ctx.clearRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+      if (currentMedia.value) {
+        ctx.clearRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+      }
       ctx.setTransform(1, 0, 0, 1, 0, 0)
 
       ctx.translate(

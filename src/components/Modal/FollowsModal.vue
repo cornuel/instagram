@@ -30,11 +30,11 @@ const getFollowList = async () => {
   isLoadingFollowItems.value = true
   const { getFollows } = useFollow()
 
-  follows.value = await getFollows(
+  follows.value = (await getFollows(
     viewedProfile.value!.username,
     'following',
     page.value
-  )
+  )) as IPaginatedProfiles
 
   isLoadingFollowItems.value = false
 }

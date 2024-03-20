@@ -5,23 +5,25 @@ import UiButton from '@/components/Atom/UiButton.vue'
 import UnfollowPopup from '@/components/Popup/UnfollowPopup.vue'
 import ActionsPopup from '@/components/Popup/ActionsPopup.vue'
 import RemovePopup from '@/components/Popup/RemovePopup.vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { type IPost } from '@/types'
+
 import {
   useProfileStore,
   usePostStore,
   useModalStore
 } from '@/stores'
+
 import {
   useFollow,
   usePost,
-  useProfile,
   useDownload
 } from '@/composables'
+
 import type { IAction } from '@/types'
-import { isConstructorDeclaration } from 'typescript'
 
 const router = useRouter()
 
@@ -41,7 +43,7 @@ const actionsPopupActive = ref(false)
 const deletePost = async () => {
   if (authenticatedProfile) {
     const { deletePost } = usePost()
-    if (await deletePost(post.value?.slug)) {
+    if (await deletePost(post.value?.slug!)) {
       const { setAuthenticatedProfile } = useProfileStore()
 
       // update the post_count of the user
@@ -88,7 +90,7 @@ const userPostActions = computed(() => {
       {
         title: 'Download photo(s)',
         action: () => {
-          downloadImages(post.value)
+          downloadImages(post.value as IPost)
         }
       },
       {
@@ -129,7 +131,7 @@ const userPostActions = computed(() => {
       {
         title: 'Download photo(s)',
         action: () => {
-          downloadImages(post.value)
+          downloadImages(post.value as IPost)
         }
       },
       {
@@ -149,7 +151,7 @@ const follow = async () => {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
     const res: string = await setFollow(
-      viewedProfile.value?.username
+      viewedProfile.value?.username!
     )
     isLoadingFollow.value = false
     if (res.includes('following')) {
@@ -163,7 +165,7 @@ const unfollow = async () => {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
     const res: string = await setFollow(
-      viewedProfile.value?.username
+      viewedProfile.value?.username!
     )
     isLoadingFollow.value = false
     if (res.includes('unfollowed')) {

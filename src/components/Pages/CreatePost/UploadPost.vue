@@ -52,10 +52,13 @@ onMounted(async () => {
     nextTick(() => {
       setTimeout(() => {
         modalCreatePostShow.value = false
-        authenticatedProfile.value.posts_count += 1
+        if (authenticatedProfile.value) {
+          authenticatedProfile.value.posts_count += 1
+        }
         if (
-          authenticatedProfile.value.username ==
-          viewedProfile.value.username
+          authenticatedProfile.value?.username ==
+            viewedProfile.value?.username &&
+          userPosts.value?.results
         ) {
           userPosts.value.results.unshift(response)
           profileStore.setAuthenticatedProfile(

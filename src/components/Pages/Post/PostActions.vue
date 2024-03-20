@@ -10,15 +10,16 @@ import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePostStore, useCommentStore } from '@/stores'
 import { useLike, usePost } from '@/composables'
+
 import {
   dateDistanceToNow,
   convertToFullDate
 } from '@/helpers'
-import type { IPaginatedUsers, IPostLike } from '@/types'
+
+import type { IPaginatedProfiles } from '@/types'
 
 const { post } = storeToRefs(usePostStore())
 const { commentRef } = storeToRefs(useCommentStore())
-const like = ref<Nullable<IPostLike>>(null)
 const isLike = ref(false)
 const isFavorited = ref(false)
 const isLoadingLike = ref(false)
@@ -29,12 +30,19 @@ const disabledLikeButtonComp = computed(() => {
     ? 'pointer-events-none'
     : 'pointer-events-auto'
 })
-const postCreatedAt = computed(() =>
-  dateDistanceToNow(post.value!.created)
-)
-const fullCreatedAtComp = computed(() =>
-  convertToFullDate(post.value!.created.toUpperCase())
-)
+const postCreatedAt = computed(() => {
+  if (post.value?.created) {
+    return dateDistanceToNow(post.value.created)
+  }
+  return ''
+})
+
+const fullCreatedAtComp = computed(() => {
+  if (post.value?.created) {
+    return convertToFullDate(post.value.created)
+  }
+  return ''
+})
 
 const handleLikePost = async () => {
   const { likePost } = useLike()
@@ -74,17 +82,19 @@ const handleClickLikedPost = async () => {
 
   setLikedListModal(true)
   setIsLoadingLikedList(true)
-  const likedUsers: IPaginatedUsers = await getLikedUsers(
+  const likedUsers = (await getLikedUsers(
     post.value!.slug,
     'post'
-  )
+  )) as IPaginatedProfiles
   setLikedList(likedUsers.results)
   setIsLoadingLikedList(false)
 }
 
 onMounted(async () => {
-  isLike.value = post.value.is_liked
-  isFavorited.value = post.value.is_favorited
+  if (post.value) {
+    isLike.value = post.value.is_liked ?? false
+    isFavorited.value = post.value.is_favorited ?? false
+  }
 })
 </script>
 

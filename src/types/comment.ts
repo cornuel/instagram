@@ -15,5 +15,5 @@ export interface IComment {
 }
 
 export interface IPaginatedComments extends IPaginated {
-	results: IComment[]
+	results: IComment[] | null
 }

@@ -23,10 +23,6 @@ const postSwiperOptions = reactive({
   pagination: { clickable: true }
 })
 
-const ratio = computed(() => ({
-  paddingBottom: `${(1 / post.value!.ratio) * 100}%`
-}))
-
 const loading = ref(true)
 
 const handleLoad = () => {
@@ -45,10 +41,7 @@ const isMultipleImages = computed(() => {
         v-for="item in post!.images"
         :key="item.image"
       >
-        <div
-          class="relative w-full pb-[100%]"
-          :style="ratio"
-        >
+        <div class="relative w-full pb-[100%]">
           <!-- <img
             :src="item.thumbnail"
             :srcset="item.image"

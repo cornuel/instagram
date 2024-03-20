@@ -4,13 +4,14 @@ import HomePage from '@/components/Pages/Home/HomePage.vue'
 import { useProfileStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 
-const { authenticatedUsername, authenticatedProfile } =
-  storeToRefs(useProfileStore())
+const { authenticatedProfile } = storeToRefs(
+  useProfileStore()
+)
 </script>
 
 <template>
   <!-- Home -->
-  <HomePage v-if="authenticatedUsername" />
+  <HomePage v-if="authenticatedProfile" />
 
   <!-- Login -->
   <HomeLogin v-else />

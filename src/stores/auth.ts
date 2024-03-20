@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import instance from '@/libs/axios/instance'
+declare const $cookies: any;
 
 interface IState {
   accessToken: Nullable<string>
