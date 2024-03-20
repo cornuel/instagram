@@ -1,15 +1,4 @@
 {
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "axios.config.ts", ],
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-    },
-    "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types/", "src/types"]
-  },
   "files": [],
   "references": [
     {

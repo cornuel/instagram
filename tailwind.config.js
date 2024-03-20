@@ -83,6 +83,7 @@ export default {
     extend: {}
   },
   plugins: [
+    require('tailwind-scrollbar-hide'),
     plugIn(function ({ matchVariant, addUtilities }) {
       matchVariant('has', (value) => {
         return `&.${value}`

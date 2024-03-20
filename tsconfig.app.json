@@ -4,15 +4,11 @@
   "files": ["env.d.ts"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    "types": ["node"],
-    "noEmit": false,
-    "esModuleInterop": true,
     "composite": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@icons/*": ["./src/assets/icons/*"],
-      "@composables/*": ["./src/composables/*"],
     },
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types/", "./src/types/"]
