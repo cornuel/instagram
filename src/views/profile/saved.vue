@@ -38,6 +38,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
       favoritedPosts.value.results.push(
         ...loadedPosts.results!
       )
+      favoritedPosts.value.next = loadedPosts.next
       usePostStore().setFavoritedPosts(favoritedPosts.value)
       loaded(favoritedPosts.value.results.length, 9)
     }

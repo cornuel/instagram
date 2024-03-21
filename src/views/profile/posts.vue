@@ -39,7 +39,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
   const { getUserPosts } = usePost()
   let loadedPosts: IPaginatedPosts | null = null
 
-  if (userPosts.value?.results) {
+  if (userPosts.value?.next && userPosts.value?.results) {
     page.value += 1
     if (viewedProfile.value) {
       loadedPosts = await getUserPosts(
@@ -49,6 +49,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
     }
     if (loadedPosts) {
       userPosts.value.results.push(...loadedPosts.results!)
+      userPosts.value.next = loadedPosts.next
       usePostStore().setPosts(userPosts.value)
       loaded(userPosts.value.results.length, 9)
     }

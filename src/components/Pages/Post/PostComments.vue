@@ -39,6 +39,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
         comments.value.results.push(
           ...loadedComments.results
         )
+        comments.value.next = loadedComments.next
       }
       useCommentStore().setComments(comments.value)
       loaded(comments.value.results?.length ?? 0, 9)

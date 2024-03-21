@@ -44,6 +44,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
       searchedPosts.value.results.push(
         ...loadedPosts.results!
       )
+      searchedPosts.value.next = loadedPosts.next
       useSearchStore().setSearchedPosts(searchedPosts.value)
       loaded(searchedPosts.value.results.length, 9)
     }
