@@ -64,14 +64,17 @@ onBeforeMount(async () => {
   <div
     class="flex items-center justify-between w-full mt-4 mb-4"
   >
-    <span class="text-xs text-textColor"
+    <span class="text-xs text-textColor mx-2"
       >Only you can see what you've saved</span
     >
   </div>
   <div>
     <Loading v-if="isLoading" class="mt-10" />
     <template v-else>
-      <div v-if="favoritedPosts" class="flex flex-wrap">
+      <div
+        v-if="favoritedPosts && favoritedPosts.count > 0"
+        class="flex flex-wrap"
+      >
         <PostReviewItem
           class="w-1/3 px-[2px] mb-1"
           v-for="post in favoritedPosts.results"
@@ -82,8 +85,8 @@ onBeforeMount(async () => {
       </div>
       <div
         v-else
-        class="w-full max-w-[350px] mx-11 my-[60px] flex flex-col
-          flex-center text-center"
+        class="w-full max-w-[350px] mx-auto my-[60px] flex flex-col
+          items-center justify-center"
       >
         <div class="flex items-center justify-center">
           <BookmarkIcon

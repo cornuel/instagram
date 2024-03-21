@@ -75,7 +75,10 @@ onBeforeMount(async () => {
   <div>
     <Loading v-if="isLoading" class="mt-10" />
     <template v-else>
-      <div v-if="userPosts" class="flex flex-wrap">
+      <div
+        v-if="userPosts && userPosts.count > 0"
+        class="flex flex-wrap"
+      >
         <PostReviewItem
           class="w-1/3 px-[2px] mb-1"
           v-for="post in userPosts.results"
@@ -87,7 +90,7 @@ onBeforeMount(async () => {
       <div v-else class="flex flex-center">
         <div
           class="w-full max-w-[350px] mx-11 my-[60px] flex flex-col
-            flex-center text-center"
+            items-center justify-center"
         >
           <template
             v-if="
