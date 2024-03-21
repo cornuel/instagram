@@ -12,7 +12,7 @@ import { useRouter } from 'vue-router'
 import { ref, computed, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProfileStore, useResizeStore } from '@/stores'
-import { useFollow } from '@/composables'
+import { useFollow, useProfile } from '@/composables'
 import { formatNumberToSuffix } from '@/helpers'
 import { Navigation } from 'swiper/modules'
 
@@ -123,24 +123,54 @@ const getInputAvatar = async (event: Event) => {
     const fileName = file.name
     console.log(file, fileName)
 
-    // const { updateAvatar } = useProfile()
+    const { updateProfile } = useProfile()
 
     avatarPopupActive.value = false
     isLoadingAvatar.value = true
-    // todo
-    // if (urlAvatar) await updateAvatar(currentUser.value.id, urlAvatar)
+    const res = await updateProfile(
+      authenticatedProfile.value.username,
+      authenticatedProfile.value.bio || '',
+      authenticatedProfile.value.full_name || '',
+      file
+    )
+
+    if (res) {
+      const { setAuthenticatedProfile } = useProfileStore()
+      authenticatedProfile.value.profile_pic =
+        res.profile_pic
+      setAuthenticatedProfile(authenticatedProfile.value)
+      if (
+        viewedProfile.value?.username ===
+        authenticatedProfile.value.username
+      ) {
+        viewedProfile.value!.profile_pic = res.profile_pic
+      }
+    }
     isLoadingAvatar.value = false
   }
 }
 
 const deleteAvatar = async () => {
   if (authenticatedProfile.value) {
-    // const { updateAvatar } = useProfile()
+    const { deleteProfilePic } = useProfile()
 
     avatarPopupActive.value = false
     isLoadingAvatar.value = true
-    // todo
-    // await Promise.all([deleteAvatar(currentUser.value.id), updateAvatar(currentUser.value.id, '')])
+    const res = await deleteProfilePic(
+      authenticatedProfile.value.username
+    )
+
+    if (res) {
+      const { setAuthenticatedProfile } = useProfileStore()
+      authenticatedProfile.value.profile_pic = ''
+      setAuthenticatedProfile(authenticatedProfile.value)
+      if (
+        viewedProfile.value?.username ===
+        authenticatedProfile.value.username
+      ) {
+        viewedProfile.value!.profile_pic = ''
+      }
+    }
     isLoadingAvatar.value = false
   }
 }
@@ -192,7 +222,7 @@ const deleteAvatar = async () => {
       >
         <input
           ref="inputAvatar"
-          accept="image/jpeg,image/png,image/jpg"
+          accept="image/jpeg,image/png,image/jpg,image/webp"
           type="file"
           @change="getInputAvatar"
         />

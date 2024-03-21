@@ -47,10 +47,10 @@ const sizeAvatar = computed(() => {
         class="w-full h-full skeleton"
       ></div>
       <img
-        v-if="avatarUrl != ''"
-        class="w-full h-full object-contain"
+        v-if="avatarUrl !== '' && avatarUrl !== null"
         v-show="!loading"
         :src="avatarUrl"
+        class="w-full h-full object-contain"
         alt=""
         @load="hanldeLoad"
       />

@@ -6,7 +6,7 @@ import UiButton from '@/components/Atom/UiButton.vue'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 
-const { authenticatedProfile } = storeToRefs(
+const { authenticatedProfile, viewedProfile } = storeToRefs(
   useProfileStore()
 )
 
@@ -16,9 +16,13 @@ const { updateProfile } = useProfile()
 
 const bio = ref(authenticatedProfile.value?.bio)
 const fullName = ref(authenticatedProfile.value?.full_name)
-
+const profile_pic = ref(
+  authenticatedProfile.value?.profile_pic
+)
+const inputAvatar = ref<Nullable<HTMLInputElement>>(null)
 const activeFullNameCharactersTooltip = ref(false)
 const activeBioCharactersTooltip = ref(false)
+const profilePicFile = ref<Nullable<File>>(null)
 
 const bioCharacterCount = computed(() => {
   return bio.value?.length
@@ -36,17 +40,36 @@ const isDisable = computed(() => {
   return !(fullName.value?.length! >= 3)
 })
 
+const handleClickChangeAvatar = () => {
+  inputAvatar.value?.click()
+}
+
+const getInputAvatar = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files![0]
+
+  profilePicFile.value = file
+  profile_pic.value = URL.createObjectURL(file)
+}
+
 const submitUpdateProfile = async () => {
   const res = await updateProfile(
     authenticatedProfile.value?.username!,
     bio.value!,
-    fullName.value!
+    fullName.value!,
+    profilePicFile.value!
   )
 
   if (res && authenticatedProfile.value) {
     authenticatedProfile.value.bio = bio.value
     authenticatedProfile.value.full_name = fullName.value
+    authenticatedProfile.value.profile_pic = res.profile_pic
     setAuthenticatedProfile(authenticatedProfile.value)
+    if (
+      viewedProfile.value?.username ===
+      authenticatedProfile.value.username
+    ) {
+      viewedProfile.value!.profile_pic = res.profile_pic
+    }
   }
 }
 
@@ -77,7 +100,7 @@ const submitUpdateProfile = async () => {
           <Avatar
             width="60"
             class="m-4"
-            :avatar-url="authenticatedProfile!.profile_pic"
+            :avatar-url="profile_pic"
           />
         </div>
         <div
@@ -91,9 +114,24 @@ const submitUpdateProfile = async () => {
               {{ authenticatedProfile?.full_name }}
             </div>
           </div>
-          <UiButton type="submit" primary class="m-4"
+          <UiButton
+            @click="handleClickChangeAvatar"
+            primary
+            class="m-4"
             >Change photo
           </UiButton>
+          <form
+            class="hidden"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <input
+              ref="inputAvatar"
+              accept="image/jpeg,image/png,image/jpg,image/webp"
+              type="file"
+              @change="getInputAvatar"
+            />
+          </form>
         </div>
       </div>
     </div>
