@@ -1,15 +1,36 @@
-export interface ILogIn {
-  refresh: string, 
+export interface ILogInResult {
+  refresh: string,
   access: string
 }
 
-export interface ISignUp {
-  username: string
-  email: string
-  password: string
-  url: string
+export type ILogInError = {
+  response: {
+    data: {
+      detail?: string;
+    };
+    status: number;
+  };
 }
+
+export type ISignUpError = {
+  response: {
+    data: {
+      username?: string;
+      password?: string;
+      email?: string;
+    };
+    status: number;
+  };
+}
+
+export type ISignUpResult = {
+  id: number;
+  username: string;
+  email: string;
+  url: string;
+}
+
 export type IAuth = {
-  logIn: ILogIn
-  signUp: ISignUp
+  logIn: ILogInResult
+  signUp: ISignUpResult
 }

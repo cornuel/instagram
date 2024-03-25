@@ -31,9 +31,9 @@ router.beforeEach(async (to, from) => {
     startSplash()
   }
 
-  if (to.meta.requiresAuth && !useProfileStore().getAuthenticatedProfile()) {
+  if (to.meta.requiresAuth) {
     console.log('requires auth')
-    return '/accounts/login'
+    // return '/accounts/login'
   } else {
     // if (authPath.includes(to.path)) {
     //   return '/'

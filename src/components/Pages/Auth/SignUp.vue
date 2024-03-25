@@ -5,106 +5,151 @@ import LogoText from '@icons/logo-text.svg'
 
 import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-// import { useAuth, useCheck, useUser } from '@/composables'
+import { useAuth } from '@/composables'
 
 const router = useRouter()
 
 interface AuthError {
-  emailOrPhoneError: string | null
+  emailError: string | null
   usernameError: string | null
+  passwordError: string | null
   signupError: string | null
 }
 
 const username = ref('')
 const password = ref('')
-const fullname = ref('')
-const emailOrPhone = ref('')
+const email = ref('')
 const authError = ref<AuthError>({
-  emailOrPhoneError: null,
+  emailError: null,
   usernameError: null,
+  passwordError: null,
   signupError: null
 })
 const isShowError = ref(false)
-const checkContact = ref<Nullable<boolean>>(null)
+const checkEmail = ref<Nullable<boolean>>(null)
 const checkUsername = ref<Nullable<boolean>>(null)
 const checkPassword = ref<Nullable<boolean>>(null)
 const loading = ref(false)
 
 const isDisable = computed(() => {
-  return !(
-    username.value != '' &&
-    emailOrPhone.value != '' &&
-    password.value.length >= 8
+  return (
+    authError.value.emailError ||
+    authError.value.usernameError ||
+    authError.value.passwordError ||
+    authError.value.signupError ||
+    !email.value ||
+    !username.value ||
+    !password.value
   )
 })
 
 const submitSignupForm = async () => {
-  // const { authError: authErr, signUp } = useAuth()
-  // loading.value = true
-  // if (authError.value.emailOrPhoneError || authError.value.usernameError) {
-  //   isShowError.value = true
-  // } else {
-  //   await signUp(emailOrPhone.value, password.value, fullname.value, username.value)
-  //   if (authError.value) {
-  //     authError.value.signupError = authErr.value
-  //     isShowError.value = true
-  //   } else {
-  //     isShowError.value = false
-  //     router.push('/')
-  //   }
-  // }
-  // loading.value = false
+  const { signUp } = useAuth()
+  loading.value = true
+  if (
+    authError.value.emailError ||
+    authError.value.usernameError
+  ) {
+    isShowError.value = true
+  } else {
+    try {
+      await signUp(
+        username.value,
+        email.value,
+        password.value
+      )
+
+      isShowError.value = false
+      router.push('/')
+    } catch (err) {
+      if (err instanceof Error) {
+        authError.value.signupError = err.message
+      } else {
+        authError.value.signupError =
+          'An unexpected error occurred'
+      }
+      isShowError.value = true
+    }
+    loading.value = false
+  }
 }
 
-const handleCheckContact = async () => {
-  // const { getUserWithQuery } = useUser()
-  // const { checkError, checkPhoneNumber, checkEmail } = useCheck()
-  // let user = null
-  // isShowError.value = false
-  // checkContact.value = null
-  // const regex = /^\+?\d+$/
-  // const isPhoneNumber = regex.test(emailOrPhone.value)
-  // if (isPhoneNumber) {
-  //   const checkValue = await checkPhoneNumber(emailOrPhone.value)
-  //   checkContact.value = checkValue
-  // } else {
-  //   const checkValue = await checkEmail(emailOrPhone.value)
-  //   checkContact.value = checkValue
-  // }
-  // if (checkContact.value) {
-  //   user = await getUserWithQuery('email', '==', emailOrPhone.value)
-  //   if (user) {
-  //     authError.value.emailOrPhoneError = 'Một tài khoản khác đang dùng chung email.'
-  //     checkContact.value = false
-  //   }
-  // } else {
-  //   authError.value.emailOrPhoneError = checkError.value
-  // }
+const handleCheckEmail = async () => {
+  authError.value.signupError = null
+  const regex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  isShowError.value = !regex.test(email.value)
+  checkEmail.value = regex.test(email.value)
+  checkEmail.value
+    ? (authError.value.emailError = null)
+    : (authError.value.emailError = 'Email is not valid.')
 }
 
 const handleCheckUsername = async () => {
-  // const { getUserWithQuery } = useUser()
-  // isShowError.value = false
-  // const user = await getUserWithQuery('username', '==', username.value)
-  // if (user == null) {
-  //   checkUsername.value = true
-  //   authError.value.usernameError = null
-  // } else {
-  //   checkUsername.value = false
-  //   authError.value.usernameError = 'Tên người dùng này đã được sử dụng. Vui lòng thử tên khác.'
-  // }
+  authError.value.signupError = null
+  if (username.value.length >= 3) {
+    isShowError.value = false
+    checkUsername.value = true
+    authError.value.usernameError = null
+  } else {
+    isShowError.value = true
+    checkUsername.value = false
+    authError.value.usernameError =
+      'Username should at least be 3 characters long.'
+  }
 }
 
-const handleCheckPassword = () => {
+const handleCheckPassword = async () => {
+  authError.value.signupError = null
+  const regexUpperCase = new RegExp('[A-Z]')
+  const regexLowerCase = new RegExp('[a-z]')
+  const regexNumber = new RegExp('\\d')
+  const regexSpecialChar = new RegExp('\\W')
+
   isShowError.value = false
-  checkPassword.value = password.value.length >= 8 ? true : false
+  checkPassword.value = true
+
+  if (!regexUpperCase.test(password.value)) {
+    isShowError.value = true
+    checkPassword.value = false
+    authError.value.passwordError =
+      'Password must contain at least one uppercase letter.'
+  }
+
+  if (!regexLowerCase.test(password.value)) {
+    isShowError.value = true
+    checkPassword.value = false
+    authError.value.passwordError =
+      'Password must contain at least one lowercase letter.'
+  }
+
+  if (!regexNumber.test(password.value)) {
+    isShowError.value = true
+    checkPassword.value = false
+    authError.value.passwordError =
+      'Password must contain at least one number.'
+  }
+
+  if (!regexSpecialChar.test(password.value)) {
+    isShowError.value = true
+    checkPassword.value = false
+    authError.value.passwordError =
+      'Password must contain at least one special character.'
+  }
+
+  if (password.value.length < 8) {
+    isShowError.value = true
+    checkPassword.value = false
+    authError.value.passwordError =
+      'Password must have at least 8 characters.'
+  }
 }
 </script>
 
 <template>
   <div
-    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0 max-[450px]:w-full
-      no-dark text-textColor-primary"
+    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0
+      max-[450px]:w-full no-dark text-textColor-primary"
   >
     <div
       class="flex flex-col items-center py-5 px-10 border rounded-lg
@@ -152,17 +197,9 @@ const handleCheckPassword = () => {
           class="mb-[6px]"
           name="email"
           placeholder="Email"
-          v-model:propValue="emailOrPhone"
-          :checkValue="checkContact"
-          @change="handleCheckContact"
-        />
-        <UiInput
-          class="mb-[6px]"
-          name="fullname"
-          placeholder="Full Name"
-          v-model:propValue="fullname"
-          :checkValue="fullname"
-          @change="isShowError = false"
+          v-model:propValue="email"
+          :checkValue="checkEmail"
+          @change="handleCheckEmail"
         />
         <UiInput
           class="mb-[6px]"
@@ -188,18 +225,22 @@ const handleCheckPassword = () => {
           :isLoading="loading"
           >Next</UiButton
         >
-        <p v-if="isShowError" class="text-sm text-error mt-8 mb-4">
+        <p
+          v-if="isShowError"
+          class="text-sm text-error mt-8 mb-4"
+        >
           {{
-            authError.emailOrPhoneError ||
+            authError.emailError ||
             authError.usernameError ||
+            authError.passwordError ||
             authError.signupError
           }}
         </p>
       </form>
     </div>
     <div
-      class="p-[25px] my-[10px] text-center border rounded-lg border-borderColor
-        max-[450px]:border-none"
+      class="p-[25px] my-[10px] text-center border rounded-lg
+        border-borderColor max-[450px]:border-none"
     >
       <span>Have an account? </span>
       <RouterLink

@@ -5,6 +5,7 @@ import BookmarkIcon from '@icons/bookmark.svg'
 import SunIcon from '@icons/sun.svg'
 import MoonIcon from '@icons/moon.svg'
 import ReportIcon from '@icons/report.svg'
+import LogoutPopup from '@/components/Popup/LogoutPopup.vue'
 
 import UiSwitchButton from '@/components/Atom/UiSwitchButton.vue'
 
@@ -29,14 +30,7 @@ watch(darkMode, (newTheme) => {
 })
 
 const logout = async () => {
-  const {
-    setAuthenticatedProfile,
-    setAuthenticatedUsername
-  } = useProfileStore()
-  setAuthenticatedProfile(null)
-  setAuthenticatedUsername('')
-  router.push('/')
-  // logoutModalShow.value = true
+  logoutModalShow.value = true
 }
 </script>
 
@@ -132,7 +126,7 @@ const logout = async () => {
           <span class="leading-tight">Log out</span>
         </div>
       </div>
-      <!-- <LogoutPopup v-if="logoutModalShow" /> -->
+      <LogoutPopup v-if="logoutModalShow" />
     </div>
     <div
       class="absolute top-0 left-full parent-[.active]:left-0 w-full

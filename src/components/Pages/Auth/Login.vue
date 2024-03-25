@@ -5,17 +5,24 @@ import LogoText from '@icons/logo-text.svg'
 
 import { ref, computed } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
-import { useProfileStore } from '@/stores'
+import { useProfileStore, useAuthStore } from '@/stores'
 import { useAuth } from '@/composables'
 import { useProfile } from '@/composables'
 
 const route = useRoute()
 const router = useRouter()
 
+interface AuthError {
+  loginError: string | null
+}
+
 const username = ref('')
 const password = ref('')
-const authError = ref<Nullable<string>>(null)
+const authError = ref<AuthError>({
+  loginError: null
+})
 const loading = ref(false)
+const isShowError = ref(false)
 
 const isDisable = computed(() => {
   return !(
@@ -24,27 +31,36 @@ const isDisable = computed(() => {
 })
 
 const submitLoginForm = async () => {
-  const { getAuthenticatedUsername } = useProfileStore()
+  const { setAuthenticatedUsername } = useProfileStore()
+  const { getAuthenticatedProfile } = useProfile()
+  const { setAccessToken, setRefreshToken } = useAuthStore()
   const { logIn } = useAuth()
 
   loading.value = true
 
-  // this login sets the current username in user store
-  const response = await logIn(
-    username.value,
-    password.value
-  )
+  try {
+    const loginResult = await logIn(
+      username.value,
+      password.value
+    )
 
-  // if the current username is set in user store, redirect to home
-  if (getAuthenticatedUsername()) {
-    await useProfile().getAuthenticatedProfile()
-    authError.value = null
+    setAccessToken(loginResult.access)
+    setRefreshToken(loginResult.refresh)
+    setAuthenticatedUsername(username.value)
+
+    const authProfile = await getAuthenticatedProfile()
+    isShowError.value = false
     if (route.path != '/') router.push('/')
-    // else router.go(0)
-  } else {
-    console.log('Login.vue error')
+    else router.go(0)
+  } catch (err) {
+    if (err instanceof Error) {
+      authError.value.loginError = err.message
+    } else {
+      authError.value.loginError =
+        'An unexpected error occurred'
+    }
+    isShowError.value = true
   }
-
   loading.value = false
 }
 </script>
@@ -69,7 +85,7 @@ const submitLoginForm = async () => {
         <UiInput
           class="mb-[6px]"
           name="username"
-          placeholder="Phone number, username, or email"
+          placeholder="Username"
           v-model:propValue="username"
         />
         <UiInput
@@ -110,8 +126,11 @@ const submitLoginForm = async () => {
             >
           </div>
         </UiButton>
-        <p v-if="authError" class="text-sm text-error my-8">
-          {{ authError }}
+        <p
+          v-if="isShowError"
+          class="text-sm text-error my-8"
+        >
+          {{ authError.loginError }}
         </p>
         <RouterLink
           to="/"

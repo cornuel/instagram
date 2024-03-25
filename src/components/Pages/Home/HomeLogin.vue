@@ -21,14 +21,17 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="w-full my-8 max-[400px]:my-0">
-    <div class="flex flex-center xl:mr-48">
-      <div class="home-phone min-[200px]:flex hidden mr-6 mb-3">
+    <div class="flex justify-center">
+      <div
+        class="home-phone min-[200px]:flex hidden mr-6 mb-3"
+      >
         <div
           class="relative w-[260px] mt-[25px] ml-[110px] mr-[18px]"
         >
           <img
-            class="screenshot absolute top-0 right-0 opacity-0 has-[active]:opacity-100
-              transition-opacity duration-[1500ms] ease-out"
+            class="screenshot absolute top-0 right-0 opacity-0
+              has-[active]:opacity-100 transition-opacity
+              duration-[1500ms] ease-out"
             :class="{ active: index == 1 }"
             src="@/assets/images/screenshot1.png"
             alt="Screenshot 1"

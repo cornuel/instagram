@@ -2,6 +2,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 import { useProfileStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import post from './post'
 import profile from './profile'
@@ -18,11 +19,13 @@ export default [
       from: RouteLocationNormalized,
       next: NavigationGuardNext
     ) => {
-      const profileStore = useProfileStore()
-      const authenticatedProfile = profileStore.getAuthenticatedProfile()
+      const { authenticatedProfile } = storeToRefs(useProfileStore())
 
-      if (authenticatedProfile) to.meta.layout = DashboardLayout
-      else to.meta.layout = AuthLayout
+      if (authenticatedProfile.value) {
+        to.meta.layout = DashboardLayout
+      } else {
+        to.meta.layout = AuthLayout
+      }
 
       next()
     }
@@ -37,11 +40,13 @@ export default [
       from: RouteLocationNormalized,
       next: NavigationGuardNext
     ) => {
-      const profileStore = useProfileStore()
-      const authenticatedProfile = profileStore.getAuthenticatedProfile()
+      const { authenticatedProfile } = storeToRefs(useProfileStore())
 
-      if (authenticatedProfile) to.meta.layout = DashboardLayout
-      else to.meta.layout = AuthLayout
+      if (authenticatedProfile.value) {
+        to.meta.layout = DashboardLayout
+      } else {
+        to.meta.layout = AuthLayout
+      }
 
       next()
     }
@@ -71,11 +76,13 @@ export default [
       from: RouteLocationNormalized,
       next: NavigationGuardNext
     ) => {
-      const profileStore = useProfileStore()
-      const authenticatedProfile = profileStore.getAuthenticatedProfile()
+      const { authenticatedProfile } = storeToRefs(useProfileStore())
 
-      if (authenticatedProfile) to.meta.layout = DashboardLayout
-      else to.meta.layout = AuthLayout
+      if (authenticatedProfile.value) {
+        to.meta.layout = DashboardLayout
+      } else {
+        to.meta.layout = AuthLayout
+      }
 
       next()
     }
