@@ -1,6 +1,7 @@
 <template>
-  <div>Welcome</div>
-  <div class="mt-10 cursor-pointer" @click="logout">Logout</div>
+  <!-- <div>Welcome</div>
+  <div class="mt-10 cursor-pointer" @click="logout">Logout</div> -->
+  <div></div>
 </template>
 
 <script setup lang="ts">
