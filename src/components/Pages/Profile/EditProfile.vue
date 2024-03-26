@@ -4,7 +4,7 @@ import { useProfile } from '@/composables'
 import Avatar from '@/components/Atom/Avatar.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { authenticatedProfile, viewedProfile } = storeToRefs(
   useProfileStore()
@@ -73,18 +73,20 @@ const submitUpdateProfile = async () => {
   }
 }
 
-// watch(
-//   authenticatedProfile,
-//   (newProfile, oldProfile) => {
-//     if (newProfile.bio.length >= 2200) {
-//       newProfile.bio = newProfile.bio.slice(
-//         0,
-//         oldProfile.bio.length
-//       )
-//     }
-//   },
-//   { deep: true }
-// )
+watch(bio, (newBio, oldBio) => {
+  if (newBio!.length >= 151) {
+    bio.value = newBio!.slice(0, oldBio!.length)
+  }
+})
+
+watch(fullName, (newFullName, oldFullName) => {
+  if (newFullName!.length >= 51) {
+    fullName.value = newFullName!.slice(
+      0,
+      oldFullName!.length
+    )
+  }
+})
 </script>
 
 <template>
@@ -177,7 +179,7 @@ const submitUpdateProfile = async () => {
                 right-0 w-[291px] text-center text-white bg-black rounded-lg
                 drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
             >
-              <span>150 characters maximum.</span>
+              <span>50 characters maximum.</span>
             </div>
           </div>
         </div>
@@ -223,7 +225,7 @@ const submitUpdateProfile = async () => {
                 right-0 w-[291px] text-center text-white bg-black rounded-lg
                 drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
             >
-              <span>50 characters maximum.</span>
+              <span>150 characters maximum.</span>
             </div>
           </div>
         </div>

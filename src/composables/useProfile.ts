@@ -24,12 +24,14 @@ export const useProfile = () => {
     userSlug: string,
     bio: string,
     fullName: string,
-    profile_pic: File
+    profilePic?: File
   ): Promise<IProfile | null> => {
     const formData = new FormData()
     formData.append('bio', bio)
     formData.append('full_name', fullName)
-    formData.append('profile_pic', profile_pic)
+    if (profilePic) {
+      formData.append('profile_pic', profilePic)
+    }
 
     try {
       const response = await instance.put(
@@ -47,6 +49,7 @@ export const useProfile = () => {
       return null
     }
   }
+
 
   const deleteProfilePic = async (
     userSlug: string
