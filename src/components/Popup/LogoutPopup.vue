@@ -3,8 +3,13 @@ import Modal from '@/components/Modal/Modal.vue'
 
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useModalStore, useProfileStore } from '@/stores'
+import {
+  useModalStore,
+  useProfileStore,
+  useAuthStore
+} from '@/stores'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables'
 
 const router = useRouter()
 
@@ -12,13 +17,15 @@ const unsubscribe = ref<NodeJS.Timeout>()
 const { logoutModalShow } = storeToRefs(useModalStore())
 
 const logout = () => {
-  const {
-    setAuthenticatedProfile,
-    setAuthenticatedUsername
-  } = useProfileStore()
+  const { removeAuthenticatedProfile } = useProfileStore()
 
-  setAuthenticatedProfile(null)
-  setAuthenticatedUsername('')
+  const { removeAccessToken, removeRefreshToken } =
+    useAuthStore()
+
+  removeAuthenticatedProfile()
+
+  removeAccessToken()
+  removeRefreshToken()
 
   if (router.currentRoute.value.name == 'Home') router.go(0)
   else router.push('/')

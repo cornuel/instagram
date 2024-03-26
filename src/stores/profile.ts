@@ -36,6 +36,12 @@ export const useProfileStore = defineStore('profile', {
     setAuthenticatedProfile(authenticatedProfile: Nullable<IProfile>) {
       this.authenticatedProfile = authenticatedProfile
       localStorage.setItem('authenticatedProfile', JSON.stringify(authenticatedProfile))
+    },
+    removeAuthenticatedProfile() {
+      this.authenticatedProfile = null
+      this.authenticatedUsername = null
+      localStorage.removeItem('authenticatedProfile')
+      localStorage.removeItem('authenticatedUsername')
     }
   }
 })

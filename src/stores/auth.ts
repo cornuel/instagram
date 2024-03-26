@@ -21,6 +21,10 @@ export const useAuthStore = defineStore('auth', {
     getAccessToken() {
       return this.accessToken
     },
+    removeAccessToken() {
+      this.accessToken = null;
+      localStorage.removeItem('access');
+    },
     getRefreshToken() {
       return $cookies.get('refresh') || null;
     },
@@ -40,5 +44,8 @@ export const useAuthStore = defineStore('auth', {
         'Strict' // prevent CSRF
       )
     },
+    removeRefreshToken() {
+      $cookies.remove('refresh');
+    }
   }
 })
