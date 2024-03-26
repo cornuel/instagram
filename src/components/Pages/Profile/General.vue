@@ -32,6 +32,15 @@ const avatarPopupActive = ref(false)
 const inputAvatar = ref<Nullable<HTMLInputElement>>(null)
 const isLoadingAvatar = ref(false)
 
+const isUserProfile = computed(() => {
+  return (
+    viewedProfile.value !== null &&
+    authenticatedProfile.value !== null &&
+    viewedProfile.value.username ===
+      authenticatedProfile.value.username
+  )
+})
+
 const storiesSwiperOptions = reactive({
   modules: [Navigation],
   slidesPerView: 1,
@@ -109,10 +118,13 @@ const unfollow = async () => {
 }
 
 const hanldeClickChangeAvatar = () => {
-  if (authenticatedProfile.value!.profile_pic == '')
-    inputAvatar.value?.click()
-  else {
+  if (isUserProfile.value) {
     avatarPopupActive.value = true
+    if (authenticatedProfile.value!.profile_pic == '')
+      inputAvatar.value?.click()
+    else {
+      avatarPopupActive.value = true
+    }
   }
 }
 
@@ -195,7 +207,7 @@ const deleteAvatar = async () => {
           <Avatar
             :width="isGeneralMobile ? '77' : '150'"
             :avatar-url="viewedProfile!.profile_pic"
-            class="cursor-pointer"
+            :class="isUserProfile ? 'cursor-pointer' : ''"
             title="Change profile picture"
             @click="hanldeClickChangeAvatar"
           />
