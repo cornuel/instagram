@@ -109,6 +109,15 @@ const handleCheckPassword = async () => {
   isShowError.value = false
   checkPassword.value = true
 
+  if (
+    regexUpperCase.test(password.value) &&
+    regexLowerCase.test(password.value) &&
+    regexNumber.test(password.value) &&
+    regexSpecialChar.test(password.value)
+  ) {
+    authError.value.passwordError = null
+  }
+
   if (!regexUpperCase.test(password.value)) {
     isShowError.value = true
     checkPassword.value = false
