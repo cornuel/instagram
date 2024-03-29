@@ -393,7 +393,7 @@ const deleteAvatar = async () => {
                     )
                   }}</span
                 >
-                followings
+                following
               </component>
             </li>
           </ul>

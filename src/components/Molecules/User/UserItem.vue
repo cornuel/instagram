@@ -23,6 +23,10 @@ const follow = async () => {
     isLoadingFollow.value = false
     props.viewedProfile!.is_following =
       !props.viewedProfile!.is_following
+
+    if (unfollowPopupActive.value) {
+      unfollowPopupActive.value = false
+    }
   }
 }
 </script>
@@ -74,6 +78,7 @@ const follow = async () => {
         <span>Following</span>
       </UiButton>
       <UiButton
+        v-else
         primary
         :isDisabled="isLoadingFollow"
         :isLoading="isLoadingFollow"

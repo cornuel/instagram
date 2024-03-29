@@ -24,15 +24,24 @@ const isMutualFollowersPage = computed(() => {
   return route.path.includes('mutualOnly') ? true : false
 })
 
+const isFollowersPage = computed(() => {
+  return route.path.includes('followers') ? true : false
+})
+
 const page = ref(1)
 
 const getFollowList = async () => {
   isLoadingFollowItems.value = true
   const { getFollows } = useFollow()
+  let followType: 'followers' | 'following' = 'following'
+
+  if (isFollowersPage.value) {
+    followType = 'followers'
+  }
 
   follows.value = (await getFollows(
     viewedProfile.value!.username,
-    'following',
+    followType,
     page.value
   )) as IPaginatedProfiles
 
@@ -61,8 +70,13 @@ onMounted(async () => {
         class="relative h-[42px] flex flex-center border-b
           border-separator-modal"
       >
-        <span class="text-base font-semibold"
+        <span
+          v-if="isFollowersPage"
+          class="text-base font-semibold"
           >Followers</span
+        >
+        <span v-else class="text-base font-semibold"
+          >Following</span
         >
         <div
           class="absolute top-1/2 -translate-y-1/2 right-2 p-2 leading-none

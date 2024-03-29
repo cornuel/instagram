@@ -7,13 +7,15 @@ import { type IPaginatedPosts } from '@/types'
 
 import { ref, onBeforeMount } from 'vue'
 
-import { onBeforeRouteUpdate } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { usePostStore, useProfileStore } from '@/stores'
 import { usePost } from '@/composables'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
+
+const route = useRoute()
 
 const { viewedProfile, authenticatedProfile } = storeToRefs(
   useProfileStore()
@@ -63,11 +65,11 @@ onBeforeMount(async () => {
 }),
   onBeforeRouteUpdate(async () => {
     // console.log(route.path)
-    // const regex = /\/([^/]+)\/(following)/
-    // const match = regex.exec(route.path)
-    // if (!match) {
-    await getPosts()
-    // }
+    const regex = /\/(following|followers)/
+    const match = regex.exec(route.path)
+    if (!match) {
+      await getPosts()
+    }
   })
 </script>
 

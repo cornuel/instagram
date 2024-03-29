@@ -20,7 +20,7 @@ withDefaults(
 
 <template>
   <ConfirmPopup
-    confirm-message="Confirm"
+    confirm-message="Unfollow"
     @confirm="onConfirm"
     @cancel="onCancel"
     @click-outside="onClickOutside"
@@ -28,8 +28,7 @@ withDefaults(
     <div class="flex flex-col flex-center">
       <Avatar width="90" :avatar-url="user.profile_pic" />
       <span class="text-center mt-6"
-        >If you change your mind, you will need to follow
-        @{{ user.username }} again.</span
+        >Unfollow @{{ user.username }}?</span
       >
     </div>
   </ConfirmPopup>
