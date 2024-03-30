@@ -28,9 +28,13 @@ export function getReviewImageSize(realImageSize: ISize, cropperSize: ISize) {
 export function getRatioCrop(realImageSize: ISize, cropperSize: ISize, scale: number, ratio: string) {
   const wScale = realImageSize.width / cropperSize.width / scale
   const hScale = realImageSize.height / cropperSize.height / scale
+  const isLandscape = realImageSize.width >= realImageSize.height
   let ratioCrop
 
   if (ratio === '4:5') {
+    ratioCrop = hScale
+  }
+  else if (ratio == '1:1' && isLandscape) {
     ratioCrop = hScale
   }
   else {
