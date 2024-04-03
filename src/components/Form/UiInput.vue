@@ -26,6 +26,14 @@ const inputType = ref(props.type)
 const showPassword = ref(false)
 const isFocus = ref(false)
 
+const autocomplete = computed(() => {
+  if (props.type === 'password') {
+    return 'on'
+  } else {
+    return 'username'
+  }
+})
+
 const emit = defineEmits(['update:propValue'])
 const inputValue = computed({
   get: () => props.propValue,
@@ -58,6 +66,7 @@ const blurInput = () => {
         :id="id"
         :type="inputType"
         :name="name"
+        :autocomplete="autocomplete"
         v-model="inputValue"
         @focus="focusInput"
         @blur="blurInput"
