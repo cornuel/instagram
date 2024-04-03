@@ -19,7 +19,11 @@ import {
 } from '@/composables'
 
 import { storeToRefs } from 'pinia'
-import { useCommentStore, useProfileStore } from '@/stores'
+import {
+  useCommentStore,
+  usePostStore,
+  useProfileStore
+} from '@/stores'
 
 import {
   dateDistanceToNow,
@@ -27,7 +31,11 @@ import {
   convertTagUser
 } from '@/helpers'
 
-import type { IAction, IProfile } from '@/types'
+import type {
+  IAction,
+  IPaginatedProfiles,
+  IProfile
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -147,14 +155,21 @@ const deleteItem = async () => {
 }
 
 const handleClickLikeCount = async () => {
-  // todo
-  // const { setLikedListModal, setIsLoadingLikedList, setLikedList } = usePostStore()
-  // const { getLikedUsers } = useLike()
-  // const type = props.commentId ? 'reply' : 'comment'
-  // setLikedListModal(true)
-  // setIsLoadingLikedList(true)
-  // setLikedList(await getLikedUsers(props.id!, type))
-  // setIsLoadingLikedList(false)
+  const {
+    setLikedListModal,
+    setIsLoadingLikedList,
+    setLikedList
+  } = usePostStore()
+  const { getLikedUsers } = useLike()
+
+  setLikedListModal(true)
+  setIsLoadingLikedList(true)
+  const likedUsers = (await getLikedUsers(
+    props.id as number,
+    'comment'
+  )) as IPaginatedProfiles
+  setLikedList(likedUsers.results)
+  setIsLoadingLikedList(false)
 }
 
 onBeforeMount(async () => {
