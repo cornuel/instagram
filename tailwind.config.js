@@ -71,6 +71,7 @@ export default {
       },
       screens: {
         tablet: '768px',
+        mid: '1024px',
         laptop: '1160px',
         desktop: '1264px'
       },
@@ -82,8 +83,12 @@ export default {
   variants: {
     extend: {}
   },
+  corePlugins: {
+    aspectRatio: false
+  },
   plugins: [
     require('tailwind-scrollbar-hide'),
+    require('@tailwindcss/aspect-ratio'),
     plugIn(function ({ matchVariant, addUtilities }) {
       matchVariant('has', (value) => {
         return `&.${value}`
