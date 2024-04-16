@@ -36,30 +36,28 @@ const isMultipleImages = computed(() => {
 
 <template>
   <div class="relative">
-    <Swiper v-bind="postSwiperOptions" class="relative">
+    <Swiper
+      v-bind="postSwiperOptions"
+      class="relative"
+    >
       <SwiperSlide
         v-for="item in post!.images"
         :key="item.image"
       >
-        <div class="relative w-full pb-[100%]">
-          <!-- <img
-            :src="item.thumbnail"
-            :srcset="item.image"
-            class="absolute top-0 left-0 w-full h-full object-cover"
-          /> -->
+        <div class="relative aspect-w-1 aspect-h-1 w-full">
           <!-- Thumbnail Image -->
           <img
             :src="item.thumbnail"
             alt=""
             @load="handleLoad()"
-            class="absolute top-0 left-0 w-full h-full object-contain"
+            class="absolute inset-0 h-full object-contain"
           />
           <!-- Original Image -->
           <img
             v-if="!loading"
             :src="item.image"
             alt=""
-            class="absolute top-0 left-0 w-full h-full object-contain"
+            class="absolute inset-0 h-full object-contain"
           />
         </div>
       </SwiperSlide>
@@ -67,9 +65,7 @@ const isMultipleImages = computed(() => {
 
     <div v-if="isMultipleImages">
       <div
-        class="absolute px-2 py-4 top-1/2 left-0 -translate-y-1/2
-          opacity-60 cursor-pointer z-10 has-[disabled]:hidden
-          navigation-prev drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+        class="absolute px-2 py-4 top-1/2 left-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 has-[disabled]:hidden navigation-prev drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
       >
         <fa
           :icon="['fas', 'circle-chevron-left']"
@@ -77,9 +73,7 @@ const isMultipleImages = computed(() => {
         />
       </div>
       <div
-        class="absolute px-2 py-4 top-1/2 right-0 -translate-y-1/2
-          opacity-60 cursor-pointer z-10 has-[disabled]:hidden
-          navigation-next drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+        class="absolute px-2 py-4 top-1/2 right-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 has-[disabled]:hidden navigation-next drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
       >
         <fa
           :icon="['fas', 'circle-chevron-right']"

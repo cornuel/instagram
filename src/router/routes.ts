@@ -1,8 +1,8 @@
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
-import { useProfileStore } from '@/stores'
 import { storeToRefs } from 'pinia'
+import { useProfileStore } from '@/stores'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import post from './post'
 import profile from './profile'
@@ -28,7 +28,7 @@ export default [
       }
 
       next()
-    }
+    },
   },
   {
     path: '/accounts/edit',

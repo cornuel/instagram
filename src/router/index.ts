@@ -1,7 +1,8 @@
 import routes from './routes'
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { useLoadingStore, useProfileStore } from '@/stores'
+import { useLoadingStore } from '@/stores'
+import { nextTick } from 'vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,11 +13,13 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition
     } else {
-      if (to.name == from.name || to.matched[0] != from.matched[0]) {
-        return {
-          top: 0
-        }
-      }
+      nextTick(() => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        })
+      })
     }
   }
 })
@@ -32,7 +35,7 @@ router.beforeEach(async (to, from) => {
   }
 
   if (to.meta.requiresAuth) {
-    console.log('requires auth')
+    // console.log('requires auth')
     // return '/accounts/login'
   } else {
     // if (authPath.includes(to.path)) {

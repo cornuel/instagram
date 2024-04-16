@@ -8,7 +8,11 @@ import BookmarkActiveIcon from '@icons/bookmark-active.svg'
 
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { usePostStore, useCommentStore } from '@/stores'
+import {
+  usePostStore,
+  useCommentStore,
+  useResizeStore
+} from '@/stores'
 import { useLike, usePost } from '@/composables'
 
 import {
@@ -20,6 +24,7 @@ import type { IPaginatedProfiles } from '@/types'
 
 const { post } = storeToRefs(usePostStore())
 const { commentRef } = storeToRefs(useCommentStore())
+const { dimensions } = storeToRefs(useResizeStore())
 const isLike = ref(false)
 const isFavorited = ref(false)
 const isLoadingLike = ref(false)
@@ -73,6 +78,7 @@ const commentIconClick = () => {
 }
 
 const handleClickLikedPost = async () => {
+  if(post.value?.like_count === 0) return
   const {
     setLikedListModal,
     setIsLoadingLikedList,
@@ -96,10 +102,14 @@ onMounted(async () => {
     isFavorited.value = post.value.is_favorited ?? false
   }
 })
+
+const desktop = computed(() => {
+  return dimensions.value.width > 736
+})
 </script>
 
 <template>
-  <div class="flex flex-col border-b border-borderColor">
+  <div class="flex flex-col" :class="{'border-b border-borderColor' : desktop}">
     <div class="flex justify-between px-[10px] py-[6px]">
       <div class="flex">
         <div class="p-2 cursor-pointer select-none">
@@ -145,7 +155,10 @@ onMounted(async () => {
     </div>
     <div class="flex flex-col px-4 mb-4">
       <span
-        class="text-sm font-semibold cursor-pointer"
+        class="text-sm font-semibold"
+        :class="{
+          'cursor-pointer': post!.like_count > 0
+        }"
         @click="handleClickLikedPost"
         >{{
           post!.like_count

@@ -6,18 +6,20 @@ import type {
 } from 'vue-router'
 
 import { useTag, useSearch } from '@/composables'
-import { useSearchStore, useTagStore } from '@/stores'
+import { useSearchStore, useTagStore, usePostStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 
-const guardProfile = (
+const guardTag = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
   const { getTag } = useTag()
   const { fetchPostsByTagQuery } = useSearch()
+
   getTag(to.params.tagname as string).then(async (tag) => {
+
     if (!tag) {
-      console.log('Tag not found')
       next({
         name: 'NotFound',
         params: {
@@ -27,7 +29,6 @@ const guardProfile = (
         hash: to.hash
       })
     } else {
-      console.log('Tag found')
       const { setQuery, setSearchedPosts } =
         useSearchStore()
       const { setCurrentTag } = useTagStore()
@@ -35,28 +36,27 @@ const guardProfile = (
       setQuery(tag.name)
       setCurrentTag(tag)
 
-      const res = await fetchPostsByTagQuery(tag.name, 1)
-
-      if (res) {
-        setSearchedPosts({
-          count: res.count,
-          next: res.next,
-          previous: res.previous,
-          results: res.results.posts
-        })
-
-        document.title = `#${tag.name} on Instagram | Hashtags`
-      }
-
-      next()
+      document.title = `#${tag.name} on Instagram | Hashtags`
     }
+
+    next()
   })
 }
 
 export default {
   path: '/explore/tags/:tagname',
   name: 'Tag',
-  component: () => import('@/views/tag.vue'),
+  components: { default: () => import('@/views/tag/index.vue') },
   meta: { layout: DashboardLayout, requiresAuth: true },
-  beforeEnter: guardProfile,
+  redirect: { name: 'TagPosts' },
+  beforeEnter: guardTag,
+  children: [
+    {
+      path: '',
+      name: 'TagPosts',
+      components: {
+        default: () => import('@/views/tag/posts.vue')
+      },
+    }
+  ]
 }

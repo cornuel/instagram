@@ -7,28 +7,31 @@ import PostHeader from './PostHeader.vue'
 import PostComments from './PostComments.vue'
 import PostActions from './PostActions.vue'
 import Modal from '@/components/Modal/Modal.vue'
-import UsersWhoLikedModel from '@/components/Modal/UsersWhoLikedModal.vue'
+import UsersWhoLikedModal from '@/components/Modal/UsersWhoLikedModal.vue'
 
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useProfileStore, usePostStore, useCommentStore } from '@/stores'
+import {
+  useProfileStore,
+  usePostStore,
+  useCommentStore,
+  useModalStore,
+  useResizeStore
+} from '@/stores'
 import { useComment } from '@/composables'
 
+import { useRouter, useRoute } from 'vue-router'
+
 const { authenticatedProfile } = storeToRefs(useProfileStore())
-const { post, likedListModal, isLoadingLikedList, likedList } =
-  storeToRefs(usePostStore())
+const { showPostModal } = storeToRefs(useModalStore())
+const { dimensions } = storeToRefs(useResizeStore())
+const { post, likedListModal } = storeToRefs(usePostStore())
 const { comment, commentRef } = storeToRefs(useCommentStore())
+
+const router = useRouter()
+
 const emojiPickerActive = ref(false)
 const loadingComment = ref(false)
-
-// const postContainerWidth = computed(() => {
-//   if (post.value!.ratio >= 1) {
-//     return { maxWidth: '935px' }
-//   } else {
-//     const widthTemp = 600 * post.value!.ratio + 335
-//     return { maxWidth: Math.max(widthTemp, 480) + 'px' }
-//   }
-// })
 
 const handleClickEmoji = (emoji: string) => {
   if (commentRef.value) {
@@ -63,26 +66,34 @@ const handleComment = async () => {
     comment.value = ''
   }
 }
-
 const close = () => {
   likedListModal.value = false
 }
+
+const desktop = computed(() => {
+  return dimensions.value.width > 736
+})
 </script>
 
 <template>
-  <div class="py-4 px-5 mx-auto box-content">
+  <transition name="modal">
     <div
-      class="flex flex-col min-[736px]:flex-row w-full mx-auto min-h-[480px] max-h-none min-[736px]:max-h-[600px] box-content border border-borderColor rounded-xl"
+      v-if="showPostModal"
+      class="flex flex-col min-[736px]:flex-row mx-auto min-h-[480px] max-w-[80rem] max-h-[92vh] bg-bgColor-primary rounded-sm"
     >
+      <PostHeader v-if="!desktop" />
       <div
-        class="flex-grow flex items-center overflow-hidden rounded-tl-xl min-[736px]:rounded-bl-xl"
+        class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-sm min-[736px]:rounded-bl-sm bg-[#000000] w-full"
       >
-        <PostSwiper class="w-full" />
+        <PostSwiper
+          class="w-full"
+          :class="{ '': desktop }"
+        />
       </div>
       <div
-        class="flex flex-col w-full min-[1024px]:w-[520px] min-[768px]:w-[400px] flex-shrink-0 border-l-0 min-[736px]:border-l border-borderColor"
+        class="flex flex-col w-full min-[1024px]:w-[30rem] min-[768px]:w-[20rem] flex-shrink-0 border-l-0 min-[736px]:border-l border-borderColor"
       >
-        <PostHeader />
+        <PostHeader v-if="desktop" />
         <PostComments
           class="flex-grow border-b border-borderColor h-[200px] min-[736px]:h-auto"
         />
@@ -136,13 +147,14 @@ const close = () => {
         </div>
       </div>
     </div>
-    <Teleport to="#modal">
-      <Modal
-        :isShow="likedListModal"
-        @click-outside="close"
-      >
-        <UsersWhoLikedModel />
-      </Modal>
-    </Teleport>
-  </div>
+  </transition>
+  <Teleport to="#modal">
+    <Modal
+      isPopup
+      :isShow="likedListModal"
+      @click-outside="close"
+    >
+      <UsersWhoLikedModal />
+    </Modal>
+  </Teleport>
 </template>

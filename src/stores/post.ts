@@ -2,8 +2,10 @@ import type { IPost, IPaginatedPosts, IProfile } from '@/types'
 import { defineStore } from 'pinia'
 
 interface IState {
+  isInitial: boolean
   post: Nullable<IPost>
   userPosts: Nullable<IPaginatedPosts>
+  showedPosts: Nullable<IPaginatedPosts>
   favoritedPosts: Nullable<IPaginatedPosts>
   likedListModal: boolean
   isLoadingLikedList: boolean
@@ -12,8 +14,10 @@ interface IState {
 
 export const usePostStore = defineStore('post', {
   state: (): IState => ({
+    isInitial: true,
     post: null,
     userPosts: null,
+    showedPosts: null,
     favoritedPosts: null,
     likedListModal: false,
     isLoadingLikedList: false,
@@ -31,15 +35,29 @@ export const usePostStore = defineStore('post', {
     },
     increaseLikeCount() {
       this.post!.like_count += 1
+      const index = this.showedPosts!.results!.findIndex(
+        (post: IPost) => post.id === this.post!.id
+      )
+      this.showedPosts!.results![index].like_count += 1
     },
     decreaseLikeCount() {
       this.post!.like_count -= 1
+      const index = this.showedPosts!.results!.findIndex(
+        (post: IPost) => post.id === this.post!.id
+      )
+      this.showedPosts!.results![index].like_count -= 1
     },
     getPosts(): Nullable<IPaginatedPosts> {
       return this.userPosts
     },
     setPosts(posts: Nullable<IPaginatedPosts>) {
       this.userPosts = posts
+    },
+    getShowedPosts(): Nullable<IPaginatedPosts> {
+      return this.showedPosts
+    },
+    setShowedPosts(posts: Nullable<IPaginatedPosts>) {
+      this.showedPosts = posts
     },
     getFavoritedPosts(): Nullable<IPaginatedPosts> {
       return this.favoritedPosts

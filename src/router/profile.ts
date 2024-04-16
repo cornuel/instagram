@@ -26,7 +26,6 @@ const guardProfile = (
   })
 }
 
-
 const handleFollowModal = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
@@ -59,8 +58,6 @@ const handleFollowModal = (
     }
   }
 
-  console.log('from', from.matched)
-  console.log('to', to.matched)
 
   next()
 }
@@ -68,7 +65,9 @@ const handleFollowModal = (
 export default {
   path: '/:username',
   name: 'Profile',
-  component: () => import('@/views/profile/index.vue'),
+  components: {
+    default: () => import('@/views/profile/index.vue'),
+  },
   meta: { layout: DashboardLayout, requiresAuth: true },
   redirect: { name: 'Posts' },
   beforeEnter: guardProfile,
@@ -76,7 +75,9 @@ export default {
     {
       path: '',
       name: 'Posts',
-      component: () => import('../views/profile/posts.vue')
+      components: {
+        default: () => import('@/views/profile/posts.vue'),
+      },
     },
     {
       path: 'saved',
@@ -92,12 +93,16 @@ export default {
           next({ name: 'Posts', params: { username: viewedProfile?.username } })
         }
       },
-      component: () => import('../views/profile/saved.vue')
+      components: {
+        default: () => import('@/views/profile/saved.vue'),
+      },
     },
     {
       path: 'tagged',
       name: 'Tagged',
-      component: () => import('../views/profile/tagged.vue')
+      components: {
+        default: () => import('@/views/profile/tagged.vue'),
+      },
     },
     {
       path: 'followers',

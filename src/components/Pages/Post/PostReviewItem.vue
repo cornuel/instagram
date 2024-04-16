@@ -24,11 +24,13 @@ const commentCountComp = computed(() => {
 
 <template>
   <RouterLink
-    :to="{ name: 'Post', params: { postId: post.slug } }"
+    :to="{
+      name: 'Post',
+      params: { postId: post.slug }
+    }"
   >
     <div
-      class="relative group/review w-full pt-[100%] cursor-pointer
-        overflow-hidden rounded-sm"
+      class="relative group/review w-full pt-[100%] cursor-pointer overflow-hidden"
     >
       <div class="absolute top-0 left-0 w-full h-full">
         <!-- <img
@@ -50,34 +52,24 @@ const commentCountComp = computed(() => {
         /> -->
       </div>
       <div
-        class="absolute top-0 left-0 w-full h-full flex flex-center
-          bg-[rgba(0,0,0,0.5)] opacity-0
-          group-hover/review:opacity-100 transition-opacity z-10"
+        class="absolute top-0 left-0 w-full h-full flex flex-center bg-[rgba(0,0,0,0.5)] opacity-0 group-hover/review:opacity-100 transition-opacity z-10"
       >
         <div class="text-center">
-          <div
-            class="text-white font-semibold text-sm md:text-lg px-4 my-2"
-          >
+          <div class="text-white font-semibold text-sm md:text-lg px-4 my-2">
             {{ post.title }}
           </div>
           <div class="flex justify-center">
             <div class="flex items-center mr-7">
-              <LikeIcon
-                class="w-5 h-5 text-white fill-white"
-              />
-              <span
-                class="ml-2 text-base font-bold text-white"
-                >{{ likeCountComp }}</span
-              >
+              <LikeIcon class="w-5 h-5 text-white fill-white" />
+              <span class="ml-2 text-base font-bold text-white">{{
+                likeCountComp
+              }}</span>
             </div>
             <div class="flex items-center">
-              <CommentIcon
-                class="w-[18px] h-[18px] text-white fill-white"
-              />
-              <span
-                class="ml-2 text-base font-bold text-white"
-                >{{ commentCountComp }}</span
-              >
+              <CommentIcon class="w-[18px] h-[18px] text-white fill-white" />
+              <span class="ml-2 text-base font-bold text-white">{{
+                commentCountComp
+              }}</span>
             </div>
           </div>
         </div>
