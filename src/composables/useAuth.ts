@@ -1,7 +1,6 @@
-import type { ILogInResult, ISignUpResult, ISignUpError, ILogInError } from '@/types/auth'
-import { AxiosError } from 'axios'
+import type { ILogInResult, ISignUpResult } from '@/types/auth'
 import { useProfileStore, useAuthStore } from '@/stores'
-import instance from '@/libs/axios/instance'
+import { instance, setAxiosAuthHeader, axiosAPI } from '@/libs'
 
 
 
@@ -9,7 +8,12 @@ export const useAuth = () => {
   const profileStore = useProfileStore()
   const authStore = useAuthStore()
 
-  const logIn = async (username: string, password: string): Promise<ILogInResult> => {
+  const { handleApiError } = axiosAPI()
+
+  const logIn = async (
+    username: string,
+    password: string)
+    : Promise<ILogInResult | null> => {
     try {
       const response = await instance.post<ILogInResult>('token/', {
         username,
@@ -18,6 +22,7 @@ export const useAuth = () => {
 
       const loginResult: ILogInResult = response.data
 
+      setAxiosAuthHeader(loginResult.access)
       authStore.setAccessToken(loginResult.access)
       authStore.setRefreshToken(loginResult.refresh)
       profileStore.setAuthenticatedUsername(username)
@@ -25,18 +30,8 @@ export const useAuth = () => {
       return loginResult
 
     } catch (error) {
-      const typedError = error as ILogInError;
-      if (typedError.response) {
-        const { status, data } = typedError.response;
-        if (status === 401 && data.detail) {
-          // Invalid Details
-          throw new Error(data.detail);
-        } else {
-          throw new Error('An unexpected error occurred');
-        }
-      } else {
-        throw new Error('Network error or error without response');
-      }
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -49,7 +44,8 @@ export const useAuth = () => {
       authStore.setAccessToken(response.data.access)
       return response.status === 200
     } catch (error) {
-      return (error as AxiosError).response
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -62,39 +58,31 @@ export const useAuth = () => {
       return response.status === 200
 
     } catch (error) {
-      return (error as AxiosError).response
+      handleApiError(error)
+      return null;
     }
   }
 
-  const signUp = async (username: string, email: string, password: string): Promise<ISignUpResult> => {
+  const signUp = async (
+    username: string,
+    email: string,
+    password: string
+  ): Promise<ISignUpResult | null> => {
     try {
-      const response = await instance.post<ISignUpResult>('users/', {
-        username,
-        email,
-        password
-      });
-      return response.data;
-    } catch (error) {
-      const typedError = error as ISignUpError;
-      if (typedError.response) {
-        const { status, data } = typedError.response;
-        if (status === 400 && data.username) {
-          // Username already taken
-          throw new Error(data.username[0]);
-        } else if (status === 400 && data.password) {
-          // Invalid Password
-          throw new Error(data.password[0]);
-        } else if (status === 400 && data.email) {
-          // Invalid Email
-          throw new Error(data.email[0]);
-        } else {
-          throw new Error('An unexpected error occurred');
+      const response = await instance.post<ISignUpResult>(
+        'users/',
+        {
+          username,
+          email,
+          password
         }
-      } else {
-        throw new Error('Network error or error without response');
-      }
+      )
+      return response.data
+    } catch (error) {
+      handleApiError(error)
+      return null;
     }
-  };
+  }
 
   return {
     signUp,

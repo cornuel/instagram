@@ -1,8 +1,10 @@
 import type { IPost } from '@/types'
-import instance from '@/libs/axios/instance'
+import { instance, axiosAPI } from '@/libs'
 
 
 export const useDownload = () => {
+  const { handleApiError } = axiosAPI()
+
   const downloadImages = async (post: IPost) => {
     try {
       const response = await instance.get(`posts/${post.slug}/download/`, {
@@ -29,8 +31,8 @@ export const useDownload = () => {
 
       return true
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 

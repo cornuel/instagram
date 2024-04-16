@@ -3,24 +3,11 @@ export interface ILogInResult {
   access: string
 }
 
-export type ILogInError = {
-  response: {
-    data: {
-      detail?: string;
-    };
-    status: number;
-  };
-}
-
-export type ISignUpError = {
-  response: {
-    data: {
-      username?: string;
-      password?: string;
-      email?: string;
-    };
-    status: number;
-  };
+export type IApiErrorData = {
+  detail?: string;
+  username?: string[];
+  password?: string[];
+  email?: string[];
 }
 
 export type ISignUpResult = {

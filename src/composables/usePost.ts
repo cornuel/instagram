@@ -1,11 +1,13 @@
 import { useCreatePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
-import instance from '@/libs/axios/instance'
+import { instance, axiosAPI } from '@/libs'
 
 export const usePost = () => {
+  const { handleApiError } = axiosAPI()
+
   const setPost = async () => {
     try {
-      const { medias, name, caption, tags, cropperSize } =
+      const { medias, name, caption, tags } =
         useCreatePostStore()
 
       const formData = new FormData()
@@ -48,8 +50,8 @@ export const usePost = () => {
       )
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 
@@ -58,8 +60,8 @@ export const usePost = () => {
       const response = await instance.get<IPost>(`posts/${postSlug}/`)
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 
@@ -68,8 +70,8 @@ export const usePost = () => {
       const response = await instance.post(`posts/${postSlug}/favorite/`)
       return response.data.message === 'Post added to favorites successfully'
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 
@@ -78,20 +80,23 @@ export const usePost = () => {
       const response = await instance.delete<IPost>(`posts/${postSlug}/`)
       return response.status === 204
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 
-  const getUserPosts = async (userId: string, page: number = 1) => {
+  const getUserPosts = async (
+    page: number = 1,
+    userId: string,
+  ): Promise<IPaginatedPosts | null> => {
     try {
       const response = await instance.get<IPaginatedPosts>(`profiles/${userId}/posts/`, {
         params: { page }
       });
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 
@@ -102,8 +107,8 @@ export const usePost = () => {
       });
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;;
     }
   }
 

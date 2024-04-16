@@ -1,8 +1,10 @@
 import { usePostStore, useCommentStore } from '@/stores'
 import type { IComment, IPaginatedComments } from '@/types'
-import instance from '@/libs/axios/instance'
+import { instance, axiosAPI } from '@/libs'
 
 export const useComment = () => {
+  const { handleApiError } = axiosAPI()
+
   const addCommentPost = async (postId: number, parent: number | null, body: string) => {
     // Optimistically update comment count on post
     usePostStore().increaseCommentCount()
@@ -12,13 +14,17 @@ export const useComment = () => {
         parent: parent,
         body: body
       })
-      useCommentStore().addComment(response.data)
+      if (parent === null) {
+        useCommentStore().addComment(response.data)
+      } else {
+        useCommentStore().addReply(response.data, parent)
+      }
       // return response.data
     } catch (error) {
-      console.log(error)
       // Rollback optimistic update
       usePostStore().decreaseCommentCount()
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -27,8 +33,8 @@ export const useComment = () => {
       const response = await instance.get<IPaginatedComments>(`posts/${postSlug}/comments/`, { params: { page } });
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -37,8 +43,8 @@ export const useComment = () => {
       const response = await instance.get<IPaginatedComments>(`posts/${postSlug}/comment/${commentId}/`, { params: { page } });
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -48,8 +54,8 @@ export const useComment = () => {
       useCommentStore().deleteComment(commentId)
       // should return 204 no content
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 

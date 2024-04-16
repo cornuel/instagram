@@ -1,10 +1,12 @@
 import type { IProfile } from '@/types'
 import { useProfileStore } from '@/stores'
-import instance from '@/libs/axios/instance'
+import { storeToRefs } from 'pinia'
+import { instance, axiosAPI } from '@/libs'
 
 
 export const useProfile = () => {
   const profileStore = useProfileStore()
+  const { handleApiError } = axiosAPI()
 
   const getProfile = async (
     userSlug: string
@@ -15,8 +17,8 @@ export const useProfile = () => {
       )
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -45,8 +47,8 @@ export const useProfile = () => {
       )
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -60,8 +62,8 @@ export const useProfile = () => {
       )
       return response.status === 200
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -69,32 +71,33 @@ export const useProfile = () => {
     userSlug: string
   ): Promise<IProfile | null> => {
     const profile = await getProfile(userSlug)
+    const { authenticatedProfile } = storeToRefs(profileStore)
 
     if (profile) {
       profileStore.setViewedProfile(profile)
     }
-
+    if (profile?.full_name === authenticatedProfile.value?.full_name) {
+      profileStore.setAuthenticatedProfile(profile)
+    }
     return profile
   }
 
-  const getAuthenticatedProfile =
-    async (): Promise<IProfile | null> => {
-      const username =
-        profileStore.getAuthenticatedUsername()
+  const getAuthenticatedProfile = async (): Promise<IProfile | null> => {
+    const username =
+      profileStore.getAuthenticatedUsername()
+    try {
+      const response = await instance.get(
+        `profiles/${username}/`
+      )
 
-      try {
-        const response = await instance.get(
-          `profiles/${username}/`
-        )
+      profileStore.setAuthenticatedProfile(response.data)
 
-        profileStore.setAuthenticatedProfile(response.data)
-
-        return response.data as IProfile
-      } catch (error) {
-        console.log(error)
-        return null
-      }
+      return response.data as IProfile
+    } catch (error) {
+      handleApiError(error)
+      return null;
     }
+  }
 
   return {
     getProfile,

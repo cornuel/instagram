@@ -1,7 +1,9 @@
 import type { IPaginatedProfiles } from '@/types'
-import instance from '@/libs/axios/instance'
+import { instance, axiosAPI } from '@/libs'
 
 export const useFollow = () => {
+  const { handleApiError } = axiosAPI()
+
   const isFollowing = async (userSlug: string) => {
     try {
       const response = await instance.get(`
@@ -11,7 +13,8 @@ export const useFollow = () => {
       return response.data.is_following
     }
     catch (error) {
-      console.log(error)
+      handleApiError(error)
+      return null;
     }
   }
 
@@ -24,19 +27,24 @@ export const useFollow = () => {
       return response.data.message
     }
     catch (error) {
-      console.log(error)
+      handleApiError(error)
+      return null;
     }
   }
 
-  const getFollows = async (userSlug: string, followType: 'followers' | 'following', page: number = 1) => {
+  const getFollows = async (
+    userSlug: string,
+    followType: 'followers' | 'following',
+    page: number = 1
+  ) => {
     try {
       const response = await instance.get<IPaginatedProfiles>(`profiles/${userSlug}/${followType}/`, {
         params: { page }
       });
       return response.data
     } catch (error) {
-      console.log(error)
-      return null
+      handleApiError(error)
+      return null;
     }
   }
 

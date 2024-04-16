@@ -1,44 +1,69 @@
-import type { IPaginatedSearchResults, IPaginatedProfiles } from '@/types'
-import instance from '@/libs/axios/instance'
+import type { IPaginatedSearchResults, IPaginatedProfiles, IPaginatedPosts } from '@/types'
+import { instance, axiosAPI } from '@/libs'
 
 
 export const useSearch = () => {
+  const { handleApiError } = axiosAPI()
 
-  const fetchPostsByQuery = async (query: string, page: number): Promise<IPaginatedSearchResults | null> => {
+  const fetchPostsByQuery = async (
+    page: number,
+    query: string,
+  ): Promise<IPaginatedPosts | null> => {
     try {
-      const response = await instance.get(`search/`,
+      const response = await instance.get<IPaginatedSearchResults>(`search/`,
         {
           params: { query: query, type: 'posts', page: page }
         })
-      return response.data
+      return {
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous,
+        results: response.data.results.posts,
+      } as IPaginatedPosts
     } catch (error) {
-      console.log(error)
+      handleApiError(error)
       return null
     }
   }
 
-  const fetchPostsByTagQuery = async (query: string, page: number): Promise<IPaginatedSearchResults | null> => {
+  const fetchPostsByTagQuery = async (
+    page: number,
+    query: string
+  ): Promise<IPaginatedPosts | null> => {
     try {
-      const response = await instance.get(`search/`,
+      const response = await instance.get<IPaginatedSearchResults>(`search/`,
         {
           params: { query: query, type: 'tag', page: page }
         })
-      return response.data
+      return {
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous,
+        results: response.data.results.posts,
+      } as IPaginatedPosts
     } catch (error) {
-      console.log(error)
+      handleApiError(error)
       return null
     }
   }
 
-  const fetchProfilesByQuery = async (query: string, page: number): Promise<IPaginatedSearchResults | null> => {
+  const fetchProfilesByQuery = async (
+    page: number,
+    query: string
+  ): Promise<IPaginatedProfiles | null> => {
     try {
-      const response = await instance.get(`search/`,
+      const response = await instance.get<IPaginatedSearchResults>(`search/`,
         {
           params: { query: query, type: 'profile', page: page }
         })
-      return response.data
+      return {
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous,
+        results: response.data.results.profiles,
+      } as IPaginatedProfiles
     } catch (error) {
-      console.log(error)
+      handleApiError(error)
       return null
     }
   }
