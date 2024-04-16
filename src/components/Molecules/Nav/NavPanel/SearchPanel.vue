@@ -59,11 +59,7 @@ const updateSearchHistory = async () => {
 }
 
 const addSearchHistory = async (user: IProfile) => {
-  searchHistory.value = unionBy(
-    [user],
-    searchHistory.value,
-    'id'
-  )
+  searchHistory.value = unionBy([user], searchHistory.value, 'id')
   await updateSearchHistory()
 }
 
@@ -76,6 +72,7 @@ const removeSearchHistory = async (user: IProfile) => {
 }
 
 const handleClickSearchItem = async (user: IProfile) => {
+  emit('close')
   await addSearchHistory(user)
 }
 
@@ -119,17 +116,14 @@ onMounted(async () => {
 
 <template>
   <div
-    class="panel flex flex-col w-[400px] h-full py-4 bg-bgColor-primary
-      border-r border-borderColor rounded-tr-2xl rounded-br-2xl"
+    class="panel flex flex-col w-[400px] h-full py-4 bg-bgColor-primary border-r border-borderColor rounded-tr-2xl rounded-br-2xl"
   >
-    <span
-      class="block m-2 px-4 text-textColor-primary text-2xl font-semibold"
+    <span class="block m-2 px-4 text-textColor-primary text-2xl font-semibold"
       >Search</span
     >
     <div class="flex flex-col mt-8 flex-1">
       <div
-        class="relative flex items-center mx-4 rounded-lg bg-[#EFEFEF]
-          dark:bg-[#262626]"
+        class="relative flex items-center mx-4 rounded-lg bg-[#EFEFEF] dark:bg-[#262626]"
         :class="{ focus: isFocus }"
       >
         <fa
@@ -137,8 +131,7 @@ onMounted(async () => {
           :icon="['fas', 'magnifying-glass']"
         />
         <input
-          class="flex-grow w-full py-2 pr-4 pl-3 parent-[.focus]:pl-4
-            text-base bg-transparent placeholder-[#8e8e8e]"
+          class="flex-grow w-full py-2 pr-4 pl-3 parent-[.focus]:pl-4 text-base bg-transparent placeholder-[#8e8e8e]"
           type="text"
           placeholder="Search"
           v-model="searchInput"
@@ -173,18 +166,11 @@ onMounted(async () => {
         class="flex-shrink flex-grow basis-0 overflow-y-auto"
       >
         <div class="flex flex-col h-full">
-          <div
-            class="flex items-center justify-between my-4 px-6"
-          >
-            <span class="text-base font-semibold"
-              >Recent</span
-            >
+          <div class="flex items-center justify-between my-4 px-6">
+            <span class="text-base font-semibold">Recent</span>
             <span
-              v-if="
-                searchHistory && searchHistory.length > 0
-              "
-              class="text-sm font-semibold text-buttonColor-primary
-                hover:text-link cursor-pointer"
+              v-if="searchHistory && searchHistory.length > 0"
+              class="text-sm font-semibold text-buttonColor-primary hover:text-link cursor-pointer"
               @click="
                 () => {
                   deleteAllPopup = true
@@ -207,9 +193,7 @@ onMounted(async () => {
         class="flex-shrink flex-grow basis-0 overflow-y-auto"
       >
         <SearchListVue
-          :searchList="
-            searchedProfiles?.results as IProfile[]
-          "
+          :searchList="searchedProfiles?.results as IProfile[]"
           notFoundMessage="No results found."
           @clickItem="handleClickSearchItem"
         />

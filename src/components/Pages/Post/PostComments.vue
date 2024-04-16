@@ -27,18 +27,13 @@ async function load({ loaded }: LoadAction): Promise<void> {
   const { getCommentsPost } = useComment()
   if (comments.value?.next) {
     page.value += 1
-    const loadedComments = await getCommentsPost(
-      post.value!.slug,
-      page.value
-    )
+    const loadedComments = await getCommentsPost(post.value!.slug, page.value)
     if (loadedComments && loadedComments.results) {
       // update next value
       comments.value.next = loadedComments.next
       // push new comments
       if (comments.value.results) {
-        comments.value.results.push(
-          ...loadedComments.results
-        )
+        comments.value.results.push(...loadedComments.results)
         comments.value.next = loadedComments.next
       }
       useCommentStore().setComments(comments.value)
@@ -52,10 +47,7 @@ async function load({ loaded }: LoadAction): Promise<void> {
 onBeforeMount(async () => {
   const { getCommentsPost } = useComment()
 
-  comments.value = await getCommentsPost(
-    post.value!.slug,
-    page.value
-  )
+  comments.value = await getCommentsPost(post.value!.slug, page.value)
   if (comments.value?.results) {
     useCommentStore().setComments(comments.value)
   }
@@ -66,19 +58,22 @@ onBeforeMount(async () => {
 <template>
   <div class="relative">
     <div
-      class="absolute top-0 left-0 w-full h-full flex flex-col pt-[10px]
-        px-[10px] no-scrollbar overflow-y-scroll"
+      class="absolute top-0 left-0 w-full h-full flex flex-col pt-[10px] px-[10px] no-scrollbar overflow-y-scroll"
     >
       <div class="w-full italic font-semibold py-2 px-2">
         {{ post?.title }}
       </div>
       <div class="w-full flex flex-wrap z-10 bg-opacity-50">
-        <div v-for="tag in post?.tags" :key="tag">
+        <div
+          v-for="tag in post?.tags"
+          :key="tag"
+        >
           <RouterLink
             :to="{
               name: 'Tag',
               params: { tagname: tag.toLowerCase() }
             }"
+            replace
           >
             <Tag size="medium">
               <span> {{ tag }} </span>
@@ -86,8 +81,14 @@ onBeforeMount(async () => {
           </RouterLink>
         </div>
       </div>
-      <CommentItem v-bind="captionComp" isCaption />
-      <Loading v-if="loading" class="mt-10" />
+      <CommentItem
+        v-bind="captionComp"
+        isCaption
+      />
+      <Loading
+        v-if="loading"
+        class="mt-10"
+      />
       <Comment
         v-else
         v-for="comment in comments?.results"

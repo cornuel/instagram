@@ -16,8 +16,8 @@ interface AuthError {
   loginError: string | null
 }
 
-const username = ref('')
-const password = ref('')
+const username = ref('demo')
+const password = ref('!Rootroot1')
 const authError = ref<AuthError>({
   loginError: null
 })
@@ -25,30 +25,23 @@ const loading = ref(false)
 const isShowError = ref(false)
 
 const isDisable = computed(() => {
-  return !(
-    username.value != '' && password.value.length >= 8
-  )
+  return !(username.value != '' && password.value.length >= 8)
 })
 
 const submitLoginForm = async () => {
   const { setAuthenticatedUsername } = useProfileStore()
   const { getAuthenticatedProfile } = useProfile()
-  const { setAccessToken, setRefreshToken } = useAuthStore()
   const { logIn } = useAuth()
 
   loading.value = true
 
   try {
-    const loginResult = await logIn(
-      username.value,
-      password.value
-    )
+    await logIn(username.value, password.value)
 
-    setAccessToken(loginResult.access)
-    setRefreshToken(loginResult.refresh)
     setAuthenticatedUsername(username.value)
 
-    const authProfile = await getAuthenticatedProfile()
+    await getAuthenticatedProfile()
+
     isShowError.value = false
     if (route.path != '/') router.push('/')
     else router.go(0)
@@ -56,8 +49,7 @@ const submitLoginForm = async () => {
     if (err instanceof Error) {
       authError.value.loginError = err.message
     } else {
-      authError.value.loginError =
-        'An unexpected error occurred'
+      authError.value.loginError = 'An unexpected error occurred'
     }
     isShowError.value = true
   }
@@ -67,14 +59,15 @@ const submitLoginForm = async () => {
 
 <template>
   <div
-    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0
-      max-[450px]:w-full no-dark text-textColor-primary"
+    class="w-[350px] flex flex-col mt-3 max-[450px]:mt-0 max-[450px]:w-full no-dark text-textColor-primary"
   >
     <div
-      class="flex flex-col items-center py-5 px-10 border rounded-lg
-        border-borderColor max-[450px]:px-4 max-[450px]:border-none"
+      class="flex flex-col items-center py-5 px-10 border rounded-lg border-borderColor max-[450px]:px-4 max-[450px]:border-none"
     >
-      <RouterLink to="/" class="w-[175px] mt-[26px] mb-10">
+      <RouterLink
+        to="/"
+        class="w-[175px] mt-[26px] mb-10"
+      >
         <LogoText />
       </RouterLink>
       <form
@@ -121,9 +114,7 @@ const submitLoginForm = async () => {
               :icon="['fab', 'square-facebook']"
               style="color: #0d84ff; height: 18px"
             />
-            <span class="text-link"
-              >Log in with Facebook</span
-            >
+            <span class="text-link">Log in with Facebook</span>
           </div>
         </UiButton>
         <p
@@ -141,8 +132,7 @@ const submitLoginForm = async () => {
       </form>
     </div>
     <div
-      class="p-[22px] mt-[10px] text-center border rounded-lg
-        border-borderColor max-[450px]:border-none"
+      class="p-[22px] mt-[10px] text-center border rounded-lg border-borderColor max-[450px]:border-none"
     >
       <span class="">Don't have an account? </span>
       <RouterLink

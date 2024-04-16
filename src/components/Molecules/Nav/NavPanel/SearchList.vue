@@ -8,6 +8,7 @@ const emit = defineEmits<{
   (e: 'clickItem', user: IProfile): void
   (e: 'deleteItem', user: IProfile): void
 }>()
+
 withDefaults(
   defineProps<{
     searchList: IProfile[] | null
@@ -49,8 +50,7 @@ const onDeleteItem = (user: IProfile) => {
           name: 'Profile',
           params: { username: user.username }
         }"
-        class="flex items-center w-full py-2 px-6 cursor-pointer
-          hover:bg-bgColor-secondary"
+        class="flex items-center w-full py-2 px-6 cursor-pointer hover:bg-bgColor-secondary"
       >
         <div
           class="flex flex-grow overflow-hidden"
@@ -63,22 +63,17 @@ const onDeleteItem = (user: IProfile) => {
             :hasStory="Math.random() > 0.5"
           />
           <div
-            class="flex flex-col justify-center flex-grow flex-shrink ml-3
-              overflow-hidden"
+            class="flex flex-col justify-center flex-grow flex-shrink ml-3 overflow-hidden"
           >
-            <span class="text-sm font-semibold">{{
-              user.username
+            <span class="text-sm font-semibold">{{ user.username }}</span>
+            <span class="text-sm text-textColor-secondary truncate">{{
+              user.bio
             }}</span>
-            <span
-              class="text-sm text-textColor-secondary truncate"
-              >{{ user.bio }}</span
-            >
           </div>
         </div>
         <fa
           v-if="hasDelete"
-          class="flex-shrink-0 w-5 h-5 p-2 ml-3 text-textColor-secondary
-            fill-textColor-secondary"
+          class="flex-shrink-0 w-5 h-5 p-2 ml-3 text-textColor-secondary fill-textColor-secondary"
           :icon="['fas', 'xmark']"
           @click.prevent="onDeleteItem(user)"
         />
@@ -86,8 +81,7 @@ const onDeleteItem = (user: IProfile) => {
     </div>
     <div
       v-else
-      class="w-full h-full flex flex-center font-semibold
-        text-textColor-secondary"
+      class="w-full h-full flex flex-center font-semibold text-textColor-secondary"
     >
       {{ notFoundMessage }}
     </div>

@@ -9,19 +9,11 @@ import EmojiPicker from '@/components/Molecules/Emoji/EmojiPicker.vue'
 
 import { ref, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import {
-  useProfileStore,
-  useCreatePostStore
-} from '@/stores'
+import { useProfileStore, useCreatePostStore } from '@/stores'
 
-const { authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
-const { name, caption, tags } = storeToRefs(
-  useCreatePostStore()
-)
-const captionInputRef =
-  ref<Nullable<HTMLTextAreaElement>>(null)
+const { authenticatedProfile } = storeToRefs(useProfileStore())
+const { name, caption, tags } = storeToRefs(useCreatePostStore())
+const captionInputRef = ref<Nullable<HTMLTextAreaElement>>(null)
 const activeEmojiTooltip = ref(false)
 const activeNameCharactersTooltip = ref(false)
 const activeCaptionCharactersTooltip = ref(false)
@@ -34,11 +26,7 @@ const validateTag = (tag: string): boolean => {
   return (
     tag.trim().length > 2 &&
     regex.test(tag) &&
-    !tags.value.some(
-      (t) =>
-        t.toLowerCase().includes(tag.toLowerCase()) ||
-        t.toUpperCase().includes(tag.toUpperCase())
-    )
+    !tags.value.some((t) => t.toLowerCase() === tag.toLowerCase())
   )
 }
 
@@ -63,14 +51,10 @@ const removeTag = (index: number) => {
 }
 
 const nameCharacterCount = computed(() => {
-  return name.value.length
-    .toLocaleString('en-US')
-    .replace(',', '.')
+  return name.value.length.toLocaleString('en-US').replace(',', '.')
 })
 const captionCharacterCount = computed(() => {
-  return caption.value.length
-    .toLocaleString('en-US')
-    .replace(',', '.')
+  return caption.value.length.toLocaleString('en-US').replace(',', '.')
 })
 
 const handleClickEmoji = (emoji: string) => {
@@ -101,8 +85,7 @@ watch(name, (newName, oldName) => {
 
 <template>
   <div
-    class="flex flex-nowrap flex-col w-[340px] h-full pb-6
-      overflow-y-scroll"
+    class="flex flex-nowrap flex-col w-[340px] h-full pb-6 overflow-y-scroll"
   >
     <div class="flex items-center my-3 ml-3">
       <Avatar
@@ -115,20 +98,15 @@ watch(name, (newName, oldName) => {
       </div>
     </div>
     <div class="flex flex-col">
-      <div
-        class="h-[50px] py-0 border-t border-separator-modal"
-      >
+      <div class="h-[50px] py-0 border-t border-separator-modal">
         <textarea
-          class="w-full h-full px-4 text-base resize-none
-            placeholder:text-placeholder"
+          class="w-full h-full px-4 text-base resize-none placeholder:text-placeholder"
           v-model="name"
           ref="nameInputRef"
           placeholder="Write a title..."
         ></textarea>
       </div>
-      <div
-        class="flex items-center justify-end px-2 flex-shrink-0"
-      >
+      <div class="flex items-center justify-end px-2 flex-shrink-0">
         <div
           class="maximum-characters relative mr-2"
           :class="{ active: activeNameCharactersTooltip }"
@@ -139,31 +117,23 @@ watch(name, (newName, oldName) => {
           "
         >
           <span
-            class="text-xs text-textColor-secondary cursor-pointer
-              parent-[.maximum-characters.active]:text-textColor-primary"
-            @click="
-              activeNameCharactersTooltip =
-                !activeNameCharactersTooltip
-            "
+            class="text-xs text-textColor-secondary cursor-pointer parent-[.maximum-characters.active]:text-textColor-primary"
+            @click="activeNameCharactersTooltip = !activeNameCharactersTooltip"
             >{{ nameCharacterCount }}/36</span
           >
           <div
             v-if="activeNameCharactersTooltip"
-            class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full
-              right-0 w-[291px] text-center text-white bg-black rounded-lg
-              drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
+            class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full right-0 w-[291px] text-center text-white bg-black rounded-lg drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
           >
             <span>36 characters maximum.</span>
           </div>
         </div>
       </div>
       <div
-        class="h-[50px] flex items-center justify-between py-0 border-t
-          border-separator-modal"
+        class="h-[50px] flex items-center justify-between py-0 border-t border-separator-modal"
       >
         <textarea
-          class="w-full h-full px-4 text-base resize-none
-            placeholder:text-placeholder"
+          class="w-full h-full px-4 text-base resize-none placeholder:text-placeholder"
           v-model="currentTag"
           ref="nameInputRef"
           @keydown.enter="addTagOnEnter"
@@ -182,7 +152,10 @@ watch(name, (newName, oldName) => {
             v-if="true"
             class="text-textColor-primary fill-textColor-primary mr-2"
           />
-          <fa v-else :icon="['far', 'circle-xmark']" />
+          <fa
+            v-else
+            :icon="['far', 'circle-xmark']"
+          />
         </div>
       </div>
       <div
@@ -193,36 +166,24 @@ watch(name, (newName, oldName) => {
         <div
           v-for="(tag, index) in tags"
           :key="index"
-          class="flex items-center px-1.5 pb-0.5 mx-1 mb-1 border
-            border-borderColor transition ease-in-out delay-80
-            duration-300 bg-bgColor-primary
-            hover:border-buttonColor-primary text-buttonColor-primary
-            rounded-full"
+          class="flex items-center px-1.5 pb-0.5 mx-1 mb-1 border border-borderColor transition ease-in-out delay-80 duration-300 bg-bgColor-primary hover:border-buttonColor-primary text-buttonColor-primary rounded-full"
         >
           <span>{{ tag }}</span>
           <CrossMarkIcon
-            class="transition ease-in-out delay-80 duration-300
-              hover:cursor-pointer hover:text-red-500
-              animate-[0.45s_like-button-animation_ease-in-out]
-              text-textColor-primary fill-textColor-primary mx-0.5"
+            class="transition ease-in-out delay-80 duration-300 hover:cursor-pointer hover:text-red-500 animate-[0.45s_like-button-animation_ease-in-out] text-textColor-primary fill-textColor-primary mx-0.5"
             @click="removeTag(index)"
           />
         </div>
       </div>
-      <div
-        class="h-[168px] border-t border-separator-modal"
-      >
+      <div class="h-[168px] border-t border-separator-modal">
         <textarea
-          class="w-full h-full px-4 text-base resize-none
-            placeholder:text-placeholder"
+          class="w-full h-full px-4 text-base resize-none placeholder:text-placeholder"
           v-model="caption"
           ref="captionInputRef"
           placeholder="Write a caption..."
         ></textarea>
       </div>
-      <div
-        class="flex items-center justify-between px-2 flex-shrink-0"
-      >
+      <div class="flex items-center justify-between px-2 flex-shrink-0">
         <div
           class="relative"
           v-click-outside="
@@ -233,15 +194,12 @@ watch(name, (newName, oldName) => {
         >
           <div
             class="p-2 cursor-pointer"
-            @click="
-              activeEmojiTooltip = !activeEmojiTooltip
-            "
+            @click="activeEmojiTooltip = !activeEmojiTooltip"
           >
             <EmojiIcon
               width="20"
               height="20"
-              class="text-textColor-secondary fill-textColor-secondary
-                align-middle"
+              class="text-textColor-secondary fill-textColor-secondary align-middle"
             />
           </div>
           <EmojiPicker
@@ -262,19 +220,15 @@ watch(name, (newName, oldName) => {
           "
         >
           <span
-            class="text-xs text-textColor-secondary cursor-pointer
-              parent-[.maximum-characters.active]:text-textColor-primary"
+            class="text-xs text-textColor-secondary cursor-pointer parent-[.maximum-characters.active]:text-textColor-primary"
             @click="
-              activeCaptionCharactersTooltip =
-                !activeCaptionCharactersTooltip
+              activeCaptionCharactersTooltip = !activeCaptionCharactersTooltip
             "
             >{{ captionCharacterCount }}/2.200</span
           >
           <div
             v-if="activeCaptionCharactersTooltip"
-            class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full
-              right-0 w-[291px] text-center text-white bg-black rounded-lg
-              drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
+            class="maximum-characters-tolltip absolute mt-[10px] p-3 top-full right-0 w-[291px] text-center text-white bg-black rounded-lg drop-shadow-[0_0_7px_rgba(0,0,0,0.1)] z-[1]"
           >
             <span>2.200 characters maximum.</span>
           </div>

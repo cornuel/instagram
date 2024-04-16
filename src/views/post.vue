@@ -10,16 +10,11 @@ import {
   type NavigationGuardNext
 } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { usePostStore, useProfileStore } from '@/stores'
-import { usePost, useProfile } from '@/composables'
-import type { IPost } from '@/types'
+import { usePostStore } from '@/stores'
+import { usePost } from '@/composables'
 
 const router = useRouter()
-const { viewedProfile, authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
 const { post } = storeToRefs(usePostStore())
-const otherPosts = ref<Nullable<IPost[]>>(null)
 const isLoading = ref(true)
 
 const getPostFn = async (
@@ -76,14 +71,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    class="w-[calc(100%-40px)] max-w-[935px] py-4 px-5 mx-auto
-      box-content"
-  >
+  <div class="w-[calc(100%-40px)] max-w-[935px] py-4 px-5 mx-auto box-content">
     <div
-      class="fixed top-0 left-0 right-0 h-[45px] px-4 flex
-        min-[768px]:hidden items-center bg-bgColor-primary border-b
-        border-borderColor z-30"
+      class="fixed top-0 left-0 right-0 h-[45px] px-4 flex min-[768px]:hidden items-center bg-bgColor-primary border-b border-borderColor z-30"
     >
       <div class="flex-shrink-0">
         <BackIcon
@@ -91,9 +81,7 @@ onMounted(async () => {
           @click="router.back()"
         />
       </div>
-      <div
-        class="flex-grow flex flex-center text-center cursor-pointer"
-      >
+      <div class="flex-grow flex flex-center text-center cursor-pointer">
         <span class="text-base font-semibold">Posts</span>
       </div>
     </div>

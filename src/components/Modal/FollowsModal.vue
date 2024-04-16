@@ -16,9 +16,7 @@ const route = useRoute()
 
 const isLoadingFollowItems = ref(true)
 const follows = ref<IPaginatedProfiles>()
-const { viewedProfile, authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
+const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
 
 const isMutualFollowersPage = computed(() => {
   return route.path.includes('mutualOnly') ? true : false
@@ -60,27 +58,27 @@ onMounted(async () => {
 <template>
   <Modal
     isShow
+    isPopup
     @click-outside="router.push({ name: 'Profile' })"
   >
     <div
-      class="flex flex-col w-screen max-w-[400px] h-[calc(100vh-40px)]
-        max-h-[400px] bg-modal rounded-xl overflow-hidden"
+      class="flex flex-col w-screen max-w-[400px] h-[calc(100vh-40px)] max-h-[400px] bg-modal rounded-xl overflow-hidden"
     >
       <div
-        class="relative h-[42px] flex flex-center border-b
-          border-separator-modal"
+        class="relative h-[42px] flex flex-center border-b border-separator-modal"
       >
         <span
           v-if="isFollowersPage"
           class="text-base font-semibold"
           >Followers</span
         >
-        <span v-else class="text-base font-semibold"
+        <span
+          v-else
+          class="text-base font-semibold"
           >Following</span
         >
         <div
-          class="absolute top-1/2 -translate-y-1/2 right-2 p-2 leading-none
-            cursor-pointer"
+          class="absolute top-1/2 -translate-y-1/2 right-2 p-2 leading-none cursor-pointer"
           @click="router.push({ name: 'Profile' })"
         >
           <fa
@@ -91,7 +89,10 @@ onMounted(async () => {
       </div>
       <div class="flex flex-col h-full overflow-y-auto">
         <template v-if="isLoadingFollowItems">
-          <UserItemSkeleton v-for="n in 20" :key="n" />
+          <UserItemSkeleton
+            v-for="n in 20"
+            :key="n"
+          />
         </template>
         <UserItem
           v-for="profile in follows?.results"

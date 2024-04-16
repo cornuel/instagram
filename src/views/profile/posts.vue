@@ -3,96 +3,92 @@ import Loading from '@/components/Utils/Loading.vue'
 import UiButton from '@/components/Atom/UiButton.vue'
 import ImageIcon from '@icons/image.svg'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
-import { type IPaginatedPosts } from '@/types'
-
 import { ref, onBeforeMount } from 'vue'
 
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { usePostStore, useProfileStore } from '@/stores'
 import { usePost } from '@/composables'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
+import { load } from '@/helpers/eternalLoader'
 
-const route = useRoute()
-
-const { viewedProfile, authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
-const { userPosts } = storeToRefs(usePostStore())
+const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
+const { userPosts, showedPosts } = storeToRefs(usePostStore())
 const isLoading = ref(true)
+const page = ref(1)
 
 const getPosts = async () => {
   const { getUserPosts } = usePost()
+  // reset page
+  page.value = 1
   isLoading.value = true
   if (viewedProfile.value) {
     userPosts.value = await getUserPosts(
-      viewedProfile.value.username,
-      page.value
+      page.value,
+      viewedProfile.value.username
     )
+    showedPosts.value = userPosts.value
   }
   isLoading.value = false
 }
 
-const page = ref(1)
-
-async function load({ loaded }: LoadAction): Promise<void> {
+const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { getUserPosts } = usePost()
-  let loadedPosts: IPaginatedPosts | null = null
-
-  if (userPosts.value?.next && userPosts.value?.results) {
-    page.value += 1
-    if (viewedProfile.value) {
-      loadedPosts = await getUserPosts(
-        viewedProfile.value.username,
-        page.value
-      )
-    }
-    if (loadedPosts) {
-      userPosts.value.results.push(...loadedPosts.results!)
-      userPosts.value.next = loadedPosts.next
-      usePostStore().setPosts(userPosts.value)
-      loaded(userPosts.value.results.length, 9)
-    }
-  } else {
-    loaded(0, 0)
-  }
+  return load(
+    (page: number, query?: string) => getUserPosts(page, query as string),
+    loadAction,
+    (page.value += 1),
+    viewedProfile.value?.username!
+  )
 }
 
 onBeforeMount(async () => {
+  // console.log(route.path)
+  // const regex = /\/(following|followers|p\/[^/]*)/
+  // const match = regex.exec(route.path)
+  // if (!match) {
   await getPosts()
+  // }
 }),
-  onBeforeRouteUpdate(async () => {
-    // console.log(route.path)
-    const regex = /\/(following|followers)/
-    const match = regex.exec(route.path)
-    if (!match) {
-      await getPosts()
+  onBeforeRouteUpdate(async ({ params: toParams }, { params: fromParams }) => {
+    if (
+      toParams.username === fromParams.username &&
+      (fromParams.username !== viewedProfile.value?.username ||
+        !/following|followers/.test(fromParams.username))
+    ) {
+      return
     }
+    await getPosts()
   })
 </script>
 
 <template>
   <div>
-    <Loading v-if="isLoading" class="mt-10" />
+    <Loading
+      v-if="isLoading"
+      class="mt-10"
+    />
     <template v-else>
       <div
-        v-if="userPosts && userPosts.count > 0"
+        v-if="showedPosts && showedPosts.count > 0"
         class="flex flex-wrap"
       >
         <PostReviewItem
-          class="w-1/3 px-[2px] mb-1"
-          v-for="post in userPosts.results"
+          class="w-1/6 px-[2px] mb-1"
+          v-for="post in showedPosts.results"
           :key="post.id"
           :post="post"
         />
-        <VueEternalLoading :load="load"></VueEternalLoading>
+        <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
       </div>
-      <div v-else class="flex flex-center">
+      <div
+        v-else
+        class="flex flex-center"
+      >
         <div
-          class="w-full max-w-[350px] mx-11 my-[60px] flex flex-col
-            items-center justify-center"
+          class="w-full max-w-[350px] mx-11 my-[60px] flex flex-col items-center justify-center"
         >
           <template
             v-if="
@@ -110,16 +106,11 @@ onBeforeMount(async () => {
                 style="border-width: 1.5px"
               ></div>
             </div>
-            <span class="my-6 text-3xl font-extrabold"
-              >Share Photos</span
-            >
+            <span class="my-6 text-3xl font-extrabold">Share Photos</span>
             <span class="mb-6"
-              >When you share photos, they will appear on
-              your profile.</span
+              >When you share photos, they will appear on your profile.</span
             >
-            <UiButton variant="text"
-              >Share your first photo</UiButton
-            >
+            <UiButton variant="text">Share your first photo</UiButton>
           </template>
         </div>
       </div>

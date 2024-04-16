@@ -14,7 +14,13 @@ const app = createApp(App)
 app.component('fa', FontAwesomeIcon)
 app.directive('click-outside', ClickOuside)
 
-app.use(createPinia())
+const pinia = createPinia();
+
+pinia.use(({ store }) => {
+  store.$router = router;
+});
+
+app.use(pinia)
 app.use(router)
 app.use(VueCookies, { expires: '7d' })
 

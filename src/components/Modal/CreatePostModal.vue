@@ -15,20 +15,15 @@ defineProps<{
   onClickOutside: Fn<any, any>
 }>()
 
-const {
-  removeMediaPopupShow,
-  removePostPopupShow,
-  modalCreatePostShow
-} = storeToRefs(useModalStore())
+const { removeMediaPopupShow, removePostPopupShow, modalCreatePostShow } =
+  storeToRefs(useModalStore())
 const { currentTab, currentMediaIndex, title } =
   storeToRefs(useCreatePostStore())
 
 const isClickBackFromEditor = ref(false)
 
 const isShowButton = computed(() => {
-  return !['InitPost', 'UploadPost'].includes(
-    currentTab.value
-  )
+  return !['InitPost', 'UploadPost'].includes(currentTab.value)
 })
 
 const handlePrevTab = () => {
@@ -100,16 +95,16 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Modal isShow @click-outside="onClickOutside">
+  <Modal
+    isShow
+    @click-outside="onClickOutside"
+  >
     <div
-      class="flex flex-col flex-nowrap w-full h-[calc(100vh-40px)]
-        max-h-[442px] bg-modal rounded-xl overflow-hidden
-        select-none"
+      class="flex flex-col flex-nowrap w-fit h-[calc(100vh-40px)] max-h-[442px] bg-modal rounded-xl overflow-hidden select-none"
     >
       <!-- TOPBAR -->
       <div
-        class="relative flex items-center justify-between h-[42px] border-b
-          border-separator-modal"
+        class="relative flex items-center justify-between h-[42px] border-b border-separator-modal"
       >
         <div
           v-if="isShowButton"
@@ -121,8 +116,7 @@ onBeforeUnmount(() => {
           />
         </div>
         <span
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-            text-base font-semibold whitespace-nowrap"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-base font-semibold whitespace-nowrap"
           >{{ title }}</span
         >
         <UiButton
@@ -130,19 +124,14 @@ onBeforeUnmount(() => {
           variant="text"
           @click="handleNextTab"
         >
-          <span
-            class="text-buttonColor-primary select-none hover:text-link"
-            >{{
-              currentTab != 'CaptionPost' ? 'Next' : 'Share'
-            }}</span
-          >
+          <span class="text-buttonColor-primary select-none hover:text-link">{{
+            currentTab != 'CaptionPost' ? 'Next' : 'Share'
+          }}</span>
         </UiButton>
       </div>
       <div class="max-h-[400px] h-screen">
         <InitPost v-if="currentTab == 'InitPost'" />
-        <UploadPost
-          v-else-if="currentTab == 'UploadPost'"
-        />
+        <UploadPost v-else-if="currentTab == 'UploadPost'" />
         <EditorPost v-else />
       </div>
     </div>

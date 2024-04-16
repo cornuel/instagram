@@ -9,42 +9,28 @@ import { onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
-import { type IPaginatedPosts } from '@/types'
+import { load } from '@/helpers/eternalLoader'
 
-const { favoritedPosts } = storeToRefs(usePostStore())
+const { showedPosts, favoritedPosts } = storeToRefs(usePostStore())
 const isLoading = ref(true)
 
 const getPosts = async () => {
   const { getFavoritedPosts } = usePost()
   isLoading.value = true
   favoritedPosts.value = await getFavoritedPosts(page.value)
+  showedPosts.value = favoritedPosts.value
   isLoading.value = false
 }
 
 const page = ref(1)
 
-async function load({ loaded }: LoadAction): Promise<void> {
+const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { getFavoritedPosts } = usePost()
-  let loadedPosts: IPaginatedPosts | null = null
-
-  if (
-    favoritedPosts.value?.results &&
-    favoritedPosts.value?.next
-  ) {
-    page.value += 1
-    loadedPosts = await getFavoritedPosts(page.value)
-
-    if (loadedPosts) {
-      favoritedPosts.value.results.push(
-        ...loadedPosts.results!
-      )
-      favoritedPosts.value.next = loadedPosts.next
-      usePostStore().setFavoritedPosts(favoritedPosts.value)
-      loaded(favoritedPosts.value.results.length, 9)
-    }
-  } else {
-    loaded(0, 0)
-  }
+  return load(
+    (page: number) => getFavoritedPosts(page),
+    loadAction,
+    (page.value += 1)
+  )
 }
 
 onBeforeMount(async () => {
@@ -61,32 +47,32 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div
-    class="flex items-center justify-between w-full mt-4 mb-4"
-  >
+  <div class="flex items-center justify-between w-full mt-4 mb-4">
     <span class="text-xs text-textColor mx-2"
       >Only you can see what you've saved</span
     >
   </div>
   <div>
-    <Loading v-if="isLoading" class="mt-10" />
+    <Loading
+      v-if="isLoading"
+      class="mt-10"
+    />
     <template v-else>
       <div
-        v-if="favoritedPosts && favoritedPosts.count > 0"
+        v-if="showedPosts && showedPosts.count > 0"
         class="flex flex-wrap"
       >
         <PostReviewItem
           class="w-1/3 px-[2px] mb-1"
-          v-for="post in favoritedPosts.results"
+          v-for="post in showedPosts.results"
           :key="post.id"
           :post="post"
         />
-        <VueEternalLoading :load="load"></VueEternalLoading>
+        <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
       </div>
       <div
         v-else
-        class="w-full max-w-[350px] mx-auto my-[60px] flex flex-col
-          items-center justify-center"
+        class="w-full max-w-[350px] mx-auto my-[60px] flex flex-col items-center justify-center"
       >
         <div class="flex items-center justify-center">
           <BookmarkIcon
@@ -99,13 +85,10 @@ onBeforeMount(async () => {
           ></div>
         </div>
 
-        <span class="my-6 text-3xl font-extrabold"
-          >Save</span
-        >
+        <span class="my-6 text-3xl font-extrabold">Save</span>
         <span class="text-center"
-          >Save photos and videos that you want to see
-          again. No one is notified, and only you can see
-          what you've saved.</span
+          >Save photos and videos that you want to see again. No one is
+          notified, and only you can see what you've saved.</span
         >
       </div>
     </template>
