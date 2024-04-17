@@ -7,7 +7,9 @@ export const useModalStore = defineStore('modal', {
     logoutModalShow: false,
     modalCreatePostShow: false,
     removeMediaPopupShow: false,
-    removePostPopupShow: false
+    removePostPopupShow: false,
+    showModal: false,
+    showPostModal: false,
   }),
   actions: {
     setStopScroll(isActive: boolean) {

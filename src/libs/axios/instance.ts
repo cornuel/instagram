@@ -24,8 +24,7 @@ instance.interceptors.response.use(
     // Get the status code from the error response
     const status = error.response ? error.response.status : null;
     // If the status is 401, it means the token is expired
-    // If the status is 403, it means the token needs to be set in headers
-    if (((status === 401) || (status === 403)) && !originalRequest._retry) {
+    if (((status === 401)) && !originalRequest._retry) {
       originalRequest._retry = true; // Set the retry flag
       try {
         const refreshToken = $cookies.get('refresh')
@@ -71,6 +70,7 @@ export const setAxiosAuthHeader = (token: string) => {
   if (token) {
     instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
+    console.debug('No token provided');
     delete instance.defaults.headers.common['Authorization'];
   }
 }

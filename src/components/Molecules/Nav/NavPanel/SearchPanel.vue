@@ -9,7 +9,6 @@ import { useSearch } from '@/composables'
 import { useSearchStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 import { unionBy, remove } from 'lodash'
-import type { IPaginatedProfiles } from '@/types'
 
 const isFocus = ref(false)
 const isLoading = ref(false)
@@ -34,18 +33,10 @@ const searchProfile = async (query: string) => {
 
   setQuery(query)
 
-  const res = await fetchProfilesByQuery(query, 1)
+  const res = await fetchProfilesByQuery(1, query)
 
   if (res) {
-    const profiles = res.results.profiles
-    if (profiles) {
-      setSearchedProfiles({
-        count: res.count,
-        next: res.next,
-        previous: res.previous,
-        results: profiles
-      })
-    }
+    setSearchedProfiles(res)
   }
 }
 

@@ -49,7 +49,6 @@ const handleFollowModal = (
         modal: () => import('@/components/Modal/FollowsModal.vue')
       }
     }
-
     if (from.matched.length > 1) {
       const childView = from.matched.slice(1)
       for (const view of childView) {
@@ -57,8 +56,6 @@ const handleFollowModal = (
       }
     }
   }
-
-
   next()
 }
 
