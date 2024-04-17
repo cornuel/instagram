@@ -5,76 +5,78 @@ import UiButton from '@/components/Atom/UiButton.vue'
 import UnfollowPopup from '@/components/Popup/UnfollowPopup.vue'
 import ActionsPopup from '@/components/Popup/ActionsPopup.vue'
 import RemovePopup from '@/components/Popup/RemovePopup.vue'
-import { useRouter } from 'vue-router'
 
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { type IPost } from '@/types'
+import type { IPost, IAction } from '@/types'
 
 import {
   useProfileStore,
   usePostStore,
-  useModalStore
+  useModalStore,
+  useTagStore
 } from '@/stores'
 
-import {
-  useFollow,
-  usePost,
-  useDownload
-} from '@/composables'
+import { useFollow, usePost, useDownload } from '@/composables'
 
-import type { IAction } from '@/types'
+import router from '@/router'
+import { useRoute } from 'vue-router'
 
-const router = useRouter()
+const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
+const { removePostPopupShow, showModal, showPostModal } =
+  storeToRefs(useModalStore())
 
-const { viewedProfile, authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
-const { removePostPopupShow } = storeToRefs(useModalStore())
-
-const { post } = storeToRefs(usePostStore())
+const { post, userPosts, showedPosts } = storeToRefs(usePostStore())
 const { downloadImages } = useDownload()
 
 const isLoadingFollow = ref(false)
 const unfollowPopupActive = ref(false)
 const actionsPopupActive = ref(false)
 
+const route = useRoute()
+const currentRoute = route.name
+
 // deletePost returns true if status code is 204
 const deletePost = async () => {
   if (authenticatedProfile) {
     const { deletePost } = usePost()
     if (await deletePost(post.value?.slug!)) {
-      const { setAuthenticatedProfile } = useProfileStore()
+      const { decreasePostsCount } = useProfileStore()
+      const { removePostfromUserPosts, removePostfromShowedPosts } =
+        usePostStore()
 
       // update the post_count of the user
-      const postCount =
-        authenticatedProfile.value!.posts_count - 1
+      decreasePostsCount()
+      if (currentRoute == 'TagPosts') {
+        const { currentTag } = storeToRefs(useTagStore())
+        currentTag.value!.post_count--
+      }
+      // remove the posts from both showed and user posts
+      removePostfromUserPosts(post.value!)
+      removePostfromShowedPosts(post.value!)
 
-      setAuthenticatedProfile({
-        ...authenticatedProfile.value!,
-        posts_count: postCount
-      })
+      if (showModal.value && showPostModal.value) {
+        showModal.value = false
+        showPostModal.value = false
+      }
 
-      router.push({
-        name: 'Profile',
-        params: {
-          username: authenticatedProfile.value!.username
-        }
-      })
+      router.back()
+
+      // router.push({
+      //   name: 'Profile',
+      //   params: {
+      //     username: authenticatedProfile.value!.username
+      //   }
+      // })
       removePostPopupShow.value = false
     } else {
-      console.log(
-        'Something went wrong when deleting this post.'
-      )
+      console.log('Something went wrong when deleting this post.')
     }
   }
 }
 
 const userPostActions = computed(() => {
-  if (
-    authenticatedProfile.value?.id ==
-    viewedProfile.value!.id
-  )
+  if (authenticatedProfile.value?.id == viewedProfile.value!.id)
     return [
       {
         title: 'Delete',
@@ -150,9 +152,7 @@ const follow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
-    const res: string = await setFollow(
-      viewedProfile.value?.username!
-    )
+    const res: string = await setFollow(viewedProfile.value?.username!)
     isLoadingFollow.value = false
     if (res.includes('following')) {
       viewedProfile.value!.is_following = true
@@ -164,9 +164,7 @@ const unfollow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
     isLoadingFollow.value = true
-    const res: string = await setFollow(
-      viewedProfile.value?.username!
-    )
+    const res: string = await setFollow(viewedProfile.value?.username!)
     isLoadingFollow.value = false
     if (res.includes('unfollowed')) {
       viewedProfile.value!.is_following = true
@@ -176,10 +174,7 @@ const unfollow = async () => {
 </script>
 
 <template>
-  <div
-    class="flex items-center justify-between border-b
-      border-borderColor"
-  >
+  <div class="flex items-center justify-between border-b border-borderColor">
     <div class="flex items-center p-[10px]">
       <RouterLink
         :to="{
@@ -199,9 +194,7 @@ const unfollow = async () => {
             params: { username: viewedProfile!.username }
           }"
         >
-          <span class="hover:opacity-60">{{
-            viewedProfile!.username
-          }}</span>
+          <span class="hover:opacity-60">{{ viewedProfile!.username }}</span>
         </RouterLink>
         <template
           v-if="

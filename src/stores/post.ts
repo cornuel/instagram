@@ -27,6 +27,25 @@ export const usePostStore = defineStore('post', {
     setPost(post: Nullable<IPost>) {
       this.post = post
     },
+    addPosttoUserPosts(post: IPost) {
+      if (this.userPosts?.results) {
+        this.userPosts.results.unshift(post)
+      }
+    },
+    removePostfromUserPosts(post: IPost) {
+      if (this.userPosts?.results) {
+        this.userPosts.results = this.userPosts.results.filter(
+          (item: IPost) => item.id !== post.id
+        )
+      }
+    },
+    removePostfromShowedPosts(post: IPost) {
+      if (this.showedPosts?.results) {
+        this.showedPosts.results = this.showedPosts.results.filter(
+          (item: IPost) => item.id !== post.id
+        )
+      }
+    },
     increaseCommentCount() {
       this.post!.comment_count += 1
     },

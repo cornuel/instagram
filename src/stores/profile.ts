@@ -14,6 +14,12 @@ export const useProfileStore = defineStore('profile', {
     authenticatedProfile: JSON.parse(localStorage.getItem('authenticatedProfile') || 'null')
   }),
   actions: {
+    increasePostsCount() {
+      this.authenticatedProfile!.posts_count += 1
+    },
+    decreasePostsCount() {
+      this.authenticatedProfile!.posts_count -= 1
+    },
     getAuthenticatedUsername() {
       return this.authenticatedUsername
     },

@@ -10,12 +10,10 @@ import {
 import { usePost } from '@/composables'
 import { getDynamicImage } from '@/helpers'
 import { nextTick } from 'vue'
+import type { IPost } from '@/types'
 
 const { title } = storeToRefs(useCreatePostStore())
 const { modalCreatePostShow } = storeToRefs(useModalStore())
-const { userPosts } = storeToRefs(usePostStore())
-const { authenticatedProfile, viewedProfile } = storeToRefs(useProfileStore())
-const profileStore = useProfileStore()
 
 const isUploading = ref(true)
 const errorMessage = ref('')
@@ -43,18 +41,11 @@ onMounted(async () => {
     nextTick(() => {
       setTimeout(() => {
         modalCreatePostShow.value = false
-        if (authenticatedProfile.value) {
-          authenticatedProfile.value.posts_count += 1
-        }
-        if (
-          authenticatedProfile.value?.username ==
-            viewedProfile.value?.username &&
-          userPosts.value?.results
-        ) {
-          userPosts.value.results.unshift(response)
-          userPosts.value.count += 1
-          profileStore.setAuthenticatedProfile(authenticatedProfile.value)
-        }
+        const { increasePostsCount } = useProfileStore()
+        const { addPosttoUserPosts } = usePostStore()
+
+        increasePostsCount()
+        addPosttoUserPosts(response as IPost)
         resetCreatePost()
       }, 1000)
     })

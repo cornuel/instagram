@@ -1,32 +1,34 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores'
 
 const emit = defineEmits(['click-outside'])
-const props = withDefaults(
+withDefaults(
   defineProps<{
     isPopup?: boolean
     isShow?: boolean
+    isPost?: boolean
   }>(),
   {
     isPopup: false,
-    isShow: false
+    isShow: false,
+    isPost: false
   }
 )
 
-const { scrollPosition, stopScroll } = storeToRefs(useModalStore())
+const { scrollPosition } = storeToRefs(useModalStore())
 
 const handleClickOutsideModal = () => {
   emit('click-outside')
 }
 
-onMounted(() => {
-  if (props.isShow) {
-    scrollPosition.value = document.documentElement.scrollTop
-    // stopScroll.value = true
-  }
-})
+// onMounted(() => {
+//   if (props.isShow) {
+//     scrollPosition.value = document.documentElement.scrollTop
+//     // stopScroll.value = true
+//   }
+// })
 
 onUnmounted(() => {
   // if (!document.querySelector('#modal > div') && !document.querySelector('#popup > div')) {
@@ -43,11 +45,11 @@ onUnmounted(() => {
     <Transition name="modal">
       <div
         v-if="isShow"
-        class="fixed top-0 left-0 right-0 bottom-0 flex flex-center bg-[#0000004d]"
+        class="fixed bottom-0 left-0 right-0 top-0 flex bg-[#0000004d] flex-center"
         :class="isPopup ? 'z-50' : 'z-40'"
       >
         <div
-          class="m-5 flex flex-center w-screen min-[500px]:w-auto"
+          class="m-5 flex w-screen flex-center min-[500px]:w-auto"
           v-click-outside="handleClickOutsideModal"
         >
           <slot />
@@ -56,7 +58,3 @@ onUnmounted(() => {
     </Transition>
   </Teleport>
 </template>
-
-<style>
-
-</style>
