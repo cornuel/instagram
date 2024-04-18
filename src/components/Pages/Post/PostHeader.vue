@@ -22,11 +22,12 @@ import { useFollow, usePost, useDownload } from '@/composables'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
-const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
+const { postProfile, viewedProfile, authenticatedProfile } =
+  storeToRefs(useProfileStore())
 const { removePostPopupShow, showModal, showPostModal } =
   storeToRefs(useModalStore())
 
-const { post, userPosts, showedPosts } = storeToRefs(usePostStore())
+const { post } = storeToRefs(usePostStore())
 const { downloadImages } = useDownload()
 
 const isLoadingFollow = ref(false)
@@ -75,8 +76,16 @@ const deletePost = async () => {
   }
 }
 
+const unfollowComputedTitle = computed(() => {
+  return postProfile.value?.is_following ? 'Unfollow' : 'Follow'
+})
+
+const unfollowComputedClasses = computed(() => {
+  return postProfile.value?.is_following ? 'font-bold text-error' : ''
+})
+
 const userPostActions = computed(() => {
-  if (authenticatedProfile.value?.id == viewedProfile.value!.id)
+  if (authenticatedProfile.value?.id == postProfile.value!.id)
     return [
       {
         title: 'Delete',
@@ -124,10 +133,14 @@ const userPostActions = computed(() => {
         classes: 'font-bold text-error'
       },
       {
-        title: 'Unfollow',
-        classes: 'font-bold text-error',
+        title: unfollowComputedTitle.value,
+        classes: unfollowComputedClasses.value,
         action: () => {
-          unfollowPopupActive.value = true
+          if (postProfile.value?.is_following) {
+            unfollowPopupActive.value = true
+          } else {
+            follow()
+          }
         }
       },
       {
@@ -151,24 +164,31 @@ const userPostActions = computed(() => {
 const follow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
+    const { increaseFollowingCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(viewedProfile.value?.username!)
-    isLoadingFollow.value = false
+    const res: string = await setFollow(postProfile.value?.username!)
     if (res.includes('following')) {
-      viewedProfile.value!.is_following = true
+      postProfile.value!.is_following = true
+      increaseFollowingCount(viewedProfile.value!)
     }
+    isLoadingFollow.value = false
   }
 }
 
 const unfollow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
+    const { decreaseFollowingCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(viewedProfile.value?.username!)
-    isLoadingFollow.value = false
+    const res: string = await setFollow(postProfile.value?.username!)
     if (res.includes('unfollowed')) {
-      viewedProfile.value!.is_following = true
+      postProfile.value!.is_following = false
+      decreaseFollowingCount(viewedProfile.value!)
+      if (unfollowPopupActive.value) {
+        unfollowPopupActive.value = false
+      }
     }
+    isLoadingFollow.value = false
   }
 }
 </script>
@@ -179,48 +199,27 @@ const unfollow = async () => {
       <RouterLink
         :to="{
           name: 'Profile',
-          params: { username: viewedProfile!.username }
+          params: { username: postProfile!.username }
         }"
       >
         <Avatar
           width="32"
-          :avatar-url="viewedProfile!.profile_pic"
+          :avatar-url="postProfile!.profile_pic"
         />
       </RouterLink>
       <div class="ml-3 font-semibold leading-none">
         <RouterLink
           :to="{
             name: 'Profile',
-            params: { username: viewedProfile!.username }
+            params: { username: postProfile!.username }
           }"
         >
-          <span class="hover:opacity-60">{{ viewedProfile!.username }}</span>
+          <span class="hover:opacity-60">{{ postProfile!.username }}</span>
         </RouterLink>
         <template
           v-if="
-            viewedProfile!.id != authenticatedProfile?.id &&
-            viewedProfile!.is_following
-          "
-        >
-          <span class="mx-1">•</span>
-          <UiButton
-            secondary
-            variant="text"
-            class="!p-0"
-            @click="
-              () => {
-                unfollowPopupActive = true
-              }
-            "
-            :is-disabled="isLoadingFollow"
-            :is-loading="isLoadingFollow"
-            >Following</UiButton
-          >
-        </template>
-        <template
-          v-if="
-            viewedProfile!.id != authenticatedProfile?.id &&
-            !viewedProfile!.is_following
+            postProfile!.id != authenticatedProfile?.id &&
+            !postProfile!.is_following
           "
         >
           <span class="mx-1">•</span>
@@ -261,7 +260,7 @@ const unfollow = async () => {
   />
   <UnfollowPopup
     v-if="unfollowPopupActive"
-    :user="viewedProfile!"
+    :user="postProfile!"
     :onConfirm="unfollow"
     :onCancel="
       () => {

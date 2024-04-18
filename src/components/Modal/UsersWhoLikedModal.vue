@@ -43,7 +43,7 @@ const close = () => {
       <UserItem
         v-for="user in likedList"
         :key="user.id"
-        :viewedProfile="user"
+        :profile="user"
         :authenticatedProfile="authenticatedProfile!"
       />
     </div>

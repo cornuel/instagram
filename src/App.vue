@@ -74,18 +74,43 @@ const handleClickOutside = () => {
       v-slot="{ Component }"
       name="modal"
     >
-      <FullSizeModal
-        v-if="showModal"
-        :component="Component"
-        @click-outside="handleClickOutside"
+      <Transition
+        :duration="200"
+        name="nested"
       >
-        <component
-          v-if="showPostModal"
-          :is="Component"
-        />
-      </FullSizeModal>
+        <FullSizeModal
+          v-if="showModal"
+          :component="Component"
+          @click-outside="handleClickOutside"
+        >
+          <component
+            v-if="showPostModal"
+            :is="Component"
+          />
+        </FullSizeModal>
+      </Transition>
     </router-view>
 
     <!-- <router-view name="popup"></router-view> -->
   </div>
 </template>
+
+<style>
+.nested-enter-active .inner {
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+.nested-leave-active .inner {
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.nested-enter-from .inner {
+  transform: scale(0.8);
+  opacity: 0;
+}
+.nested-leave-to .inner {
+  transform: scale(0.6);
+  opacity: 0;
+}
+</style>

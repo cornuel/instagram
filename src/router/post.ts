@@ -41,7 +41,9 @@ export default {
       })
     } else {
       post.value = postTemp
-      viewedProfile.value = await useProfile().getViewedProfile(postTemp.profile)
+      const { getProfile } = useProfile()
+      const { setPostProfile } = useProfileStore()
+      setPostProfile(await getProfile(postTemp.profile))
 
       const previousRouteZero = from.matched[0];
       const previousRoute = from

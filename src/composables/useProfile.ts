@@ -71,13 +71,8 @@ export const useProfile = () => {
     userSlug: string
   ): Promise<IProfile | null> => {
     const profile = await getProfile(userSlug)
-    const { authenticatedProfile } = storeToRefs(profileStore)
-
     if (profile) {
       profileStore.setViewedProfile(profile)
-    }
-    if (profile?.full_name === authenticatedProfile.value?.full_name) {
-      profileStore.setAuthenticatedProfile(profile)
     }
     return profile
   }

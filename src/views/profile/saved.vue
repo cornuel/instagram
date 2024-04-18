@@ -2,7 +2,7 @@
 import Loading from '@/components/Utils/Loading.vue'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
 import { usePost } from '@/composables'
-import { usePostStore } from '@/stores'
+import { usePostStore, useProfileStore } from '@/stores'
 import BookmarkIcon from '@icons/bookmark.svg'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, ref } from 'vue'
@@ -12,6 +12,7 @@ import type { LoadAction } from '@/types/vue-eternal'
 import { load } from '@/helpers/eternalLoader'
 
 const { showedPosts, favoritedPosts } = storeToRefs(usePostStore())
+const { authenticatedProfile } = storeToRefs(useProfileStore())
 const isLoading = ref(true)
 
 const getPosts = async () => {
@@ -29,20 +30,22 @@ const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   return load(
     (page: number) => getFavoritedPosts(page),
     loadAction,
-    (page.value += 1)
+    page.value + 1
   )
 }
 
 onBeforeMount(async () => {
   await getPosts()
 }),
-  onBeforeRouteUpdate(async () => {
-    // console.log(route.path)
-    // const regex = /\/([^/]+)\/(following)/
-    // const match = regex.exec(route.path)
-    // if (!match) {
+  onBeforeRouteUpdate(async ({ params: toParams }, { params: fromParams }) => {
+    if (
+      toParams.username === fromParams.username &&
+      (fromParams.username !== authenticatedProfile.value?.username ||
+        !/following|followers/.test(fromParams.username))
+    ) {
+      return
+    }
     await getPosts()
-    // }
   })
 </script>
 

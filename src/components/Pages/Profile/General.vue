@@ -20,9 +20,7 @@ defineProps<{
   isCurrentUser: boolean
 }>()
 
-const { viewedProfile, authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
+const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
 const router = useRouter()
 const { dimensions } = storeToRefs(useResizeStore())
 const isLoadingFollow = ref(false)
@@ -36,8 +34,7 @@ const isUserProfile = computed(() => {
   return (
     viewedProfile.value !== null &&
     authenticatedProfile.value !== null &&
-    viewedProfile.value.username ===
-      authenticatedProfile.value.username
+    viewedProfile.value.username === authenticatedProfile.value.username
   )
 })
 
@@ -92,12 +89,12 @@ const isGeneralMobile = computed(() => {
 const follow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
+    const { increaseFollowersCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(
-      viewedProfile.value?.username!
-    )
+    const res: string = await setFollow(viewedProfile.value?.username!)
     isLoadingFollow.value = false
     if (res.includes('following')) {
+      increaseFollowersCount()
       viewedProfile.value!.is_following = true
     }
   }
@@ -106,12 +103,12 @@ const follow = async () => {
 const unfollow = async () => {
   if (authenticatedProfile) {
     const { setFollow } = useFollow()
+    const { decreaseFollowersCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(
-      viewedProfile.value?.username!
-    )
+    const res: string = await setFollow(viewedProfile.value?.username!)
     isLoadingFollow.value = false
     if (res.includes('unfollowed')) {
+      decreaseFollowersCount()
       viewedProfile.value!.is_following = false
     }
   }
@@ -130,8 +127,7 @@ const hanldeClickChangeAvatar = () => {
 
 const getInputAvatar = async (event: Event) => {
   if (authenticatedProfile.value) {
-    const file = (event.target as HTMLInputElement)
-      .files![0]
+    const file = (event.target as HTMLInputElement).files![0]
     const fileName = file.name
     console.log(file, fileName)
 
@@ -148,12 +144,10 @@ const getInputAvatar = async (event: Event) => {
 
     if (res) {
       const { setAuthenticatedProfile } = useProfileStore()
-      authenticatedProfile.value.profile_pic =
-        res.profile_pic
+      authenticatedProfile.value.profile_pic = res.profile_pic
       setAuthenticatedProfile(authenticatedProfile.value)
       if (
-        viewedProfile.value?.username ===
-        authenticatedProfile.value.username
+        viewedProfile.value?.username === authenticatedProfile.value.username
       ) {
         viewedProfile.value!.profile_pic = res.profile_pic
       }
@@ -168,17 +162,14 @@ const deleteAvatar = async () => {
 
     avatarPopupActive.value = false
     isLoadingAvatar.value = true
-    const res = await deleteProfilePic(
-      authenticatedProfile.value.username
-    )
+    const res = await deleteProfilePic(authenticatedProfile.value.username)
 
     if (res) {
       const { setAuthenticatedProfile } = useProfileStore()
       authenticatedProfile.value.profile_pic = ''
       setAuthenticatedProfile(authenticatedProfile.value)
       if (
-        viewedProfile.value?.username ===
-        authenticatedProfile.value.username
+        viewedProfile.value?.username === authenticatedProfile.value.username
       ) {
         viewedProfile.value!.profile_pic = ''
       }
@@ -190,9 +181,7 @@ const deleteAvatar = async () => {
 
 <template>
   <div class="flex flex-col">
-    <div
-      class="flex w-full mb-6 min-[736px]:mb-11 px-4 min-[736px]:px-0"
-    >
+    <div class="flex w-full mb-6 min-[736px]:mb-11 px-4 min-[736px]:px-0">
       <div class="flex-[0_1] min-[736px]:flex-[1_1_0%]">
         <div class="relative flex justify-center mr-[30px]">
           <div
@@ -241,13 +230,14 @@ const deleteAvatar = async () => {
       </form>
       <div class="flex flex-col flex-[2_1_0%]">
         <div
-          class="flex flex-col min-[736px]:flex-row items-start
-            min-[736px]:items-center"
+          class="flex flex-col min-[736px]:flex-row items-start min-[736px]:items-center"
         >
           <div class="flex mb-4 min-[736px]:mb-0">
-            <RouterLink to="" class="text-xl mr-2">{{
-              viewedProfile?.username
-            }}</RouterLink>
+            <RouterLink
+              to=""
+              class="text-xl mr-2"
+              >{{ viewedProfile?.username }}</RouterLink
+            >
             <div v-if="isGeneralMobile">
               <UiButton
                 v-if="isCurrentUser"
@@ -256,7 +246,10 @@ const deleteAvatar = async () => {
               >
                 <SettingIcon />
               </UiButton>
-              <UiButton v-else variant="text">
+              <UiButton
+                v-else
+                variant="text"
+              >
                 <fa
                   class="text-textColor-primary text-lg"
                   :icon="['fas', 'ellipsis']"
@@ -279,7 +272,7 @@ const deleteAvatar = async () => {
             >
             <template v-else>
               <UiButton
-                class="mr-2 mb-1"
+                class="mr-2"
                 v-if="viewedProfile?.is_following"
                 secondary
                 :isDisabled="isLoadingFollow"
@@ -318,7 +311,10 @@ const deleteAvatar = async () => {
             >
               <SettingIcon />
             </UiButton>
-            <UiButton v-else variant="text">
+            <UiButton
+              v-else
+              variant="text"
+            >
               <fa
                 class="text-textColor-primary text-lg"
                 :icon="['fas', 'ellipsis']"
@@ -327,9 +323,7 @@ const deleteAvatar = async () => {
           </div>
         </div>
         <template v-if="!isGeneralMobile">
-          <ul
-            class="flex [&>*:not(:last-child)]:mr-10 my-5"
-          >
+          <ul class="flex [&>*:not(:last-child)]:mr-10 my-5">
             <li class="text-base">
               <span
                 class="font-semibold"
@@ -339,8 +333,7 @@ const deleteAvatar = async () => {
                 "
                 >{{
                   formatNumberToSuffix(
-                    authenticatedProfile?.username ===
-                      viewedProfile?.username
+                    authenticatedProfile?.username === viewedProfile?.username
                       ? authenticatedProfile?.posts_count
                       : viewedProfile?.posts_count
                   )
@@ -351,8 +344,7 @@ const deleteAvatar = async () => {
             <li class="text-base">
               <component
                 :is="
-                  viewedProfile?.followers_count == 0 ||
-                  !authenticatedProfile
+                  viewedProfile?.followers_count == 0 || !authenticatedProfile
                     ? 'span'
                     : 'router-link'
                 "
@@ -360,13 +352,9 @@ const deleteAvatar = async () => {
               >
                 <span
                   class="font-semibold"
-                  :title="
-                    viewedProfile?.followers_count?.toString()
-                  "
+                  :title="viewedProfile?.followers_count?.toString()"
                   >{{
-                    formatNumberToSuffix(
-                      viewedProfile?.followers_count
-                    )
+                    formatNumberToSuffix(viewedProfile?.followers_count)
                   }}</span
                 >
                 followers
@@ -375,8 +363,7 @@ const deleteAvatar = async () => {
             <li class="text-base">
               <component
                 :is="
-                  viewedProfile?.following_count == 0 ||
-                  !authenticatedProfile
+                  viewedProfile?.following_count == 0 || !authenticatedProfile
                     ? 'span'
                     : 'router-link'
                 "
@@ -384,13 +371,9 @@ const deleteAvatar = async () => {
               >
                 <span
                   class="font-semibold"
-                  :title="
-                    viewedProfile?.following_count?.toString()
-                  "
+                  :title="viewedProfile?.following_count?.toString()"
                   >{{
-                    formatNumberToSuffix(
-                      viewedProfile?.following_count
-                    )
+                    formatNumberToSuffix(viewedProfile?.following_count)
                   }}</span
                 >
                 following
@@ -398,9 +381,7 @@ const deleteAvatar = async () => {
             </li>
           </ul>
           <div class="flex flex-col">
-            <span class="font-semibold">{{
-              viewedProfile?.full_name
-            }}</span>
+            <span class="font-semibold">{{ viewedProfile?.full_name }}</span>
             <span class="">{{ viewedProfile?.bio }}</span>
           </div>
           <!-- <div

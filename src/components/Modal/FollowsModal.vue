@@ -59,7 +59,7 @@ onMounted(async () => {
   <Modal
     isShow
     isPopup
-    @click-outside="router.push({ name: 'Profile' })"
+    @click-outside="router.back()"
   >
     <div
       class="flex flex-col w-screen max-w-[400px] h-[calc(100vh-40px)] max-h-[400px] bg-modal rounded-xl overflow-hidden"
@@ -79,7 +79,7 @@ onMounted(async () => {
         >
         <div
           class="absolute top-1/2 -translate-y-1/2 right-2 p-2 leading-none cursor-pointer"
-          @click="router.push({ name: 'Profile' })"
+          @click="router.back()"
         >
           <fa
             class="text-[25px]"
@@ -97,7 +97,7 @@ onMounted(async () => {
         <UserItem
           v-for="profile in follows?.results"
           :key="profile.id"
-          :viewedProfile="profile"
+          :profile="profile"
           :authenticatedProfile="authenticatedProfile!"
         />
         <UiButton variant="text">

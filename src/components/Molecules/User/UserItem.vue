@@ -6,9 +6,13 @@ import UnfollowPopup from '@/components/Popup/UnfollowPopup.vue'
 import { ref } from 'vue'
 import { useFollow } from '@/composables'
 import type { IProfile } from '@/types'
+import { useProfileStore } from '@/stores/profile'
+import { storeToRefs } from 'pinia'
+
+const { viewedProfile } = storeToRefs(useProfileStore())
 
 const props = defineProps<{
-  viewedProfile: IProfile
+  profile: IProfile
   authenticatedProfile: IProfile
 }>()
 
@@ -18,15 +22,19 @@ const unfollowPopupActive = ref(false)
 const follow = async () => {
   if (props.authenticatedProfile) {
     const { setFollow } = useFollow()
+    const { increaseFollowingCount, decreaseFollowingCount } = useProfileStore()
     isLoadingFollow.value = true
-    await setFollow(props.viewedProfile.username)
-    isLoadingFollow.value = false
-    props.viewedProfile!.is_following =
-      !props.viewedProfile!.is_following
-
+    const res: string = await setFollow(props.profile.username)
+    props.profile!.is_following = !props.profile!.is_following
+    if (res.includes('following')) {
+      increaseFollowingCount(viewedProfile.value!)
+    } else {
+      decreaseFollowingCount(viewedProfile.value!)
+    }
     if (unfollowPopupActive.value) {
       unfollowPopupActive.value = false
     }
+    isLoadingFollow.value = false
   }
 }
 </script>
@@ -36,13 +44,13 @@ const follow = async () => {
     <RouterLink
       :to="{
         name: 'Profile',
-        params: { username: viewedProfile.username }
+        params: { username: profile.username }
       }"
       class="user-avatar"
     >
       <Avatar
         width="45"
-        :avatarUrl="viewedProfile.profile_pic"
+        :avatarUrl="profile.profile_pic"
       />
     </RouterLink>
     <div class="flex flex-col flex-grow ml-3">
@@ -50,23 +58,21 @@ const follow = async () => {
         <RouterLink
           :to="{
             name: 'Profile',
-            params: { username: viewedProfile.username }
+            params: { username: profile.username }
           }"
         >
-          {{ viewedProfile.username }}
+          {{ profile.username }}
         </RouterLink>
       </span>
-      <span class="text-textColor-secondary">{{
-        viewedProfile.full_name
-      }}</span>
+      <span class="text-textColor-secondary">{{ profile.full_name }}</span>
     </div>
     <div
       class="user-follow"
-      v-if="authenticatedProfile!.id != viewedProfile.id"
+      v-if="authenticatedProfile!.id != profile.id"
     >
       <UiButton
         secondary
-        v-if="viewedProfile.is_following"
+        v-if="profile.is_following"
         :isDisabled="isLoadingFollow"
         :isLoading="isLoadingFollow"
         @click="
@@ -88,7 +94,7 @@ const follow = async () => {
       </UiButton>
       <UnfollowPopup
         v-if="unfollowPopupActive"
-        :user="viewedProfile"
+        :user="profile"
         :onConfirm="follow"
         :onCancel="
           () => {

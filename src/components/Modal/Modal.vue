@@ -42,14 +42,17 @@ onUnmounted(() => {
 
 <template>
   <Teleport :to="isPopup ? '#popup' : '#modal'">
-    <Transition name="modal">
+    <Transition
+      :duration="200"
+      name="nested"
+    >
       <div
         v-if="isShow"
         class="fixed bottom-0 left-0 right-0 top-0 flex bg-[#0000004d] flex-center"
         :class="isPopup ? 'z-50' : 'z-40'"
       >
         <div
-          class="m-5 flex w-screen flex-center min-[500px]:w-auto"
+          class="inner m-5 flex w-screen flex-center min-[500px]:w-auto"
           v-click-outside="handleClickOutsideModal"
         >
           <slot />

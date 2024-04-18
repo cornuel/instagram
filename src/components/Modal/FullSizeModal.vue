@@ -45,7 +45,7 @@ onBeforeRouteUpdate(() => {
 
 <template>
   <div
-    class="fixed bottom-0 left-0 right-0 top-0 flex bg-[#000000aa] flex-center"
+    class="inner fixed bottom-0 left-0 right-0 top-0 flex bg-[#000000aa] flex-center"
     :class="isPopup ? 'z-50' : 'z-40'"
   >
     <div
@@ -56,14 +56,9 @@ onBeforeRouteUpdate(() => {
         class="delay-80 absolute right-0 top-0 mr-8 mt-6 h-6 w-6 fill-textColor-secondary text-[#ffffff] transition duration-300 ease-in-out hover:cursor-pointer hover:text-red-500"
         @click="handleClickOutsideModal"
       />
-      <Transition name="modal">
-        <div
-          v-if="showPostModal"
-          class="w-screen"
-        >
-          <component :is="component" />
-        </div>
-      </Transition>
+      <div class="w-screen inner">
+        <component :is="component" />
+      </div>
     </div>
   </div>
 </template>
