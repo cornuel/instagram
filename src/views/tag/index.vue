@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Avatar from '@/components/Atom/Avatar.vue'
+import LayoutSelector from '@/components/Molecules/Layout/LayoutSelector.vue'
 import { computed, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 
@@ -28,7 +29,7 @@ onBeforeRouteUpdate(() => {
     id="tag-index"
     class="max-w-[935px] pt-[30px] px-0 min-[736px]:px-5 mx-auto box-content flex flex-col"
   >
-    <div class="flex w-full mb-6 min-[736px]:mb-11 px-4 min-[736px]:px-0">
+    <div class="flex w-full px-4 min-[736px]:px-0">
       <div class="flex-[0_1] min-[736px]:flex-[1_1_0%]">
         <div class="relative flex justify-center mr-[30px]">
           <Avatar
@@ -63,6 +64,7 @@ onBeforeRouteUpdate(() => {
         </div>
       </div>
     </div>
+    <LayoutSelector />
     <div>
       <RouterView />
     </div>

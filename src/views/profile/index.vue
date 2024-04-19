@@ -7,6 +7,7 @@ import BackIcon from '@icons/back.svg'
 import DownIcon from '@icons/down.svg'
 import MoreUserIcon from '@icons/more-user.svg'
 import General from '@/components/Pages/Profile/General.vue'
+import LayoutSelector from '@/components/Molecules/Layout/LayoutSelector.vue'
 
 import { computed, onBeforeMount, nextTick } from 'vue'
 
@@ -118,6 +119,7 @@ onBeforeMount(async () => {
       :isCurrentUser="isCurrentUser"
       class="mt-[45px] min-[768px]:mt-0"
     />
+    <LayoutSelector />
 
     <div class="border-t border-borderColor">
       <div

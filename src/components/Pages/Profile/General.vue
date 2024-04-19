@@ -181,7 +181,7 @@ const deleteAvatar = async () => {
 
 <template>
   <div class="flex flex-col">
-    <div class="flex w-full mb-6 min-[736px]:mb-11 px-4 min-[736px]:px-0">
+    <div class="flex w-full px-4 min-[736px]:px-0">
       <div class="flex-[0_1] min-[736px]:flex-[1_1_0%]">
         <div class="relative flex justify-center mr-[30px]">
           <div

@@ -1,0 +1,10 @@
+<svg aria-label="grid" color="#dbdbdb" fill="rgb(0, 0, 0)" height="12" role="img" viewBox="0 0 24 24" width="12">
+    <rect fill="none" height="8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="8" x="3" y="3"></rect>
+    <rect fill="none" height="8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="8" x="3" y="13"></rect>
+    <rect fill="none" height="8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="8" x="13" y="3"></rect>
+    <rect fill="none" height="8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="8" x="13" y="13"></rect>
+</svg>

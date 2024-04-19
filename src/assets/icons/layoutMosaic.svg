@@ -1,0 +1,20 @@
+<svg aria-label="grid" color="rgb(0, 0, 0)" fill="rgb(0, 0, 0)" height="12" role="img" viewBox="0 0 24 24" width="12">
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="3" y="3"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="9.5" y="3"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="16" y="3"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="3" y="9.5"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="9.5" y="9.5"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="16" y="9.5"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="3" y="16"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="9.5" y="16"></rect>
+    <rect fill="none" height="5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+        width="5" x="16" y="16"></rect>
+</svg>

@@ -1,10 +1,15 @@
 <script lang="ts" setup>
 import Loading from '@/components/Utils/Loading.vue'
 import PostReviewItem from '@/components/Pages/Post/PostReviewItem.vue'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import { useSearchStore, useTagStore, usePostStore } from '@/stores'
+import {
+  useSearchStore,
+  useTagStore,
+  usePostStore,
+  useLayoutStore
+} from '@/stores'
 
 import { useSearch, useTag } from '@/composables'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
@@ -13,14 +18,15 @@ import { onBeforeRouteUpdate, useRouter } from 'vue-router'
 import { load } from '@/helpers/eternalLoader'
 
 const { query, searchedPosts } = storeToRefs(useSearchStore())
+const { getLayoutClass } = storeToRefs(useLayoutStore())
+
+// const layoutClass = computed(() => getLayoutClass())
 
 const isLoading = ref(true)
 const { currentTag } = storeToRefs(useTagStore())
-const { isInitial, showedPosts } = storeToRefs(usePostStore())
+const { showedPosts } = storeToRefs(usePostStore())
 
 const page = ref(1)
-
-isInitial.value = true
 
 const getPosts = async () => {
   const { fetchPostsByTagQuery } = useSearch()
@@ -91,23 +97,31 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <Loading
-      v-if="isLoading"
-      class="mt-10"
-    />
-    <template v-else>
-      <div
-        v-if="showedPosts"
-        class="flex flex-wrap -mx-[2px]"
-      >
-        <PostReviewItem
-          class="w-1/3 px-[2px] mb-1"
-          v-for="post in showedPosts.results"
-          :key="post.id"
-          :post="post"
-        />
-        <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
-      </div>
-    </template>
+    <Transition
+      :duration="{ enter: 300, leave: 200 }"
+      name="postsTransition"
+    >
+      <Loading
+        v-if="isLoading"
+        class="absolute left-1/2 mt-10"
+      />
+      <template v-else>
+        <div
+          v-if="showedPosts"
+          class="flex flex-wrap -mx-[2px]"
+        >
+          <TransitionGroup name="list">
+            <PostReviewItem
+              :class="getLayoutClass"
+              class="innerPostsTransition px-[2px] mb-1"
+              v-for="post in showedPosts.results"
+              :key="post.id"
+              :post="post"
+            />
+          </TransitionGroup>
+          <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
+        </div>
+      </template>
+    </Transition>
   </div>
 </template>
