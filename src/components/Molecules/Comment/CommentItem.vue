@@ -5,37 +5,16 @@ import LikeActiveIcon from '@icons/heart-active.svg'
 import Avatar from '@/components/Atom/Avatar.vue'
 import ActionsPopup from '@/components/Popup/ActionsPopup.vue'
 
-import {
-  ref,
-  computed,
-  onBeforeMount,
-  onMounted
-} from 'vue'
+import { ref, computed, onBeforeMount, onMounted } from 'vue'
 
-import {
-  useComment,
-  useLike,
-  useProfile
-} from '@/composables'
+import { useComment, useLike, useProfile } from '@/composables'
 
 import { storeToRefs } from 'pinia'
-import {
-  useCommentStore,
-  usePostStore,
-  useProfileStore
-} from '@/stores'
+import { useCommentStore, usePostStore, useProfileStore } from '@/stores'
 
-import {
-  dateDistanceToNow,
-  convertToFullDate,
-  convertTagUser
-} from '@/helpers'
+import { dateDistanceToNow, convertToFullDate, convertTagUser } from '@/helpers'
 
-import type {
-  IAction,
-  IPaginatedProfiles,
-  IProfile
-} from '@/types'
+import type { IAction, IPaginatedProfiles, IProfile } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -58,9 +37,7 @@ const props = withDefaults(
   }
 )
 
-const { authenticatedProfile } = storeToRefs(
-  useProfileStore()
-)
+const { authenticatedProfile } = storeToRefs(useProfileStore())
 
 const { commentProfiles } = storeToRefs(useCommentStore())
 
@@ -105,13 +82,9 @@ const commentActionsComp = computed(() => {
     ]
 })
 const disabledLikeButtonComp = computed(() => {
-  return isLoadingLike.value
-    ? 'pointer-events-none'
-    : 'pointer-events-auto'
+  return isLoadingLike.value ? 'pointer-events-none' : 'pointer-events-auto'
 })
-const commentComp = computed(() =>
-  convertTagUser(props.body!)
-)
+const commentComp = computed(() => convertTagUser(props.body!))
 const createdTimeComp = computed(() =>
   dateDistanceToNow(props.created, false, false)
 )
@@ -120,8 +93,8 @@ const fullCreatedAtComp = computed(() =>
 )
 
 const handleReply = () => {
-  // const { setReply } = useCommentStore()
-  // setReply(props.commentId || props.id!, user.value?.username!)
+  const { setReply } = useCommentStore()
+  setReply(props.id! as number, user.value?.username!)
 }
 
 const handleLike = async () => {
@@ -131,19 +104,14 @@ const handleLike = async () => {
 
   try {
     // console.log(isLike.value)
-    const response = await likeComment(
-      Number(props.id!),
-      !isLike.value
-    )
+    const response = await likeComment(Number(props.id!), !isLike.value)
     console.log(response.message)
   } catch (error) {
     isLike.value = !isLike.value
   }
 
   if (likeCount.value) {
-    isLike.value
-      ? (likeCount.value += 1)
-      : (likeCount.value -= 1)
+    isLike.value ? (likeCount.value += 1) : (likeCount.value -= 1)
   }
 
   isLoadingLike.value = false
@@ -155,11 +123,8 @@ const deleteItem = async () => {
 }
 
 const handleClickLikeCount = async () => {
-  const {
-    setLikedListModal,
-    setIsLoadingLikedList,
-    setLikedList
-  } = usePostStore()
+  const { setLikedListModal, setIsLoadingLikedList, setLikedList } =
+    usePostStore()
   const { getLikedUsers } = useLike()
 
   setLikedListModal(true)
@@ -199,7 +164,10 @@ onMounted(async () => {
     class="flex group/comment mb-4 mt-2"
   >
     <div class="">
-      <Avatar width="32" :avatar-url="user?.profile_pic" />
+      <Avatar
+        width="32"
+        :avatar-url="user?.profile_pic"
+      />
     </div>
     <div class="flex flex-grow flex-col ml-3 mt-[2px]">
       <div class="">
@@ -210,9 +178,7 @@ onMounted(async () => {
             params: { username: user.username }
           }"
         >
-          <span class="font-semibold mr-1">{{
-            user.username
-          }}</span>
+          <span class="font-semibold mr-1">{{ user.username }}</span>
         </RouterLink>
         <div class="inline-flex items-center">
           <span
@@ -222,8 +188,7 @@ onMounted(async () => {
         </div>
       </div>
       <div
-        class="flex flex-wrap items-center mt-1 text-xs
-          text-textColor-secondary"
+        class="flex flex-wrap items-center mt-1 text-xs text-textColor-secondary"
       >
         <span
           class="mr-3 cursor-pointer"
@@ -243,12 +208,10 @@ onMounted(async () => {
             >Reply</span
           >
           <div
-            class="relative w-4 h-4 invisible group-hover/comment:visible
-              cursor-pointer"
+            class="relative w-4 h-4 invisible group-hover/comment:visible cursor-pointer"
           >
             <EllipsisIcon
-              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                text-textColor-secondary fill-textColor-secondary"
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-textColor-secondary fill-textColor-secondary"
               @click="
                 () => {
                   commentActionsPopup = true
@@ -266,15 +229,13 @@ onMounted(async () => {
       <LikeIcon
         v-if="!isLike"
         @click="handleLike"
-        class="w-3 hover:opacity-60
-          animate-[0.45s_like-button-animation_ease-in-out]"
+        class="w-3 hover:opacity-60 animate-[0.45s_like-button-animation_ease-in-out] text-textColor-secondary fill-textColor-secondary"
         :class="disabledLikeButtonComp"
       />
       <LikeActiveIcon
         v-else
         @click="handleLike"
-        class="w-3 fill-error
-          animate-[0.45s_like-button-animation_ease-in-out]"
+        class="w-3 fill-error animate-[0.45s_like-button-animation_ease-in-out]"
         :class="disabledLikeButtonComp"
       />
     </div>

@@ -6,7 +6,7 @@ interface IState {
   comment: string
   comments: Nullable<IPaginatedComments>
   commentRef: Nullable<HTMLInputElement>
-  replyTo: Nullable<string>
+  replyTo: Nullable<number>
   commentProfiles: Record<string, IProfile>
 }
 
@@ -31,6 +31,17 @@ export const useCommentStore = defineStore('comment', {
     addComment(comment: IComment) {
       if (this.comments?.results) {
         this.comments.results.push(comment)
+      }
+    },
+    addReply(comment: IComment, parent: number) {
+      if (this.comments?.results) {
+        const index = findIndex(
+          this.comments.results,
+          (comment: IComment) => comment.id == parent
+        )
+        if (index >= 0) {
+          this.comments.results[index].replies_count++
+        }
       }
     },
     increaseReplyCount(commentId: number) {
@@ -71,7 +82,7 @@ export const useCommentStore = defineStore('comment', {
         }
       }
     },
-    setReply(replyTo: string, replyUsername: string) {
+    setReply(replyTo: number, replyUsername: string) {
       this.replyTo = replyTo
       this.comment = `@${replyUsername} `
       if (this.commentRef) {
