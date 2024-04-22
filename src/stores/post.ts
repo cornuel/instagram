@@ -54,17 +54,25 @@ export const usePostStore = defineStore('post', {
     },
     increaseLikeCount() {
       this.post!.like_count += 1
-      const index = this.showedPosts!.results!.findIndex(
-        (post: IPost) => post.id === this.post!.id
-      )
-      this.showedPosts!.results![index].like_count += 1
+      try {
+        const index = this.showedPosts!.results!.findIndex(
+          (post: IPost) => post.id === this.post!.id
+        )
+        this.showedPosts!.results![index].like_count += 1
+      } catch {
+        console.debug('post not found')
+      }
     },
     decreaseLikeCount() {
       this.post!.like_count -= 1
-      const index = this.showedPosts!.results!.findIndex(
-        (post: IPost) => post.id === this.post!.id
-      )
-      this.showedPosts!.results![index].like_count -= 1
+      try {
+        const index = this.showedPosts!.results!.findIndex(
+          (post: IPost) => post.id === this.post!.id
+        )
+        this.showedPosts!.results![index].like_count -= 1
+      } catch {
+        console.debug('post not found')
+      }
     },
     getPosts(): Nullable<IPaginatedPosts> {
       return this.userPosts

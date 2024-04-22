@@ -16,7 +16,8 @@ import {
   usePostStore,
   useCommentStore,
   useModalStore,
-  useResizeStore
+  useResizeStore,
+  useThemeStore
 } from '@/stores'
 import { useComment } from '@/composables'
 
@@ -27,6 +28,7 @@ const { showPostModal } = storeToRefs(useModalStore())
 const { dimensions } = storeToRefs(useResizeStore())
 const { post, likedListModal } = storeToRefs(usePostStore())
 const { comment, commentRef } = storeToRefs(useCommentStore())
+const { darkMode } = storeToRefs(useThemeStore())
 
 const router = useRouter()
 
@@ -78,11 +80,12 @@ const desktop = computed(() => {
 <template>
   <!-- <transition name="modal"> -->
   <div
-    class="flex flex-col min-[736px]:flex-row mx-auto min-h-[480px] max-w-[80rem] max-h-[92vh] bg-bgColor-primary rounded-sm"
+    class="flex flex-col min-[736px]:flex-row mx-auto min-h-[480px] max-w-[80rem] max-h-[92vh] bg-bgColor-primary rounded-md"
+    :class="{ 'border border-borderColor': darkMode }"
   >
     <PostHeader v-if="!desktop" />
     <div
-      class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-sm min-[736px]:rounded-bl-sm bg-[#000000] w-full"
+      class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-md min-[736px]:rounded-bl-md bg-[#000000] w-full"
     >
       <PostSwiper
         class="w-full"

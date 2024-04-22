@@ -72,10 +72,10 @@ const close = () => {
 <template>
   <div class="py-4 px-5 mx-auto box-content">
     <div
-      class="flex flex-col min-[736px]:flex-row w-full mx-auto min-h-[480px] max-h-none min-[736px]:max-h-[600px] box-content border border-borderColor rounded-xl"
+      class="flex flex-col min-[736px]:flex-row w-full mx-auto min-h-[480px] max-h-none min-[736px]:max-h-[600px] box-content border border-borderColor rounded-md"
     >
       <div
-        class="flex-grow flex items-center overflow-hidden rounded-tl-xl min-[736px]:rounded-bl-xl"
+        class="flex-grow flex items-center overflow-hidden rounded-tl-md min-[736px]:rounded-bl-md"
       >
         <PostSwiper class="w-full" />
       </div>

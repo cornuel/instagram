@@ -2,8 +2,9 @@
 import { storeToRefs } from 'pinia'
 import { useModalStore, usePostStore } from '@/stores'
 import CrossMarkIcon from '@icons/cross.svg'
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute } from 'vue-router'
 import router from '@/router'
+const route = useRoute()
 
 const emit = defineEmits(['click-outside'])
 
@@ -25,6 +26,8 @@ const { likedListModal } = storeToRefs(usePostStore())
 
 const handleClickOutsideModal = () => {
   showPostModal.value = false
+  if (route.matched[0].components!.modal)
+    delete route.matched[0].components!.modal
   router.back()
   emit('click-outside')
 }
@@ -33,6 +36,8 @@ onBeforeRouteLeave(() => {
   showPostModal.value = false
   showModal.value = false
   likedListModal.value = false
+  if (route.matched[0].components!.modal)
+    delete route.matched[0].components!.modal
 })
 onBeforeRouteUpdate(() => {
   // scrollPosition.value = document.getElementById("tag-index").scrollTop // save scroll
@@ -40,6 +45,8 @@ onBeforeRouteUpdate(() => {
   showPostModal.value = false
   showModal.value = false
   likedListModal.value = false
+  if (route.matched[0].components!.modal)
+    delete route.matched[0].components!.modal
 })
 </script>
 

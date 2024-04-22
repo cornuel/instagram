@@ -27,7 +27,7 @@ const handleLayout = (mode: 'detailed' | 'medium' | 'mosaic') => {
       />
       <LayoutDetailedActiveIcon
         v-else
-        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out]"
+        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out] fill-textColor-primary"
       />
     </div>
     <div class="p-2 cursor-pointer select-none">
@@ -38,7 +38,7 @@ const handleLayout = (mode: 'detailed' | 'medium' | 'mosaic') => {
       />
       <LayoutMediumActiveIcon
         v-else
-        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out]"
+        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out] fill-textColor-primary"
       />
     </div>
     <div class="p-2 cursor-pointer select-none">
@@ -49,7 +49,7 @@ const handleLayout = (mode: 'detailed' | 'medium' | 'mosaic') => {
       />
       <LayoutMosaicActiveIcon
         v-else
-        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out]"
+        class="w-6 h-6 animate-[0.45s_like-button-animation_ease-out] fill-textColor-primary"
       />
     </div>
   </div>

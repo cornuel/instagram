@@ -8,19 +8,13 @@ import BookmarkActiveIcon from '@icons/bookmark-active.svg'
 
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import {
-  usePostStore,
-  useCommentStore,
-  useResizeStore
-} from '@/stores'
+import { usePostStore, useCommentStore, useResizeStore } from '@/stores'
 import { useLike, usePost } from '@/composables'
 
-import {
-  dateDistanceToNow,
-  convertToFullDate
-} from '@/helpers'
+import { dateDistanceToNow, convertToFullDate } from '@/helpers'
 
 import type { IPaginatedProfiles } from '@/types'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
 const { post } = storeToRefs(usePostStore())
 const { commentRef } = storeToRefs(useCommentStore())
@@ -31,9 +25,7 @@ const isLoadingLike = ref(false)
 const isLoadingFavorited = ref(false)
 
 const disabledLikeButtonComp = computed(() => {
-  return isLoadingLike.value
-    ? 'pointer-events-none'
-    : 'pointer-events-auto'
+  return isLoadingLike.value ? 'pointer-events-none' : 'pointer-events-auto'
 })
 const postCreatedAt = computed(() => {
   if (post.value?.created) {
@@ -78,12 +70,9 @@ const commentIconClick = () => {
 }
 
 const handleClickLikedPost = async () => {
-  if(post.value?.like_count === 0) return
-  const {
-    setLikedListModal,
-    setIsLoadingLikedList,
-    setLikedList
-  } = usePostStore()
+  if (post.value?.like_count === 0) return
+  const { setLikedListModal, setIsLoadingLikedList, setLikedList } =
+    usePostStore()
   const { getLikedUsers } = useLike()
 
   setLikedListModal(true)
@@ -109,21 +98,22 @@ const desktop = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col" :class="{'border-b border-borderColor' : desktop}">
+  <div
+    class="flex flex-col"
+    :class="{ 'border-b border-borderColor': desktop }"
+  >
     <div class="flex justify-between px-[10px] py-[6px]">
       <div class="flex">
         <div class="p-2 cursor-pointer select-none">
           <LikeIcon
             v-if="!isLike"
-            class="w-6 fill-textColor-primary text-textColor-primary
-              animate-[0.45s_like-button-animation_ease-in-out]"
+            class="w-6 fill-textColor-primary text-textColor-primary animate-[0.45s_like-button-animation_ease-in-out]"
             :class="disabledLikeButtonComp"
             @click="handleLikePost"
           />
           <LikeActiveIcon
             v-else
-            class="w-6 text-error fill-error
-              animate-[0.45s_like-button-animation_ease-in-out]"
+            class="w-6 text-error fill-error animate-[0.45s_like-button-animation_ease-in-out]"
             :class="disabledLikeButtonComp"
             @click="handleLikePost"
           />
@@ -135,9 +125,7 @@ const desktop = computed(() => {
           />
         </div>
         <div class="p-2 cursor-pointer select-none">
-          <SendIcon
-            class="fill-textColor-primary text-textColor-primary"
-          />
+          <SendIcon class="fill-textColor-primary text-textColor-primary" />
         </div>
       </div>
       <div class="p-2 cursor-pointer select-none">
@@ -161,9 +149,7 @@ const desktop = computed(() => {
         }"
         @click="handleClickLikedPost"
         >{{
-          post!.like_count
-            .toLocaleString('en-US')
-            .replace(',', '.')
+          post!.like_count.toLocaleString('en-US').replace(',', '.')
         }}
         likes</span
       >

@@ -20,19 +20,15 @@ export default {
     next: NavigationGuardNext
   ) => {
     const { getPost } = usePost()
-    const { viewedProfile } = storeToRefs(useProfileStore())
     const { post } = storeToRefs(usePostStore())
     const { showModal, showPostModal } = storeToRefs(useModalStore())
-
 
     if (from.matched.length) {
       showModal.value = true
     }
 
-    const postTemp = await getPost(to.params.postId as string)
-    showPostModal.value = true
-
-    if (!postTemp) {
+    const res = await getPost(to.params.postId as string)
+    if (!res) {
       next({
         name: 'NotFound',
         params: { pathMatch: to.path.substring(1).split('/') },
@@ -40,10 +36,10 @@ export default {
         hash: to.hash
       })
     } else {
-      post.value = postTemp
+      post.value = res
       const { getProfile } = useProfile()
       const { setPostProfile } = useProfileStore()
-      setPostProfile(await getProfile(postTemp.profile))
+      await getProfile(res.profile).then(setPostProfile)
 
       const previousRouteZero = from.matched[0];
       const previousRoute = from
