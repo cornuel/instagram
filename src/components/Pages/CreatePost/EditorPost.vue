@@ -396,11 +396,11 @@ onMounted(() => {
     class="min-h-[400px]"
   >
     <div
-      class="relative max-w-[400px] max-h-[400px] h-full w-full select-none overflow-y-scoll"
+      class="relative max-w-[400px] max-h-[400px] min-h-[400px] min-w-[400px] h-full w-full select-none overflow-y-scoll"
     >
       <div
         ref="containerRef"
-        class="w-full h-full flex flex-center bg-[#f5f5f5]"
+        class="min-h-[400px] min-w-[400px] w-full h-full flex flex-center bg-[#f5f5f5]"
       >
         <div
           ref="cropperRef"
