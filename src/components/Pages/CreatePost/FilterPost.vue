@@ -15,7 +15,8 @@ interface IFilterTemplate {
 
 const emit = defineEmits(['drawCanvas'])
 
-const { currentMedia, currentMediaIndex, filter } = storeToRefs(useCreatePostStore())
+const { currentMedia, currentMediaIndex, filter } =
+  storeToRefs(useCreatePostStore())
 const filterTab = ref<'Filter' | 'Adjust'>('Filter')
 const curentFilterTemplate = ref('Normal')
 const filterTemplate = ref<IAdjust>(DEFAULT_FILTER)
@@ -28,7 +29,7 @@ const adjust = ref({
   sepia: 0,
   'hue-rotate': 0,
   temperature: 0,
-  vignette: 0,
+  vignette: 0
 })
 
 const adjustOptions = [
@@ -61,12 +62,11 @@ const adjustOptions = [
     name: 'hue-rotate',
     divid: 1,
     unit: 'deg'
-  },
+  }
   // {
   //   name: 'vignette',
   //   divid: 100,
   // },
-
 ]
 
 const adjustInputs = computed(() => [
@@ -77,7 +77,7 @@ const adjustInputs = computed(() => [
   { title: 'Grayscale', min: 0, name: 'grayscale' },
   { title: 'Sepia', min: 0, name: 'sepia' },
   { title: 'Blur', min: 0, name: 'blur' },
-  { title: 'Vignette', min: 0, name: 'vignette' },
+  { title: 'Vignette', min: 0, name: 'vignette' }
 ])
 
 const updateMediaFilter = () => {
@@ -102,22 +102,23 @@ const convertToFilter = (adjust: IAdjust) => {
   //Filter
   const filter = adjustOptions.map((adjustOption) => {
     const adjustName = adjustOption.name as keyof IAdjust
-    return `${adjustOption.name}(${filterTemplate.value[adjustName]! + (adjust[adjustName] ?? 0) / adjustOption.divid
-      }${adjustOption.unit || ''})`
+    return `${adjustOption.name}(${
+      filterTemplate.value[adjustName]! +
+      (adjust[adjustName] ?? 0) / adjustOption.divid
+    }${adjustOption.unit || ''})`
   })
 
   //Background cover
   //255-200-0-0.1 Cold
   //0-110-255-0.1 Hot
   let backgroundValues = []
-  let vignetteCSS: string = '';
+  let vignetteCSS: string = ''
 
   if (adjust.temperature && adjust.temperature > 0) {
-    backgroundValues.push(`rgba(255,200,0,${adjust.temperature / 2000})`);
+    backgroundValues.push(`rgba(255,200,0,${adjust.temperature / 2000})`)
   } else if (adjust.temperature !== undefined && adjust.temperature < 0) {
-    backgroundValues.push(`rgba(0,110,255,${-adjust.temperature / 2000})`);
+    backgroundValues.push(`rgba(0,110,255,${-adjust.temperature / 2000})`)
   }
-
 
   if (adjust.vignette && adjust.vignette > 0) {
     let vignette: number
@@ -126,8 +127,8 @@ const convertToFilter = (adjust: IAdjust) => {
     } else {
       vignette = adjust.vignette
     }
-    const vignetteSize = Math.round((1 - vignette / 80) * window.innerWidth);
-    const vignetteBlur = Math.round((window.innerWidth - vignetteSize) / 1.2);
+    const vignetteSize = Math.round((1 - vignette / 80) * window.innerWidth)
+    const vignetteBlur = Math.round((window.innerWidth - vignetteSize) / 1.2)
     vignetteCSS = `radial-gradient(circle ${vignetteSize}px at center, rgba(0,0,0,0) ${vignetteSize}px, rgba(0,0,0,1) ${vignetteBlur}px)`
   }
 
@@ -140,7 +141,6 @@ const convertToFilter = (adjust: IAdjust) => {
   setFilter(filters)
   updateMediaFilter()
 }
-
 
 const chooseTemplate = (template: IFilterTemplate) => {
   filterTemplate.value = {
@@ -185,7 +185,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-[340px] h-full overflow-y-scroll">
+  <div
+    class="max-w-[400px] max-h-[400px] min-w-[400px] w-full h-full overflow-y-scroll"
+  >
     <div class="flex">
       <div
         class="h-10 flex flex-center flex-1 text-link border-b border-textColor-primary opacity-30 has-[active]:opacity-100 has-[active]:font-semibold cursor-pointer transition-all duration-[0.25s] ease-in-out"
@@ -203,8 +205,17 @@ onMounted(() => {
       </div>
     </div>
     <div class="mx-2">
-      <div v-if="filterTab == 'Filter'" class="flex flex-wrap mb-3">
-        <div v-for="filterTemplate in FILTER_TEMPLATES.slice().sort((a, b) => a.name.localeCompare(b.name))" :key="filterTemplate.name" class="w-4/12">
+      <div
+        v-if="filterTab == 'Filter'"
+        class="flex flex-wrap mb-3"
+      >
+        <div
+          v-for="filterTemplate in FILTER_TEMPLATES.slice().sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )"
+          :key="filterTemplate.name"
+          class="w-4/12"
+        >
           <div
             class="filter-item flex flex-col flex-center mt-4 mx-2 cursor-pointer"
             :class="{ active: curentFilterTemplate == filterTemplate.name }"
@@ -225,7 +236,10 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-else class="flex flex-col mb-4 mx-2">
+      <div
+        v-else
+        class="flex flex-col mb-4 mx-2"
+      >
         <AdjustInput
           v-for="input in adjustInputs"
           :key="input.title"

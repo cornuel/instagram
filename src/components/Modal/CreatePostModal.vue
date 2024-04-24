@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
     @click-outside="onClickOutside"
   >
     <div
-      class="flex flex-col flex-nowrap w-fit h-[calc(100vh-40px)] max-h-[442px] bg-modal rounded-xl overflow-hidden select-none"
+      class="flex flex-col flex-nowrap max-w-[calc(100vw-40px)] max-h-[calc(100vh-40px)] min-h-[400px] min-w-[400px] h-full bg-modal rounded-xl overflow-hidden select-none"
     >
       <!-- TOPBAR -->
       <div
@@ -129,7 +129,7 @@ onBeforeUnmount(() => {
           }}</span>
         </UiButton>
       </div>
-      <div class="max-h-[400px] h-screen">
+      <div class="h-fit">
         <InitPost v-if="currentTab == 'InitPost'" />
         <UploadPost v-else-if="currentTab == 'UploadPost'" />
         <EditorPost v-else />

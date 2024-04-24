@@ -18,7 +18,7 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
 const { post } = storeToRefs(usePostStore())
 const { commentRef } = storeToRefs(useCommentStore())
-const { dimensions } = storeToRefs(useResizeStore())
+const { isDesktop } = storeToRefs(useResizeStore())
 const isLike = ref(false)
 const isFavorited = ref(false)
 const isLoadingLike = ref(false)
@@ -91,16 +91,12 @@ onMounted(async () => {
     isFavorited.value = post.value.is_favorited ?? false
   }
 })
-
-const desktop = computed(() => {
-  return dimensions.value.width > 736
-})
 </script>
 
 <template>
   <div
     class="flex flex-col"
-    :class="{ 'border-b border-borderColor': desktop }"
+    :class="{ 'border-b border-borderColor': isDesktop }"
   >
     <div class="flex justify-between px-[10px] py-[6px]">
       <div class="flex">

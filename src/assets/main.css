@@ -295,6 +295,19 @@ button {
   opacity: 0;
 }
 
+.slideDown-enter-active,
+.slideDown-leave-active {
+  max-height: 340px;
+  opacity: 1;
+  transition: all 180ms linear;
+}
+
+.slideDown-enter-from,
+.slideDown-leave-to {
+  max-height: 0px;
+  opacity: 0;
+}
+
 /* === Swiper === */
 .swiper-pagination-bullet {
   width: 6px;

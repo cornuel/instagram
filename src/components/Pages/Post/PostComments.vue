@@ -6,7 +6,7 @@ import CommentItem from '@/components/Molecules/Comment/CommentItem.vue'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
 
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, onMounted } from 'vue'
 import { useComment } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { usePostStore, useCommentStore } from '@/stores'

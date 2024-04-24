@@ -13,10 +13,11 @@ import CaptionPost from './CaptionPost.vue'
 
 import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCreatePostStore } from '@/stores'
+import { useCreatePostStore, useResizeStore } from '@/stores'
 import { getReviewImageSize, getRatioCrop } from '@/helpers'
 import type { IMedia, IPoint, ISize } from '@/types'
 
+const { isDesktop } = storeToRefs(useResizeStore())
 const containerRef = ref<Nullable<HTMLDivElement>>(null)
 const cropperRef = ref<Nullable<HTMLDivElement>>(null)
 const imageRef = ref<Nullable<HTMLDivElement>>(null)
@@ -62,9 +63,10 @@ const imgStyle = computed(() => {
 })
 
 const imgCoverStyle = computed(() => ({
-  background: currentMedia.value!.filters!.background + currentMedia.value!.filters!.vignette
+  background:
+    currentMedia.value!.filters!.background +
+    currentMedia.value!.filters!.vignette
 }))
-
 
 const handleChangeScale = () => {
   const { updateMedia } = useCreatePostStore()
@@ -128,20 +130,31 @@ const changeRatio = (ratio: string) => {
 
   switch (ratio) {
     case 'original':
-      width = Math.min(containerSizeValue.width, containerSizeValue.height * currentMedia.value!.size.width / currentMedia.value!.size.height)
-      height = Math.min(containerSizeValue.height, containerSizeValue.width * currentMedia.value!.size.height / currentMedia.value!.size.width)
+      width = Math.min(
+        containerSizeValue.width,
+        (containerSizeValue.height * currentMedia.value!.size.width) /
+          currentMedia.value!.size.height
+      )
+      height = Math.min(
+        containerSizeValue.height,
+        (containerSizeValue.width * currentMedia.value!.size.height) /
+          currentMedia.value!.size.width
+      )
       break
     case '1:1':
       width = Math.min(containerSizeValue.width, containerSizeValue.height)
       height = width
       break
     case '4:5':
-      height = Math.min(containerSizeValue.height, size.height * scaleValueValue)
-      width = Math.min(containerSizeValue.width, height * 4 / 5)
+      height = Math.min(
+        containerSizeValue.height,
+        size.height * scaleValueValue
+      )
+      width = Math.min(containerSizeValue.width, (height * 4) / 5)
       break
     case '16:9':
       width = Math.min(containerSizeValue.width, size.width * scaleValueValue)
-      height = Math.min(containerSizeValue.height, width * 9 / 16)
+      height = Math.min(containerSizeValue.height, (width * 9) / 16)
       break
   }
 
@@ -188,28 +201,33 @@ const drawCanvasforAllMedia = () => {
   })
 }
 
-function cssRadialGradientToCanvasGradient(ctx: CanvasRenderingContext2D, cssString: string) {
-  const match = cssString.match(/circle (\d+)px at center, rgba\(\d+,\d+,\d+,\d+\) (\d+)px, rgba\(\d+,\d+,\d+,\d+\) (\d+)px/);
+function cssRadialGradientToCanvasGradient(
+  ctx: CanvasRenderingContext2D,
+  cssString: string
+) {
+  const match = cssString.match(
+    /circle (\d+)px at center, rgba\(\d+,\d+,\d+,\d+\) (\d+)px, rgba\(\d+,\d+,\d+,\d+\) (\d+)px/
+  )
   if (!match) {
-      throw new Error('Invalid CSS radial gradient string');
+    throw new Error('Invalid CSS radial gradient string')
   }
 
-  const vignetteSize = parseInt(match[2], 10);
-  const vignetteBlur = parseInt(match[3], 10);
+  const vignetteSize = parseInt(match[2], 10)
+  const vignetteBlur = parseInt(match[3], 10)
 
   const gradient = ctx.createRadialGradient(
-    ctx.canvas.width / 2, 
+    ctx.canvas.width / 2,
     ctx.canvas.height / 2,
     vignetteSize,
     ctx.canvas.width / 2,
     ctx.canvas.height / 2,
     vignetteBlur
-  );
+  )
 
-  gradient.addColorStop(0, 'rgba(0,0,0,0)');
-  gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
+  gradient.addColorStop(0, 'rgba(0,0,0,0)')
+  gradient.addColorStop(1, 'rgba(0,0,0,0.4)')
 
-  return gradient;
+  return gradient
 }
 
 const drawCanvasforMedia = (media: IMedia) => {
@@ -217,7 +235,12 @@ const drawCanvasforMedia = (media: IMedia) => {
     const cropperRect = cropperRef.value!.getBoundingClientRect()
     const imageRect = imageRef.value!.getBoundingClientRect()
 
-    const ratioCrop = getRatioCrop(media.image, cropperSize.value, scaleValue.value, currentRatio.value)
+    const ratioCrop = getRatioCrop(
+      media.image,
+      cropperSize.value,
+      scaleValue.value,
+      currentRatio.value
+    )
 
     media.canvas.width = cropperSize.value.width * ratioCrop
     media.canvas.height = cropperSize.value.height * ratioCrop
@@ -225,7 +248,12 @@ const drawCanvasforMedia = (media: IMedia) => {
     const ctx = media.canvas.getContext('2d')
     if (ctx) {
       if (currentMedia.value) {
-        ctx.clearRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+        ctx.clearRect(
+          0,
+          0,
+          currentMedia.value.canvas.width,
+          currentMedia.value.canvas.height
+        )
       }
       ctx.setTransform(1, 0, 0, 1, 0, 0)
 
@@ -238,17 +266,19 @@ const drawCanvasforMedia = (media: IMedia) => {
       ctx.drawImage(media.image, 0, 0)
 
       if (media.filters!.vignette) {
-        const gradient = cssRadialGradientToCanvasGradient(ctx, media.filters!.vignette);
-        ctx.fillStyle = gradient;
+        const gradient = cssRadialGradientToCanvasGradient(
+          ctx,
+          media.filters!.vignette
+        )
+        ctx.fillStyle = gradient
         // ctx.fillStyle = 'radial-gradient(circle 12px at center, rgba(0,0,0,0) 12px, rgba(0,0,0,1) 788px)';
         ctx.fillRect(0, 0, media.canvas.width, media.canvas.height)
       }
 
-      if(media.filters!.background) {
+      if (media.filters!.background) {
         ctx.fillStyle = media.filters!.background
         ctx.fillRect(0, 0, media.canvas.width, media.canvas.height)
       }
-
     }
   }
 }
@@ -258,18 +288,25 @@ const drawCanvas = () => {
     const cropperRect = cropperRef.value!.getBoundingClientRect()
     const imageRect = imageRef.value!.getBoundingClientRect()
 
-    const ratioCrop = getRatioCrop(currentMedia.value.image, cropperSize.value, scaleValue.value, currentRatio.value)
+    const ratioCrop = getRatioCrop(
+      currentMedia.value.image,
+      cropperSize.value,
+      scaleValue.value,
+      currentRatio.value
+    )
 
     currentMedia.value.canvas.width = cropperSize.value.width * ratioCrop
     currentMedia.value.canvas.height = cropperSize.value.height * ratioCrop
 
-
-
     const ctx = currentMedia.value.canvas.getContext('2d')
     if (ctx) {
-      ctx.clearRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+      ctx.clearRect(
+        0,
+        0,
+        currentMedia.value.canvas.width,
+        currentMedia.value.canvas.height
+      )
       ctx.setTransform(1, 0, 0, 1, 0, 0)
-
 
       ctx.translate(
         (imageRect.x - cropperRect.x) * ratioCrop,
@@ -280,15 +317,28 @@ const drawCanvas = () => {
       ctx.drawImage(currentMedia.value.image, 0, 0)
 
       if (currentMedia.value.filters!.vignette) {
-        const gradient = cssRadialGradientToCanvasGradient(ctx, currentMedia.value.filters!.vignette);
-        ctx.fillStyle = gradient;
+        const gradient = cssRadialGradientToCanvasGradient(
+          ctx,
+          currentMedia.value.filters!.vignette
+        )
+        ctx.fillStyle = gradient
         // ctx.fillStyle = 'radial-gradient(circle 12px at center, rgba(0,0,0,0) 12px, rgba(0,0,0,1) 788px)';
-        ctx.fillRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+        ctx.fillRect(
+          0,
+          0,
+          currentMedia.value.canvas.width,
+          currentMedia.value.canvas.height
+        )
       }
 
-      if(currentMedia.value.filters!.background) {
+      if (currentMedia.value.filters!.background) {
         ctx.fillStyle = currentMedia.value.filters!.background
-        ctx.fillRect(0, 0, currentMedia.value.canvas.width, currentMedia.value.canvas.height)
+        ctx.fillRect(
+          0,
+          0,
+          currentMedia.value.canvas.width,
+          currentMedia.value.canvas.height
+        )
       }
     }
   }
@@ -341,9 +391,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-nowrap w-full h-full">
-    <div class="relative w-[400px] h-full select-none">
-      <div ref="containerRef" class="w-full h-full flex flex-center bg-[#f5f5f5]">
+  <div
+    :class="isDesktop ? 'flex nowrap' : 'flex-wrap'"
+    class="min-h-[400px]"
+  >
+    <div
+      class="relative max-w-[400px] max-h-[400px] h-full w-full select-none overflow-y-scoll"
+    >
+      <div
+        ref="containerRef"
+        class="w-full h-full flex flex-center bg-[#f5f5f5]"
+      >
         <div
           ref="cropperRef"
           class="relative overflow-hidden"
@@ -369,14 +427,20 @@ onMounted(() => {
             class="absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-[#1a1a1acc] rounded-full flex flex-center p-2 transition-opacity duration-200 hover:opacity-60 cursor-pointer z-[1] left-2"
             @click="handlePrevMedia"
           >
-            <fa :icon="['fas', 'chevron-left']" class="text-base text-white fill-white" />
+            <fa
+              :icon="['fas', 'chevron-left']"
+              class="text-base text-white fill-white"
+            />
           </div>
           <div
             v-if="currentMediaIndex != medias.length - 1"
             class="absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-[#1a1a1acc] rounded-full flex flex-center p-2 transition-opacity duration-200 hover:opacity-60 cursor-pointer z-[1] right-2"
             @click="handleNextMedia"
           >
-            <fa :icon="['fas', 'chevron-right']" class="text-base text-white fill-white" />
+            <fa
+              :icon="['fas', 'chevron-right']"
+              class="text-base text-white fill-white"
+            />
           </div>
         </div>
         <div
@@ -386,7 +450,10 @@ onMounted(() => {
           <div
             v-for="media in medias"
             :key="media.url"
-            :class="['w-[6px] h-[6px] bg-borderColor-dark has-[active]:bg-bgColor-primary dark:has-[active]:bg-buttonColor-primary rounded-full mx-[2px] transition-colors duration-200 ease-in-out', { active: media.url == currentMedia!.url }]"
+            :class="[
+              'w-[6px] h-[6px] bg-borderColor-dark has-[active]:bg-bgColor-primary dark:has-[active]:bg-buttonColor-primary rounded-full mx-[2px] transition-colors duration-200 ease-in-out',
+              { active: media.url == currentMedia!.url }
+            ]"
           ></div>
         </div>
         <div
@@ -421,7 +488,10 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-if="currentTab == 'EditorPost'" class="absolute left-0 bottom-0 w-full select-none">
+      <div
+        v-if="currentTab == 'EditorPost'"
+        class="absolute left-0 bottom-0 w-full select-none"
+      >
         <div class="left">
           <div
             class="absolute left-0 bottom-0 flex flex-col"
@@ -429,7 +499,10 @@ onMounted(() => {
             v-click-outside.short="() => (aspectRatioActive = false)"
           >
             <transition name="fadeUp">
-              <div class="ml-4 rounded-lg bg-overlay z-[1]" v-if="aspectRatioActive">
+              <div
+                class="ml-4 rounded-lg bg-overlay z-[1]"
+                v-if="aspectRatioActive"
+              >
                 <div
                   class="original flex items-center pl-4 cursor-pointer opacity-60 has-[active]:opacity-100"
                   :class="{ active: currentRatio == 'original' }"
@@ -529,7 +602,10 @@ onMounted(() => {
             "
           >
             <!-- <transition name="fadeUp"> -->
-            <div class="flex" v-if="listImageActive">
+            <div
+              class="flex"
+              v-if="listImageActive"
+            >
               <ListPost />
             </div>
             <!-- </transition> -->
@@ -545,12 +621,15 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <transition name="slideRight">
+    <transition :name="isDesktop ? 'slideRight' : 'slideDown'">
       <div
         v-if="['FilterPost', 'CaptionPost'].includes(currentTab)"
-        class="border-l border-borderColor overflow-hidden"
+        class="border-l border-borderColor"
       >
-        <FilterPost v-if="currentTab == 'FilterPost'" @drawCanvas="drawCanvas" />
+        <FilterPost
+          v-if="currentTab == 'FilterPost'"
+          @drawCanvas="drawCanvas"
+        />
         <CaptionPost v-if="currentTab == 'CaptionPost'" />
       </div>
     </transition>

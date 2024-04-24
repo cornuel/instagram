@@ -46,5 +46,10 @@ export const useResizeStore = defineStore('resize', {
         this.dimensions.height = height
       }, 300)
     }
+  },
+  getters: {
+    isDesktop(): boolean {
+      return this.dimensions.width > 736
+    }
   }
 })

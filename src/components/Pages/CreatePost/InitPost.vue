@@ -23,6 +23,11 @@ const getInputFiles = (event: Event) => {
         fileErrorName.value = fileArr[index].name
         setTitle('File should be more than 5 KB')
         break
+      } else if (fileArr[index].size > 1024 * 1024 * 5) {
+        isError.value = true
+        fileErrorName.value = fileArr[index].name
+        setTitle('File should be less than 5 MB')
+        break
       }
     }
     if (!isError.value) uploadMedias(files)
@@ -48,6 +53,11 @@ const handleDrop = (event: DragEvent) => {
         fileErrorName.value = fileArr[index].name
         setTitle('File should be more than 5 KB')
         break
+      } else if (fileArr[index].size > 1024 * 1024 * 5) {
+        isError.value = true
+        fileErrorName.value = fileArr[index].name
+        setTitle('File should be less than 5 MB')
+        break
       }
     }
     if (!isError.value) uploadMedias(files)
@@ -57,7 +67,7 @@ const handleDrop = (event: DragEvent) => {
 
 <template>
   <div
-    class="w-[400px] h-full p-6"
+    class="w-[400px] h-[400px] items-center"
     @dragover="handleDragOver($event)"
     @drop="handleDrop($event)"
   >
@@ -74,19 +84,18 @@ const handleDrop = (event: DragEvent) => {
         v-else
         class="text-textColor-primary fill-textColor-primary"
       />
-      <span class="text-xl mt-[10px]"
-        >Drag photos and videos here</span
-      >
+      <span class="text-xl mt-[10px]">Drag photos and videos here</span>
       <span
         v-if="isError"
         class="text-sm text-textColor-secondary text-center mt-1"
       >
-        <span class="font-semibold">{{
-          fileErrorName
-        }}</span>
+        <span class="font-semibold">{{ fileErrorName }}</span>
         Should be more than 5 KB.
       </span>
-      <UiButton primary class="mt-5">
+      <UiButton
+        primary
+        class="mt-5"
+      >
         <span>Select from computer</span>
         <input
           ref="inputFiles"

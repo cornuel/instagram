@@ -9,28 +9,22 @@ import PostActions from './PostActions.vue'
 import Modal from '@/components/Modal/Modal.vue'
 import UsersWhoLikedModal from '@/components/Modal/UsersWhoLikedModal.vue'
 
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
   useProfileStore,
   usePostStore,
   useCommentStore,
-  useModalStore,
   useResizeStore,
   useThemeStore
 } from '@/stores'
 import { useComment } from '@/composables'
 
-import { useRouter, useRoute } from 'vue-router'
-
 const { authenticatedProfile } = storeToRefs(useProfileStore())
-const { showPostModal } = storeToRefs(useModalStore())
-const { dimensions } = storeToRefs(useResizeStore())
+const { isDesktop } = storeToRefs(useResizeStore())
 const { post, likedListModal } = storeToRefs(usePostStore())
 const { comment, commentRef } = storeToRefs(useCommentStore())
 const { darkMode } = storeToRefs(useThemeStore())
-
-const router = useRouter()
 
 const emojiPickerActive = ref(false)
 const loadingComment = ref(false)
@@ -71,10 +65,6 @@ const handleComment = async () => {
 const close = () => {
   likedListModal.value = false
 }
-
-const desktop = computed(() => {
-  return dimensions.value.width > 736
-})
 </script>
 
 <template>
@@ -83,19 +73,19 @@ const desktop = computed(() => {
     class="flex flex-col min-[736px]:flex-row mx-auto min-h-[480px] max-w-[80rem] max-h-[92vh] bg-bgColor-primary rounded-md"
     :class="{ 'border border-borderColor': darkMode }"
   >
-    <PostHeader v-if="!desktop" />
+    <PostHeader v-if="!isDesktop" />
     <div
       class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-md min-[736px]:rounded-bl-md bg-[#000000] w-full"
     >
       <PostSwiper
         class="w-full"
-        :class="{ '': desktop }"
+        :class="{ '': isDesktop }"
       />
     </div>
     <div
       class="flex flex-col w-full min-[1024px]:w-[30rem] min-[768px]:w-[20rem] flex-shrink-0 border-l-0 min-[736px]:border-l border-borderColor"
     >
-      <PostHeader v-if="desktop" />
+      <PostHeader v-if="isDesktop" />
       <PostComments
         class="flex-grow border-b border-borderColor h-[200px] min-[736px]:h-auto"
       />
