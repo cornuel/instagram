@@ -71,7 +71,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-center h-full w-[400px]">
+  <div class="flex flex-col flex-center w-[400px] h-[400px] items-center">
     <div
       v-if="errorMessage === ''"
       class="w-[96px] h-[96px] bg-cover bg-center bg-no-repeat"
