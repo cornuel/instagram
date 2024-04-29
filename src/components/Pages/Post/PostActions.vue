@@ -157,9 +157,7 @@ onMounted(async () => {
         >
       </div>
       <div class="flex px-4 mb-4">
-        <span
-          class="text-sm font-normal text-textColor-secondary"
-          @click="handleClickLikedPost"
+        <span class="text-sm font-normal text-textColor-secondary"
           >{{
             post!.view_count.toLocaleString('en-US').replace(',', '.')
           }}
