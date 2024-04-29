@@ -137,23 +137,35 @@ onMounted(async () => {
         />
       </div>
     </div>
-    <div class="flex flex-col px-4 mb-4">
-      <span
-        class="text-sm font-semibold"
-        :class="{
-          'cursor-pointer': post!.like_count > 0
-        }"
-        @click="handleClickLikedPost"
-        >{{
-          post!.like_count.toLocaleString('en-US').replace(',', '.')
-        }}
-        likes</span
-      >
-      <span
-        class="text-[10px] uppercase text-textColor-secondary"
-        :title="fullCreatedAtComp"
-        >{{ postCreatedAt }}</span
-      >
+    <div class="flex justify-between">
+      <div class="flex flex-col px-4 mb-4">
+        <span
+          class="text-sm font-semibold"
+          :class="{
+            'cursor-pointer': post!.like_count > 0
+          }"
+          @click="handleClickLikedPost"
+          >{{
+            post!.like_count.toLocaleString('en-US').replace(',', '.')
+          }}
+          likes</span
+        >
+        <span
+          class="text-[10px] uppercase text-textColor-secondary"
+          :title="fullCreatedAtComp"
+          >{{ postCreatedAt }}</span
+        >
+      </div>
+      <div class="flex px-4 mb-4">
+        <span
+          class="text-sm font-normal text-textColor-secondary"
+          @click="handleClickLikedPost"
+          >{{
+            post!.view_count.toLocaleString('en-US').replace(',', '.')
+          }}
+          views</span
+        >
+      </div>
     </div>
   </div>
 </template>
