@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vue-eternal-loading flex"
+    class="vue-eternal-loading flex justify-center"
     ref="rootRef"
   >
     <slot
@@ -8,7 +8,7 @@
       v-bind="{ isFirstLoad }"
       name="loading"
     >
-      <Loading class="absolute left-1/2 mt-2" />
+      <Loading />
       <!-- <div class="loading">Loading...</div> -->
     </slot>
     <slot
