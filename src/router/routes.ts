@@ -86,5 +86,26 @@ export default [
 
       next()
     }
-  }
+  },
+  {
+    path: '/too-many-requests',
+    name: 'TooManyRequests',
+    component: () => import('@/views/tooManyRequests.vue'),
+    meta: { title: 'Too many requests • Instagram', requiresAuth: true },
+    beforeEnter: async (
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) => {
+      const { authenticatedProfile } = storeToRefs(useProfileStore())
+
+      if (authenticatedProfile.value) {
+        to.meta.layout = DashboardLayout
+      } else {
+        to.meta.layout = AuthLayout
+      }
+
+      next()
+    }
+  },
 ] as readonly RouteRecordRaw[]

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 declare const $cookies: any;
 import type { IApiErrorData } from '@/types';
+import router from '@/router';
 
 const IS_DEV: boolean = import.meta.env.VITE_ENV === 'dev' ? true : false;
 
@@ -23,6 +24,10 @@ instance.interceptors.response.use(
 
     // Get the status code from the error response
     const status = error.response ? error.response.status : null;
+    // Check if the status is 429 Too Many Requests
+    if (status === 429) {
+      router.push('/too-many-requests');
+    }
     // If the status is 401, it means the token is expired
     if (((status === 401)) && !originalRequest._retry) {
       originalRequest._retry = true; // Set the retry flag
