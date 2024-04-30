@@ -13,10 +13,8 @@ withDefaults(
 
 <template>
   <div class="flex flex-center">
-    <div class="animate-spin">
-      <LoadingIcon
-        :style="{ width: width, height: width }"
-      />
+    <div class="animate-spin mb-2">
+      <LoadingIcon :style="{ width: width, height: width }" />
     </div>
   </div>
 </template>

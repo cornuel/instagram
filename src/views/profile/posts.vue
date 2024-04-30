@@ -72,25 +72,30 @@ onBeforeMount(async () => {
       :duration="{ enter: 300, leave: 200 }"
       name="postsTransition"
     >
-      <Loading
+      <div
         v-if="isLoading"
-        class="absolute left-1/2 mt-10"
-      />
+        class="flex justify-center"
+      >
+        <div class="absolute">
+          <Loading class="mt-10" />
+        </div>
+      </div>
       <template v-else>
-        <div
-          v-if="showedPosts && showedPosts.count > 0"
-          class="flex flex-wrap"
-        >
-          <TransitionGroup name="list">
-            <PostReviewItem
-              :class="getLayoutClass"
-              class="innerPostsTransition px-[2px] mb-1"
-              v-for="post in showedPosts.results"
-              :key="post.id"
-              :post="post"
-            />
-          </TransitionGroup>
-          <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
+        <div v-if="showedPosts && showedPosts.count > 0">
+          <div class="flex flex-wrap">
+            <TransitionGroup name="list">
+              <PostReviewItem
+                :class="getLayoutClass"
+                class="innerPostsTransition px-[2px] mb-1"
+                v-for="post in showedPosts.results"
+                :key="post.id"
+                :post="post"
+              />
+            </TransitionGroup>
+          </div>
+          <div class="flex justify-center">
+            <VueEternalLoading :load="loadMorePosts" />
+          </div>
         </div>
         <div
           v-else

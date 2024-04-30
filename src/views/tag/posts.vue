@@ -106,20 +106,21 @@ onBeforeMount(async () => {
         class="absolute left-1/2 mt-10"
       />
       <template v-else>
-        <div
-          v-if="showedPosts"
-          class="flex flex-wrap -mx-[2px]"
-        >
-          <TransitionGroup name="list">
-            <PostReviewItem
-              :class="getLayoutClass"
-              class="innerPostsTransition px-[2px] mb-1"
-              v-for="post in showedPosts.results"
-              :key="post.id"
-              :post="post"
-            />
-          </TransitionGroup>
-          <VueEternalLoading :load="loadMorePosts"></VueEternalLoading>
+        <div v-if="showedPosts">
+          <div class="flex flex-wrap -mx-[2px]">
+            <TransitionGroup name="list">
+              <PostReviewItem
+                :class="getLayoutClass"
+                class="innerPostsTransition px-[2px] mb-1 overflow-y-hidden"
+                v-for="post in showedPosts.results"
+                :key="post.id"
+                :post="post"
+              />
+            </TransitionGroup>
+            <div class="flex justify-center">
+              <VueEternalLoading :load="loadMorePosts" />
+            </div>
+          </div>
         </div>
       </template>
     </Transition>
