@@ -28,7 +28,7 @@ const isFocus = ref(false)
 
 const autocomplete = computed(() => {
   if (props.type === 'password') {
-    return 'on'
+    return 'off'
   } else {
     return 'username'
   }
@@ -76,9 +76,20 @@ const blurInput = () => {
         >{{ placeholder }}</span
       >
     </div>
-    <div v-if="checkValue != null && inputValue != ''" class="parent-[.focus]:hidden mr-2">
-      <fa v-if="checkValue" :icon="['far', 'circle-check']" style="color: #b4b4b4; height: 22px" />
-      <fa v-else :icon="['far', 'circle-xmark']" style="color: #ee2d3e; height: 22px" />
+    <div
+      v-if="checkValue != null && inputValue != ''"
+      class="parent-[.focus]:hidden mr-2"
+    >
+      <fa
+        v-if="checkValue"
+        :icon="['far', 'circle-check']"
+        style="color: #b4b4b4; height: 22px"
+      />
+      <fa
+        v-else
+        :icon="['far', 'circle-xmark']"
+        style="color: #ee2d3e; height: 22px"
+      />
     </div>
     <div
       v-if="type == 'password' && inputValue != ''"
