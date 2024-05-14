@@ -16,8 +16,8 @@ interface AuthError {
   loginError: string | null
 }
 
-const username = ref('demo')
-const password = ref('!Rootroot1')
+const username = ref('')
+const password = ref('')
 const authError = ref<AuthError>({
   loginError: null
 })
