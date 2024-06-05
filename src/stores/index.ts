@@ -1,5 +1,6 @@
 export * from './loading'
 export * from './search'
+export * from './feed'
 export * from './tag'
 export * from './profile'
 export * from './auth'

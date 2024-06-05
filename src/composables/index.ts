@@ -1,5 +1,6 @@
 export * from './useAuth'
 export * from './useSearch'
+export * from './useFeed'
 export * from './useTag'
 export * from './useProfile'
 export * from './useComment'

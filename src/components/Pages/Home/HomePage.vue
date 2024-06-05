@@ -1,20 +1,23 @@
-<template>
-  <!-- <div>Welcome</div>
-  <div class="mt-10 cursor-pointer" @click="logout">Logout</div> -->
-  <div></div>
-</template>
-
 <script setup lang="ts">
-import { useProfileStore } from '@/stores'
+import { useFeedStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import FeedPost from '../Post/FeedPost.vue'
 
 const router = useRouter()
 
-const logout = async () => {
-  const { setAuthenticatedUsername } = useProfileStore()
-  setAuthenticatedUsername('')
-  router.push('accounts/login')
-}
+const { feed } = storeToRefs(useFeedStore())
 </script>
 
-<style scoped></style>
+<template>
+  <div
+    class="max-w-[935px] pt-[30px] px-0 min-[736px]:px-5 mx-auto box-content flex flex-col"
+  >
+    <div>Yo</div>
+  </div>
+  <!-- <FeedPost
+    v-for="post in feed?.results"
+    :key="post.id"
+    :post="post"
+  /> -->
+</template>

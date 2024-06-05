@@ -2,11 +2,13 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 import { storeToRefs } from 'pinia'
-import { useProfileStore } from '@/stores'
+import { useProfileStore, useFeedStore } from '@/stores'
+import { useFeed } from '@/composables'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import post from './post'
 import profile from './profile'
 import tag from './tag'
+import type { IPaginatedPosts } from '@/types'
 
 export default [
   {
@@ -23,6 +25,15 @@ export default [
 
       if (authenticatedProfile.value) {
         to.meta.layout = DashboardLayout
+        const { setFeed } = useFeedStore()
+        const { fetchFeed } = useFeed()
+
+        const res: IPaginatedPosts | null = await fetchFeed()
+
+        if (res) {
+          setFeed(res)
+        }
+
       } else {
         to.meta.layout = AuthLayout
       }
