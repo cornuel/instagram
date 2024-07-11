@@ -41,7 +41,6 @@ export const useLike = () => {
     }
   }
 
-
   const getPostLike = async (postId: string) => {
     // todo
   }

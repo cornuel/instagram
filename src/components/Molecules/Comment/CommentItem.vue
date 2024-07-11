@@ -31,9 +31,13 @@ const props = withDefaults(
     updated?: any
     url?: string
     isCaption?: boolean
+    isFeedPostCaption?: boolean
+    isFeedPostTopComment?: boolean
   }>(),
   {
-    isCaption: false
+    isCaption: false,
+    isFeedPostCaption: false,
+    isFeedPostTopComment: false
   }
 )
 
@@ -105,7 +109,7 @@ const handleLike = async () => {
   try {
     // console.log(isLike.value)
     const response = await likeComment(Number(props.id!), !isLike.value)
-    console.log(response.message)
+    // console.log(response.message)
   } catch (error) {
     isLike.value = !isLike.value
   }
@@ -138,6 +142,13 @@ const handleClickLikeCount = async () => {
 }
 
 onBeforeMount(async () => {
+  // get the already fetched profile if feed post
+  if (props.isFeedPostCaption) {
+    const { getProfilefromFeedProfiles } = useProfileStore()
+    user.value = getProfilefromFeedProfiles(props!.profile)
+    loading.value = false
+    return
+  }
   if (!commentProfiles.value[props.profile]) {
     const { getProfile } = useProfile()
     const profile = await getProfile(props.profile)
@@ -161,15 +172,19 @@ onMounted(async () => {
 <template>
   <div
     v-if="body && !loading"
-    class="flex group/comment mb-4 mt-2"
+    class="flex group/comment mt-2"
+    :class="isFeedPostCaption ? '' : 'mb-4'"
   >
-    <div class="">
+    <div
+      v-if="!isFeedPostCaption && !isFeedPostTopComment"
+      class="mr-3"
+    >
       <Avatar
         width="32"
         :avatar-url="user?.profile_pic"
       />
     </div>
-    <div class="flex flex-grow flex-col ml-3 mt-[2px]">
+    <div class="flex flex-grow flex-col mt-[2px]">
       <div class="">
         <RouterLink
           v-if="user"
@@ -180,22 +195,22 @@ onMounted(async () => {
         >
           <span class="font-semibold mr-1">{{ user.username }}</span>
         </RouterLink>
-        <div class="inline-flex items-center">
-          <span
-            class="leading-tight"
-            v-html="commentComp"
-          ></span>
+        <div class="inline-flex items-center whitespace-pre-wrap">
+          <span class="leading-tight whitespace-pre-wrap">
+            {{ commentComp }}
+          </span>
         </div>
       </div>
       <div
         class="flex flex-wrap items-center mt-1 text-xs text-textColor-secondary"
       >
         <span
+          v-if="!isFeedPostCaption"
           class="mr-3 cursor-pointer"
           :title="fullCreatedAtComp"
           >{{ createdTimeComp }}</span
         >
-        <template v-if="!isCaption">
+        <template v-if="!isCaption && !isFeedPostCaption">
           <span
             v-if="likeCount && likeCount > 0"
             class="font-semibold mr-3 cursor-pointer"
@@ -203,6 +218,7 @@ onMounted(async () => {
             >{{ likeCount }} likes</span
           >
           <span
+            v-if="!isFeedPostTopComment"
             class="font-semibold mr-5 cursor-pointer"
             @click="handleReply"
             >Reply</span
@@ -223,7 +239,7 @@ onMounted(async () => {
       </div>
     </div>
     <div
-      v-if="!isCaption && authenticatedProfile"
+      v-if="!isCaption && !isFeedPostCaption && authenticatedProfile"
       class="mt-3 ml-1 cursor-pointer"
     >
       <LikeIcon

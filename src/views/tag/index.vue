@@ -46,7 +46,7 @@ onBeforeRouteUpdate(() => {
           <div
             class="text-transparent bg-clip-text bg-gradient-to-r from-[#c128be] via-[#ea3469] to-[#ee8131]"
           >
-            <div class="text-3xl min-[736px]:text-4xl font-light">
+            <div class="text-3xl min-[736px]:text-4xl font-light pb-2">
               {{ currentTag?.name }}
             </div>
           </div>
@@ -56,8 +56,8 @@ onBeforeRouteUpdate(() => {
           <div class="text-base">
             <span
               class="font-semibold"
-              :title="currentTag?.post_count?.toString()"
-              >{{ currentTag?.post_count }}</span
+              :title="currentTag?.posts_count?.toString()"
+              >{{ currentTag?.posts_count }}</span
             >
             <span class=""> posts</span>
           </div>

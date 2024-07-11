@@ -54,22 +54,49 @@ export const usePostStore = defineStore('post', {
     },
     increaseLikeCount() {
       this.post!.like_count += 1
+      this.post!.is_liked = true
       try {
         const index = this.showedPosts!.results!.findIndex(
           (post: IPost) => post.id === this.post!.id
         )
+        console.log(index)
         this.showedPosts!.results![index].like_count += 1
+        this.showedPosts!.results![index].is_liked = true
       } catch {
         console.debug('post not found')
       }
     },
     decreaseLikeCount() {
       this.post!.like_count -= 1
+      this.post!.is_liked = false
       try {
         const index = this.showedPosts!.results!.findIndex(
           (post: IPost) => post.id === this.post!.id
         )
         this.showedPosts!.results![index].like_count -= 1
+        this.showedPosts!.results![index].is_liked = false
+      } catch {
+        console.debug('post not found')
+      }
+    },
+    addPosttoFavoritedPosts() {
+      this.post!.is_favorited = true
+      try {
+        const index = this.showedPosts!.results!.findIndex(
+          (post: IPost) => post.id === this.post!.id
+        )
+        this.showedPosts!.results![index].is_favorited = true
+      } catch {
+        console.debug('post not found')
+      }
+    },
+    removePostfromFavoritedPosts() {
+      this.post!.is_favorited = false
+      try {
+        const index = this.showedPosts!.results!.findIndex(
+          (post: IPost) => post.id === this.post!.id
+        )
+        this.showedPosts!.results![index].is_favorited = false
       } catch {
         console.debug('post not found')
       }

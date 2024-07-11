@@ -1,4 +1,4 @@
-import { useCreatePostStore } from '@/stores'
+import { useCreatePostStore, usePostStore } from '@/stores'
 import type { IPost, IPaginatedPosts } from '@/types'
 import { instance, axiosAPI } from '@/libs'
 
@@ -65,11 +65,15 @@ export const usePost = () => {
     }
   }
 
-  const makePostFavorite = async (postSlug: string) => {
+  const makePostFavorite = async (postSlug: string, isFavorited: boolean) => {
+    const { removePostfromFavoritedPosts, addPosttoFavoritedPosts } = usePostStore()
     try {
+      isFavorited ? removePostfromFavoritedPosts() : addPosttoFavoritedPosts()
       const response = await instance.post(`posts/${postSlug}/favorite/`)
       return response.data.message === 'Post added to favorites successfully'
     } catch (error) {
+      // Rollback optimistic update
+      isFavorited ? addPosttoFavoritedPosts() : removePostfromFavoritedPosts()
       handleApiError(error)
       return null;;
     }

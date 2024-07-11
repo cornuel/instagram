@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import type { IProfile } from '@/types'
+import { useProfile } from '@/composables'
 
 interface IState {
+  feedProfiles: Record<string, IProfile>
   authenticatedUsername: Nullable<string>
   postProfile: Nullable<IProfile>
   viewedProfile: Nullable<IProfile>
@@ -10,12 +12,32 @@ interface IState {
 
 export const useProfileStore = defineStore('profile', {
   state: (): IState => ({
+    feedProfiles: {},
     authenticatedUsername: localStorage.getItem('authenticatedUsername') || null,
     postProfile: null,
     viewedProfile: null,
     authenticatedProfile: JSON.parse(localStorage.getItem('authenticatedProfile') || 'null')
   }),
   actions: {
+    async addProfiletoFeedProfiles(profileName: string) {
+      const { getProfile } = useProfile();
+      // console.log(`Adding profile ${profileName} to feedProfiles`);
+      if (this.feedProfiles[profileName] === undefined) {
+        try {
+          const profile = await getProfile(profileName);
+          if (profile) {
+            this.feedProfiles[profileName] = profile;
+            console.log(`Profile ${profileName} added to feed profiles`)
+          }
+        } catch (error) {
+          console.error(`Failed to get profile for ${profileName}:`, error);
+        }
+      }
+    },
+    getProfilefromFeedProfiles(profileName: string) {
+      // console.log(`Getting profile ${profileName} from feedProfiles`);
+      return this.feedProfiles[profileName] || null;
+    },
     increasePostsCount() {
       this.authenticatedProfile!.posts_count++
     },

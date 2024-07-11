@@ -44,14 +44,24 @@ export default {
       const previousRouteZero = from.matched[0];
       const previousRoute = from
 
-      if (previousRouteZero?.name === 'Profile' || previousRouteZero?.name === 'Tag') {
+      if (
+        previousRouteZero?.name === 'Profile' ||
+        previousRouteZero?.name === 'Tag' ||
+        previousRouteZero?.name === 'Home'
+      ) {
+
         const { name } = previousRouteZero;
         const { params } = previousRoute;
         to.matched = from.matched;
+        // console.log(to.matched, from.matched)
 
         if (name === 'Profile') {
           to.params.username = params.username;
         } else if (name === 'Tag') {
+          to.params.tagname = params.tagname;
+        }
+        else {
+          to.params.username = params.username;
           to.params.tagname = params.tagname;
         }
       }

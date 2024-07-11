@@ -59,6 +59,9 @@ instance.interceptors.response.use(
           // Retry the original request with the new token
           return axios(originalRequest);
         }
+        else {
+          return null
+        }
       } catch (error) {
         // If the refresh token is also expired, log out the user
         localStorage.clear();

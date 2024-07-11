@@ -26,8 +26,10 @@ const { likedListModal } = storeToRefs(usePostStore())
 
 const handleClickOutsideModal = () => {
   showPostModal.value = false
+  // console.log(route.matched[0].components!.modal)
   if (route.matched[0].components!.modal)
     delete route.matched[0].components!.modal
+  // router.push({ name: 'Profile', params: { username: 'root' } })
   router.back()
   emit('click-outside')
 }
@@ -56,14 +58,14 @@ onBeforeRouteUpdate(() => {
     :class="isPopup ? 'z-50' : 'z-40'"
   >
     <div
-      class="flex max-h-[80vh] w-screen max-w-[89vw] rounded-xl flex-center"
+      class="flex max-h-[80vh] w-10/12 max-w-[110rem] rounded-xl flex-center"
       v-click-outside="handleClickOutsideModal"
     >
       <CrossMarkIcon
         class="delay-80 absolute right-0 top-0 mr-8 mt-6 h-6 w-6 fill-textColor-secondary text-[#ffffff] transition duration-300 ease-in-out hover:cursor-pointer hover:text-red-500"
         @click="handleClickOutsideModal"
       />
-      <div class="w-screen inner">
+      <div class="w-full">
         <component :is="component" />
       </div>
     </div>

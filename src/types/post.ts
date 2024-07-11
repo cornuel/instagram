@@ -1,3 +1,4 @@
+import type { IComment } from './comment'
 import { type IPaginated } from './common'
 
 export interface IImages {
@@ -24,6 +25,7 @@ export interface IPost {
   is_featured?: boolean
   url: string
   is_private?: boolean
+  top_comment?: IComment
 }
 
 export interface IPaginatedPosts extends IPaginated {

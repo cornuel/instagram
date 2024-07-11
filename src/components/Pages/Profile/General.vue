@@ -382,7 +382,7 @@ const deleteAvatar = async () => {
           </ul>
           <div class="flex flex-col">
             <span class="font-semibold">{{ viewedProfile?.full_name }}</span>
-            <span class="">{{ viewedProfile?.bio }}</span>
+            <span class="whitespace-pre-wrap">{{ viewedProfile?.bio }}</span>
           </div>
           <!-- <div
             v-if="user?.mutualFollowers && mutualFollowersComp"
@@ -398,6 +398,10 @@ const deleteAvatar = async () => {
           </div> -->
         </template>
       </div>
+    </div>
+    <div class="flex flex-col p-2 max-w-[35rem]">
+      <span class="font-semibold">{{ viewedProfile?.full_name }}</span>
+      <span class="whitespace-pre-wrap">{{ viewedProfile?.bio }}</span>
     </div>
 
     <!-- <Stories

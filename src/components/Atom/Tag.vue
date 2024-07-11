@@ -23,19 +23,25 @@ const classes = computed(() => {
 
   return [
     sizeClasses[props.size] || sizeClasses.medium,
-    'rounded-full transition ease-in-out delay-50 duration-100',
-    'border border-borderColor hover:bg-gradient-to-r from-[#c128be] via-[#ea3469] to-[#ee8131]',
-    'hover:cursor-pointer hover:text-white hover:border-[#c128be]',
-    'hover:shadow-sm'
+    'rounded-full',
+    'border border-borderColor',
+    'hover:cursor-pointer'
   ]
 })
 </script>
 
 <template>
   <div
-    class="select-none flex items-center whitespace-normal"
+    class="select-none relative flex items-center whitespace-normal px-0.5 py-1 group transition-all duration-100 ease-in-out hover:scale-105 hover:shadow-md"
     :class="[classes, classProps]"
   >
-    <slot />
+    <span
+      class="rounded-full opacity-0 w-0 h-0 absolute top-0 left-0 transition-all duration-200 ease-in-out bg-gradient-to-r from-[#c128be] via-[#ea3469] to-[#ee8131] group-hover:w-full group-hover:h-full group-hover:opacity-100 -z-1"
+    ></span>
+    <span
+      class="transition-colors duration-300 ease-in-out group-hover:text-white px-1 delay-100 z-10"
+    >
+      <slot />
+    </span>
   </div>
 </template>

@@ -20,7 +20,7 @@ import {
   type NavigationGuardNext
 } from 'vue-router'
 
-import { useProfileStore } from '@/stores'
+import { useProfileStore, useResizeStore } from '@/stores'
 import { useProfile } from '@/composables'
 
 const router = useRouter()
@@ -36,6 +36,8 @@ const isCurrentUser = computed(() => {
     currentUser.username === profileUser.username
   )
 })
+
+const { isDesktop } = storeToRefs(useResizeStore())
 
 onBeforeRouteUpdate(
   async (
@@ -119,7 +121,7 @@ onBeforeMount(async () => {
       :isCurrentUser="isCurrentUser"
       class="mt-[45px] min-[768px]:mt-0"
     />
-    <LayoutSelector />
+    <LayoutSelector type="review" />
 
     <div class="border-t border-borderColor">
       <div
@@ -130,9 +132,11 @@ onBeforeMount(async () => {
           class="flex flex-center flex-[1_1_0%] min-[736px]:flex-none h-[52px] text-textColor-secondary border-t border-transparent cursor-pointer has-[exact-link-active]:text-textColor-primary has-[exact-link-active]:border-black"
         >
           <GridIcon
-            class="w-3 h-3 text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
+            :class="isDesktop ? 'w-3 h-3' : 'w-6 h-6'"
+            class="text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
           />
           <span
+            v-if="isDesktop"
             class="ml-[6px] uppercase tracking-widest font-semibold font text-xs"
             >Posts</span
           >
@@ -143,9 +147,11 @@ onBeforeMount(async () => {
           class="flex flex-center flex-[1_1_0%] min-[736px]:flex-none h-[52px] text-textColor-secondary border-t border-transparent cursor-pointer has-[exact-link-active]:text-textColor-primary has-[exact-link-active]:border-black"
         >
           <BookmarkIcon
-            class="w-3 h-3 text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
+            :class="isDesktop ? 'w-3 h-3' : 'w-6 h-6'"
+            class="text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
           />
           <span
+            v-if="isDesktop"
             class="ml-[6px] uppercase tracking-widest font-semibold font text-xs"
             >Saved</span
           >
@@ -155,9 +161,11 @@ onBeforeMount(async () => {
           class="flex flex-center flex-[1_1_0%] min-[736px]:flex-none h-[52px] text-textColor-secondary border-t border-transparent cursor-pointer has-[exact-link-active]:text-textColor-primary has-[exact-link-active]:border-black"
         >
           <TagIcon
-            class="w-3 h-3 text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
+            :class="isDesktop ? 'w-3 h-3' : 'w-6 h-6'"
+            class="text-textColor-secondary fill-textColor-secondary parent-[.exact-link-active]:text-textColor-primary parent-[.exact-link-active]:fill-textColor-primary"
           />
           <span
+            v-if="isDesktop"
             class="ml-[6px] uppercase tracking-widest font-semibold font text-xs"
             >Tagged</span
           >

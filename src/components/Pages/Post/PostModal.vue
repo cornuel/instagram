@@ -70,12 +70,15 @@ const close = () => {
 <template>
   <!-- <transition name="modal"> -->
   <div
-    class="flex flex-col min-[736px]:flex-row mx-auto min-h-[480px] max-w-[80rem] max-h-[92vh] bg-bgColor-primary rounded-md"
-    :class="{ 'border border-borderColor': darkMode }"
+    class="flex flex-col min-[736px]:flex-row mx-auto bg-bgColor-primary rounded-md max-w-[110rem]"
+    :class="{
+      'border border-borderColor backdrop-blur-xl bg-transparent/60 rounded-md':
+        darkMode
+    }"
   >
     <PostHeader v-if="!isDesktop" />
     <div
-      class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-md min-[736px]:rounded-bl-md bg-[#000000] w-full"
+      class="flex-grow flex items-center justify-center overflow-hidden min-[736px]:rounded-tl-md min-[736px]:rounded-bl-md bg-[#000000]"
     >
       <PostSwiper
         class="w-full"
@@ -83,7 +86,7 @@ const close = () => {
       />
     </div>
     <div
-      class="flex flex-col w-full min-[1024px]:w-[30rem] min-[768px]:w-[20rem] flex-shrink-0 border-l-0 min-[736px]:border-l border-borderColor"
+      class="flex flex-col w-full min-h-[30rem] min-[1024px]:w-[30rem] min-[768px]:w-[20rem] flex-shrink-0 border-l-0 min-[736px]:border-l border-borderColor"
     >
       <PostHeader v-if="isDesktop" />
       <PostComments

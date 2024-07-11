@@ -4,10 +4,19 @@ import CommentIcon from '@icons/comment-active.svg'
 import MultipleIcon from '@icons/multiple-active.svg'
 import ReelIcon from '@icons/reel-active.svg'
 import PlayIcon from '@icons/play.svg'
+import { useLayoutStore, useResizeStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 
 import { computed } from 'vue'
 import type { IPost } from '@/types'
 import { formatNumberToSuffix } from '@/helpers'
+
+const { selectedLayout } = storeToRefs(useLayoutStore())
+const { screen } = storeToRefs(useResizeStore())
+
+const layout = computed(() => {
+  return selectedLayout.value
+})
 
 const props = defineProps<{
   post: IPost
@@ -52,14 +61,22 @@ const commentCountComp = computed(() => {
         /> -->
       </div>
       <div
-        class="absolute top-0 left-0 w-full h-full flex flex-center bg-[rgba(0,0,0,0.5)] opacity-0 group-hover/review:opacity-100 transition-opacity z-10"
+        class="absolute top-0 left-0 w-full h-full flex flex-center bg-[rgba(0,0,0,0.5)] opacity-0 group-hover/review:opacity-100 outline outline-1 outline-white group-hover/review:outline-red-100 transition-opacity z-10"
       >
         <div class="text-center">
-          <div class="text-white font-semibold text-sm md:text-lg px-4 my-2">
+          <div
+            v-if="screen !== 'mobile' || layout !== 'mosaic'"
+            class="text-white font-semibold text-base px-2 my-2"
+            :class="{
+              'text-xl': layout === 'detailed',
+              'text-lg': layout === 'medium',
+              'text-xs': layout === 'mosaic'
+            }"
+          >
             {{ post.title }}
           </div>
-          <div class="flex justify-center">
-            <div class="flex items-center mr-7">
+          <div class="flex justify-center px-">
+            <div class="flex items-center mr-5">
               <LikeIcon class="w-5 h-5 text-white fill-white" />
               <span class="ml-2 text-base font-bold text-white">{{
                 likeCountComp

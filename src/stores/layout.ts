@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
 interface IState {
-  selectedLayout: 'detailed' | 'medium' | 'mosaic'
+  selectedLayout: 'detailed' | 'medium' | 'mosaic',
+  feedLayout: 'single' | 'double'
 }
 
 const layoutDict: Record<'detailed' | 'medium' | 'mosaic', string> = {
@@ -16,13 +17,23 @@ export const useLayoutStore = defineStore('layout', {
       (localStorage.getItem('selectedLayout') as
         | 'detailed'
         | 'medium'
-        | 'mosaic') || 'medium'
+        | 'mosaic') || 'medium',
+    feedLayout: (localStorage.getItem('feedLayout') as
+      | 'single'
+      | 'double') || 'single'
   }),
   actions: {
     setPostLayout(mode: 'detailed' | 'medium' | 'mosaic') {
       this.selectedLayout = mode
       localStorage.setItem('selectedLayout', mode)
     },
+    setFeedLayout(mode: 'single' | 'double') {
+      this.feedLayout = mode
+      localStorage.setItem('feedLayout', mode)
+    },
+    getFeedLayout() {
+      return this.feedLayout
+    }
   },
   getters: {
     getLayoutClass(): string {

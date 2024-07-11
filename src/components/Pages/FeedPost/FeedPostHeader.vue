@@ -6,9 +6,9 @@ import UnfollowPopup from '@/components/Popup/UnfollowPopup.vue'
 import ActionsPopup from '@/components/Popup/ActionsPopup.vue'
 import RemovePopup from '@/components/Popup/RemovePopup.vue'
 
-import { ref, computed } from 'vue'
+import { ref, computed, inject, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { IPost, IAction } from '@/types'
+import type { IPost, IAction, IProfile } from '@/types'
 
 import {
   useProfileStore,
@@ -18,16 +18,31 @@ import {
 } from '@/stores'
 
 import { useFollow, usePost, useDownload } from '@/composables'
+import { dateDistanceToNow, convertToFullDate } from '@/helpers'
 
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
-const { postProfile, viewedProfile, authenticatedProfile } =
+const { feedProfiles, viewedProfile, authenticatedProfile } =
   storeToRefs(useProfileStore())
 const { removePostPopupShow, showModal, showPostModal } =
   storeToRefs(useModalStore())
 
-const { post } = storeToRefs(usePostStore())
+const post = inject<IPost>('post')
+const { getProfilefromFeedProfiles } = useProfileStore()
+const isLoading = ref(true)
+
+let postProfile: Nullable<IProfile> = null
+
+const getPostProfile = async () => {
+  try {
+    postProfile = await getProfilefromFeedProfiles(post!.profile)
+    isLoading.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const { downloadImages } = useDownload()
 
 const isLoadingFollow = ref(false)
@@ -37,11 +52,18 @@ const actionsPopupActive = ref(false)
 const route = useRoute()
 const currentRoute = route.name
 
+const createdTimeComp = computed(() =>
+  dateDistanceToNow(post?.created!, false, false)
+)
+const fullCreatedAtComp = computed(() =>
+  convertToFullDate(post?.created!).toUpperCase()
+)
+
 // deletePost returns true if status code is 204
 const deletePost = async () => {
   if (authenticatedProfile) {
     const { deletePost } = usePost()
-    if (await deletePost(post.value?.slug!)) {
+    if (await deletePost(post?.slug!)) {
       const { decreasePostsCount } = useProfileStore()
       const { removePostfromUserPosts, removePostfromShowedPosts } =
         usePostStore()
@@ -53,8 +75,8 @@ const deletePost = async () => {
         currentTag.value!.posts_count--
       }
       // remove the posts from both showed and user posts
-      removePostfromUserPosts(post.value!)
-      removePostfromShowedPosts(post.value!)
+      removePostfromUserPosts(post!)
+      removePostfromShowedPosts(post!)
 
       if (showModal.value && showPostModal.value) {
         showModal.value = false
@@ -77,15 +99,15 @@ const deletePost = async () => {
 }
 
 const unfollowComputedTitle = computed(() => {
-  return postProfile.value?.is_following ? 'Unfollow' : 'Follow'
+  return postProfile?.is_following ? 'Unfollow' : 'Follow'
 })
 
 const unfollowComputedClasses = computed(() => {
-  return postProfile.value?.is_following ? 'font-bold text-error' : ''
+  return postProfile?.is_following ? 'font-bold text-error' : ''
 })
 
 const userPostActions = computed(() => {
-  if (authenticatedProfile.value?.id == postProfile.value!.id)
+  if (authenticatedProfile.value?.id == postProfile!.id)
     return [
       {
         title: 'Delete',
@@ -101,7 +123,7 @@ const userPostActions = computed(() => {
       {
         title: 'Download photo(s)',
         action: () => {
-          downloadImages(post.value as IPost)
+          downloadImages(post as IPost)
         }
       },
       {
@@ -136,7 +158,7 @@ const userPostActions = computed(() => {
         title: unfollowComputedTitle.value,
         classes: unfollowComputedClasses.value,
         action: () => {
-          if (postProfile.value?.is_following) {
+          if (postProfile?.is_following) {
             unfollowPopupActive.value = true
           } else {
             follow()
@@ -146,7 +168,7 @@ const userPostActions = computed(() => {
       {
         title: 'Download photo(s)',
         action: () => {
-          downloadImages(post.value as IPost)
+          downloadImages(post as IPost)
         }
       },
       {
@@ -166,9 +188,9 @@ const follow = async () => {
     const { setFollow } = useFollow()
     const { increaseFollowingCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(postProfile.value?.username!)
+    const res: string = await setFollow(postProfile?.username!)
     if (res.includes('following')) {
-      postProfile.value!.is_following = true
+      postProfile!.is_following = true
       increaseFollowingCount(viewedProfile.value!)
     }
     isLoadingFollow.value = false
@@ -180,9 +202,9 @@ const unfollow = async () => {
     const { setFollow } = useFollow()
     const { decreaseFollowingCount } = useProfileStore()
     isLoadingFollow.value = true
-    const res: string = await setFollow(postProfile.value?.username!)
+    const res: string = await setFollow(postProfile?.username!)
     if (res.includes('unfollowed')) {
-      postProfile.value!.is_following = false
+      postProfile!.is_following = false
       decreaseFollowingCount(viewedProfile.value!)
       if (unfollowPopupActive.value) {
         unfollowPopupActive.value = false
@@ -191,10 +213,17 @@ const unfollow = async () => {
     isLoadingFollow.value = false
   }
 }
+
+onBeforeMount(() => {
+  getPostProfile()
+})
 </script>
 
 <template>
-  <div class="flex items-center justify-between border-b border-borderColor">
+  <div
+    v-if="!isLoading"
+    class="flex items-center justify-between"
+  >
     <div class="flex items-center p-[10px]">
       <RouterLink
         :to="{
@@ -215,6 +244,12 @@ const unfollow = async () => {
           }"
         >
           <span class="hover:opacity-60">{{ postProfile!.username }}</span>
+          <span class="opacity-60"> • </span>
+          <span
+            class="mr-3 cursor-pointer opacity-60"
+            :title="fullCreatedAtComp"
+            >{{ createdTimeComp }}</span
+          >
         </RouterLink>
         <template
           v-if="

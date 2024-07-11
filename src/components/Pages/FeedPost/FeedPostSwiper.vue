@@ -1,13 +1,15 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { reactive, computed, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { usePostStore } from '@/stores'
+import MultipleIcon from '@icons/multiple-active.svg'
 
-const { post } = storeToRefs(usePostStore())
+import type { IPost } from '@/types'
+import { inject } from 'vue'
+
+const post = inject<IPost>('post')
 
 const postSwiperOptions = reactive({
   modules: [Navigation, Pagination],
@@ -16,9 +18,9 @@ const postSwiperOptions = reactive({
   spaceBetween: 0,
   allowTouchMove: true,
   navigation: {
-    nextEl: '.navigation-next',
-    prevEl: '.navigation-prev',
-    disabledClass: 'disabled'
+    nextEl: `.navigation-next-${post!.id}`,
+    prevEl: `.navigation-prev-${post!.id}`,
+    disabledClass: `disabled-${post!.id}`
   },
   pagination: { clickable: true }
 })
@@ -30,15 +32,18 @@ const handleLoad = () => {
 }
 
 const isMultipleImages = computed(() => {
-  return post.value!.images.length > 1
+  return post!.images.length > 1
 })
 </script>
 
 <template>
-  <div class="relative">
+  <div
+    class="relative"
+    id="post.id"
+  >
     <Swiper
       v-bind="postSwiperOptions"
-      class="relative"
+      class="relative border border-borderColor md:rounded-lg rounded-none"
     >
       <SwiperSlide
         v-for="item in post!.images"
@@ -68,8 +73,12 @@ const isMultipleImages = computed(() => {
     </Swiper>
 
     <div v-if="isMultipleImages">
+      <div class="absolute top-2 right-2 z-10">
+        <MultipleIcon class="fill-slate-50" />
+      </div>
       <div
-        class="absolute px-2 py-4 top-1/2 left-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 has-[disabled]:hidden navigation-prev drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+        :class="`navigation-prev-${post!.id} has-[disabled-${post!.id}]:hidden`"
+        class="absolute px-2 py-4 top-1/2 left-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
       >
         <fa
           :icon="['fas', 'circle-chevron-left']"
@@ -77,7 +86,8 @@ const isMultipleImages = computed(() => {
         />
       </div>
       <div
-        class="absolute px-2 py-4 top-1/2 right-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 has-[disabled]:hidden navigation-next drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+        :class="`navigation-next-${post!.id} has-[disabled-${post!.id}]:hidden`"
+        class="absolute px-2 py-4 top-1/2 right-0 -translate-y-1/2 opacity-60 cursor-pointer z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.2)]"
       >
         <fa
           :icon="['fas', 'circle-chevron-right']"

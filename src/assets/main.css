@@ -139,6 +139,10 @@ img {
   vertical-align: middle;
 }
 
+svg[aria-label='multiple-a'] {
+  filter: drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4));
+}
+
 input,
 textarea,
 button {
@@ -315,6 +319,7 @@ button {
   background: #fff !important;
   opacity: 0.4;
   margin: 10px 5px !important;
+  filter: drop-shadow(0px 1px 1px rgb(0 0 0 / 0.6));
 }
 
 .swiper-pagination-bullet-active {

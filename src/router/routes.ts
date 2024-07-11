@@ -2,20 +2,20 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 import { storeToRefs } from 'pinia'
-import { useProfileStore, useFeedStore } from '@/stores'
-import { useFeed } from '@/composables'
+import { usePostStore, useProfileStore, useFeedStore } from '@/stores'
+import { useFeed, useProfile } from '@/composables'
 import type { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import post from './post'
 import profile from './profile'
 import tag from './tag'
-import type { IPaginatedPosts } from '@/types'
+import type { IPaginatedPosts, IProfile } from '@/types'
 
 export default [
   {
     path: '/',
     name: 'Home',
     component: () => import('@/views/home.vue'),
-    meta: { title: 'Instagram', requiresAuth: true },
+    meta: { layout: DashboardLayout, title: 'Instagram', requiresAuth: true },
     beforeEnter: async (
       to: RouteLocationNormalized,
       from: RouteLocationNormalized,
@@ -24,22 +24,49 @@ export default [
       const { authenticatedProfile } = storeToRefs(useProfileStore())
 
       if (authenticatedProfile.value) {
+        // console.log('On repasse par Home')
         to.meta.layout = DashboardLayout
         const { setFeed } = useFeedStore()
+        const { setShowedPosts } = usePostStore()
         const { fetchFeed } = useFeed()
+        const { showedPosts } = storeToRefs(usePostStore())
+        const { feedProfiles } = storeToRefs(useProfileStore())
+        const { addProfiletoFeedProfiles } = useProfileStore()
 
-        const res: IPaginatedPosts | null = await fetchFeed()
+        next()
+        // const res: IPaginatedPosts | null = await fetchFeed()
+        // console.log(res)
 
-        if (res) {
-          setFeed(res)
-        }
+        // if (res) {
+        //   // setFeed(res)
+        //   // Fetch profiles for each post
+        //   const { getProfile } = useProfile();
+        //   setShowedPosts(res)
+        //   for (const post of res.results!) {
+        //     const profileId = post.profile;
+        //     if (!feedProfiles.value[profileId]) {
+        //       const profile = await getProfile(profileId);
+        //       if (profile) {
+        //         feedProfiles.value[profileId] = profile;
+        //         console.log(`Profile ${profileId} added to feed profiles`)
+        //       } else {
+        //         console.warn(`Profile not found for ID: ${profileId}`);
+        //       }
+        //     }
+        //   }
+        //   next()
+
+
+        //   // await Promise.all(profilesPromises);
+        //   console.log('feedProfiles', feedProfiles)
+        // }
 
       } else {
         to.meta.layout = AuthLayout
+        next()
       }
 
-      next()
-    },
+    }
   },
   {
     path: '/accounts/edit',

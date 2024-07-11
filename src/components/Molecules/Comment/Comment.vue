@@ -58,24 +58,22 @@ watch(
 <template>
   <div class="">
     <CommentItem v-bind="comment" />
-    <div v-if="comment.replies_count > 0" class="ml-[54px]">
+    <div
+      v-if="comment.replies_count > 0"
+      class="ml-[54px]"
+    >
       <div
         class="flex items-center cursor-pointer"
         @click="toggleReplies"
       >
         <div
-          class="inline-block w-6 h-[1px] bg-textColor-secondary align-middle
-            mr-4"
+          class="inline-block w-6 h-[1px] bg-textColor-secondary align-middle mr-4"
         ></div>
-        <span
-          class="text-xs text-textColor-secondary font-semibold"
-        >
+        <span class="text-xs text-textColor-secondary font-semibold">
           {{
             renderReplies
               ? 'Hide replies'
-              : 'View replies (' +
-                comment.replies_count +
-                ')'
+              : 'View replies (' + comment.replies_count + ')'
           }}
         </span>
         <Loading
@@ -84,7 +82,10 @@ watch(
           width="16px"
         />
       </div>
-      <div v-if="renderReplies && replies" class="mt-3">
+      <div
+        v-if="renderReplies && replies"
+        class="mt-3"
+      >
         <CommentItem
           v-for="reply in replies.results"
           :key="reply.id"

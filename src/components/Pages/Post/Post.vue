@@ -70,9 +70,9 @@ const close = () => {
 </script>
 
 <template>
-  <div class="py-4 px-5 mx-auto box-content">
+  <div class="py-4 px-5 mx-auto box-content max-w-[80rem]">
     <div
-      class="flex flex-col min-[736px]:flex-row w-full mx-auto min-h-[480px] max-h-none min-[736px]:max-h-[600px] box-content border border-borderColor rounded-md"
+      class="flex flex-col min-[736px]:flex-row w-full mx-auto min-h-[480px] max-h-none min-[736px]:max-h-[800px] box-content border border-borderColor rounded-md"
     >
       <div
         class="flex-grow flex items-center overflow-hidden rounded-tl-md min-[736px]:rounded-bl-md"
