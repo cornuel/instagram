@@ -40,7 +40,7 @@ const displayedTags = computed(() =>
           </RouterLink>
         </div>
         <p
-          v-if="!showAllTags && post?.tags?.length > 5"
+          v-if="!showAllTags && post?.tags?.length! > 5"
           @click="showAllTags = true"
           class="cursor-pointer py-1"
         >

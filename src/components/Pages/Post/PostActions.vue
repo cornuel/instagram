@@ -13,7 +13,7 @@ import { useLike, usePost } from '@/composables'
 
 import { dateDistanceToNow, convertToFullDate } from '@/helpers'
 
-import type { IPaginatedProfiles } from '@/types'
+import type { IPaginatedProfiles, IPost } from '@/types'
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
 const { post } = storeToRefs(usePostStore())
@@ -70,7 +70,9 @@ const commentIconClick = () => {
 }
 
 const likeText = computed(() => {
-  return post?.like_count === 1 || post?.like_count === 0 ? 'like' : 'likes'
+  return post?.value?.like_count === 1 || post?.value?.like_count === 0
+    ? 'like'
+    : 'likes'
 })
 
 const handleClickLikedPost = async () => {

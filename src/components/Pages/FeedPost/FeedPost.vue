@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { IPost, IProfile } from '@/types'
-import { onBeforeMount, onMounted, on, provide, ref } from 'vue'
+import { onBeforeMount, onMounted, provide, ref } from 'vue'
 import FeedPostHeader from './FeedPostHeader.vue'
 import FeedPostSwiper from './FeedPostSwiper.vue'
 import FeedPostActions from './FeedPostActions.vue'

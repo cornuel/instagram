@@ -81,11 +81,10 @@ const commentIconClick = () => {
 
 onMounted(async () => {
   if (post) {
-    const { setLikedList } = usePostStore()
-    const { getLikedUsers } = useLike()
-
-    isLike.value = post.is_liked ?? false
-    isFavorited.value = post.is_favorited ?? false
+    // const { setLikedList } = usePostStore()
+    // const { getLikedUsers } = useLike()
+    // isLike.value = post.is_liked ?? false
+    // isFavorited.value = post.is_favorited ?? false
     // const likedUsers = (await getLikedUsers(
     //   post!.slug,
     //   'post'

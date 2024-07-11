@@ -72,7 +72,7 @@ onBeforeMount(async () => {
         class="mt-10"
       />
       <RouterLink
-        v-if="post?.comment_count > 0"
+        v-if="post?.comment_count! > 0"
         :to="{
           name: 'Post',
           params: { postId: post!.slug }

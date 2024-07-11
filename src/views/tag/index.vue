@@ -64,7 +64,7 @@ onBeforeRouteUpdate(() => {
         </div>
       </div>
     </div>
-    <LayoutSelector />
+    <LayoutSelector type="review" />
     <div>
       <RouterView />
     </div>
