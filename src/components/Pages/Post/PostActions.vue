@@ -84,6 +84,7 @@ const handleClickLikedPost = async () => {
   setLikedListModal(true)
   setIsLoadingLikedList(true)
   const likedUsers = (await getLikedUsers(
+    1,
     post.value!.slug,
     'post'
   )) as IPaginatedProfiles

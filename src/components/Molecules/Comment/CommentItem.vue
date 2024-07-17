@@ -134,6 +134,7 @@ const handleClickLikeCount = async () => {
   setLikedListModal(true)
   setIsLoadingLikedList(true)
   const likedUsers = (await getLikedUsers(
+    1,
     props.id as number,
     'comment'
   )) as IPaginatedProfiles
