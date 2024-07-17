@@ -15,7 +15,7 @@ import { useSearch, useTag } from '@/composables'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
 import { onBeforeRouteUpdate, useRouter } from 'vue-router'
-import { load } from '@/helpers/eternalLoader'
+import { loadPosts } from '@/helpers/eternalLoader'
 
 const { query, searchedPosts } = storeToRefs(useSearchStore())
 const { getLayoutClass } = storeToRefs(useLayoutStore())
@@ -51,7 +51,7 @@ const getPosts = async () => {
 
 const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { fetchPostsByTagQuery } = useSearch()
-  return load(
+  return loadPosts(
     (page: number, query?: string) =>
       fetchPostsByTagQuery(page, query as string),
     loadAction,

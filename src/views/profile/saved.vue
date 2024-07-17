@@ -9,7 +9,7 @@ import { onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
-import { load } from '@/helpers/eternalLoader'
+import { loadPosts } from '@/helpers/eternalLoader'
 
 const { showedPosts, favoritedPosts } = storeToRefs(usePostStore())
 const { authenticatedProfile } = storeToRefs(useProfileStore())
@@ -29,7 +29,7 @@ const page = ref(1)
 
 const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { getFavoritedPosts } = usePost()
-  return load(
+  return loadPosts(
     (page: number) => getFavoritedPosts(page),
     loadAction,
     page.value + 1

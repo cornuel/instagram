@@ -31,10 +31,10 @@ const notifyPanelActive = ref(false)
 const barPanelActive = ref(false)
 
 const changeTab = (nav: NavTabEnum) => {
-  searchPanelActive.value = nav == NavTabEnum.Search ? true : false
-  notifyPanelActive.value = nav == NavTabEnum.Notification ? true : false
-  barPanelActive.value = nav == NavTabEnum.Bar ? true : false
-  modalCreatePostShow.value = nav == NavTabEnum.CreatePost ? true : false
+  searchPanelActive.value = nav === NavTabEnum.Search
+  notifyPanelActive.value = nav === NavTabEnum.Notification
+  barPanelActive.value = nav === NavTabEnum.Bar
+  modalCreatePostShow.value = nav === NavTabEnum.CreatePost
   currentNav.value = nav
 }
 

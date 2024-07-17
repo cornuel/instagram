@@ -1,10 +1,17 @@
 <script lang="ts" setup>
-import Modal from '@/components/Modal/Modal.vue'
 import UserItem from '@/components/Molecules/User/UserItem.vue'
 import UserItemSkeleton from '@/components/Skeleton/User/UserItemSkeleton.vue'
+import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
+import type { LoadAction } from '@/types/vue-eternal'
+import { loadProfiles } from '@/helpers/eternalLoader'
 
 import { storeToRefs } from 'pinia'
 import { usePostStore, useProfileStore } from '@/stores'
+import { useLike } from '@/composables'
+import { ref } from 'vue'
+import type { IPaginatedProfiles } from '@/types'
+
+const { post } = storeToRefs(usePostStore())
 
 const { likedListModal, isLoadingLikedList, likedList } =
   storeToRefs(usePostStore())
@@ -12,6 +19,27 @@ const { authenticatedProfile } = storeToRefs(useProfileStore())
 
 const close = () => {
   likedListModal.value = false
+}
+
+const page = ref(1)
+
+const getMoreLikedUsers = async (page: number) => {
+  const { getLikedUsers } = useLike()
+
+  const data: IPaginatedProfiles = (await getLikedUsers(
+    page,
+    post!.value!.slug,
+    'post'
+  )) as IPaginatedProfiles
+  return data
+}
+
+const loadMoreProfiles = (loadAction: LoadAction): Promise<void> => {
+  return loadProfiles(
+    (page: number) => getMoreLikedUsers(page),
+    loadAction,
+    (page.value += 1)
+  )
 }
 </script>
 
@@ -46,6 +74,7 @@ const close = () => {
         :profile="user"
         :authenticatedProfile="authenticatedProfile!"
       />
+      <VueEternalLoading :load="loadMoreProfiles" />
     </div>
   </div>
 </template>

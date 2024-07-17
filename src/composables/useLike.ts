@@ -6,12 +6,15 @@ export const useLike = () => {
   const { handleApiError } = axiosAPI()
 
   const getLikedUsers = async (
+    page: number = 1,
     findId: string | number,
     type: 'post' | 'comment'
   ) => {
 
     try {
-      const response = await instance.get<IPaginatedProfiles>(`${type}s/${findId}/likes/`)
+      const response = await instance.get<IPaginatedProfiles>(`${type}s/${findId}/likes/`, {
+        params: { page }
+      })
       return response.data
     } catch (error) {
       handleApiError(error)

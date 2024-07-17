@@ -23,10 +23,14 @@ const handleClickLikedPost = async () => {
   const { setLikedListModal, setIsLoadingLikedList, setLikedList } =
     usePostStore()
   const { getLikedUsers } = useLike()
+  const { setPost } = usePostStore()
+
+  setPost(post!)
 
   setLikedListModal(true)
   setIsLoadingLikedList(true)
   const likedUsers = (await getLikedUsers(
+    1,
     post!.slug,
     'post'
   )) as IPaginatedProfiles

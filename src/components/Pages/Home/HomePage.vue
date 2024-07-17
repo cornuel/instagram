@@ -6,20 +6,16 @@ import {
   useResizeStore,
   useLayoutStore
 } from '@/stores'
-import { useFeed } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
-import { load } from '@/helpers/eternalLoader'
+import { loadPosts } from '@/helpers/eternalLoader'
 import FeedPost from '../FeedPost/FeedPost.vue'
 import Modal from '@/components/Modal/Modal.vue'
 import UsersWhoLikedModal from '@/components/Modal/UsersWhoLikedModal.vue'
 import LayoutSelector from '@/components/Molecules/Layout/LayoutSelector.vue'
 import { onBeforeMount, onMounted, onUpdated, ref, watch } from 'vue'
-import type { IPost } from '@/types'
-
-const router = useRouter()
 
 const { screen } = storeToRefs(useResizeStore())
 const { feedLayout } = storeToRefs(useLayoutStore())
@@ -34,7 +30,11 @@ const close = () => {
 
 const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { setFeed } = useFeedStore()
-  return load((page: number) => setFeed(page), loadAction, (page.value += 1))
+  return loadPosts(
+    (page: number) => setFeed(page),
+    loadAction,
+    (page.value += 1)
+  )
 }
 
 onBeforeMount(async () => {

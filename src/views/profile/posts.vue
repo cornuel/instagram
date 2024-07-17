@@ -12,7 +12,7 @@ import { useLayoutStore, usePostStore, useProfileStore } from '@/stores'
 import { usePost } from '@/composables'
 import VueEternalLoading from '@/helpers/VueEternalLoading.vue'
 import type { LoadAction } from '@/types/vue-eternal'
-import { load } from '@/helpers/eternalLoader'
+import { loadPosts } from '@/helpers/eternalLoader'
 
 const { viewedProfile, authenticatedProfile } = storeToRefs(useProfileStore())
 const { userPosts, showedPosts } = storeToRefs(usePostStore())
@@ -38,7 +38,7 @@ const getPosts = async () => {
 
 const loadMorePosts = (loadAction: LoadAction): Promise<void> => {
   const { getUserPosts } = usePost()
-  return load(
+  return loadPosts(
     (page: number, query?: string) => getUserPosts(page, query as string),
     loadAction,
     (page.value += 1),
