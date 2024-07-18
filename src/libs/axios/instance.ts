@@ -60,7 +60,10 @@ instance.interceptors.response.use(
           return axios(originalRequest);
         }
         else {
-          return null
+          localStorage.clear();
+          alert("Your session has expired. Please log in again.");
+          router.push('/accounts/login');
+          // return null
         }
       } catch (error) {
         // If the refresh token is also expired, log out the user
