@@ -52,31 +52,35 @@ export const usePostStore = defineStore('post', {
     decreaseCommentCount() {
       this.post!.comment_count -= 1
     },
-    increaseLikeCount() {
+    increaseLikeCount(likeFromModal: boolean = false) {
       this.post!.like_count += 1
       this.post!.is_liked = true
-      try {
-        const index = this.showedPosts!.results!.findIndex(
-          (post: IPost) => post.id === this.post!.id
-        )
-        console.log(index)
-        this.showedPosts!.results![index].like_count += 1
-        this.showedPosts!.results![index].is_liked = true
-      } catch {
-        console.debug('post not found')
+
+      if (likeFromModal) {
+        try {
+          const index = this.showedPosts!.results!.findIndex(
+            (post: IPost) => post.id === this.post!.id
+          )
+          this.showedPosts!.results![index].like_count += 1
+          this.showedPosts!.results![index].is_liked = true
+        } catch {
+          console.debug('post not found')
+        }
       }
     },
-    decreaseLikeCount() {
+    decreaseLikeCount(likeFromModal: boolean = false) {
       this.post!.like_count -= 1
       this.post!.is_liked = false
-      try {
-        const index = this.showedPosts!.results!.findIndex(
-          (post: IPost) => post.id === this.post!.id
-        )
-        this.showedPosts!.results![index].like_count -= 1
-        this.showedPosts!.results![index].is_liked = false
-      } catch {
-        console.debug('post not found')
+      if (likeFromModal) {
+        try {
+          const index = this.showedPosts!.results!.findIndex(
+            (post: IPost) => post.id === this.post!.id
+          )
+          this.showedPosts!.results![index].like_count -= 1
+          this.showedPosts!.results![index].is_liked = false
+        } catch {
+          console.debug('post not found')
+        }
       }
     },
     addPosttoFavoritedPosts() {

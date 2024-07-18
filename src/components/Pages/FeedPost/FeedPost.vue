@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { IPost, IProfile } from '@/types'
-import { onBeforeMount, onMounted, provide, ref } from 'vue'
+import type { IPost } from '@/types'
+import { onBeforeMount, provide, ref } from 'vue'
 import FeedPostHeader from './FeedPostHeader.vue'
 import FeedPostSwiper from './FeedPostSwiper.vue'
 import FeedPostActions from './FeedPostActions.vue'
@@ -18,8 +18,6 @@ const props = defineProps<{
 provide('post', props.post)
 
 const isLoading = ref(true)
-const { addProfiletoFeedProfiles } = useProfileStore()
-const { feedProfiles } = storeToRefs(useProfileStore())
 const { likedListModal } = storeToRefs(usePostStore())
 
 const close = () => {
@@ -28,13 +26,6 @@ const close = () => {
 
 onBeforeMount(async () => {
   isLoading.value = false
-  // console.log(`Loading post... ${props.post.slug}`)
-  // if (post_copy) {
-  //   await addProfiletoFeedProfiles(post_copy.profile)
-  //   console.log(`Profile ${post_copy.profile} added to feed profiles`)
-  //   isLoading.value = false
-  //   // console.log(feedProfiles.value)
-  // }
 })
 </script>
 

@@ -43,10 +43,12 @@ const fullCreatedAtComp = computed(() => {
 
 const handleLikePost = async () => {
   const { likePost } = useLike()
+  const { setPost } = usePostStore()
   isLoadingLike.value = true
   isLike.value = !isLike.value
+  const likeFromModal = true
   try {
-    await likePost(post.value!.slug, !isLike.value)
+    await likePost(post.value!.slug, !isLike.value, likeFromModal)
   } catch (error) {
     isLike.value = !isLike.value
   }

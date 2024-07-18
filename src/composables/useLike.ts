@@ -26,19 +26,20 @@ export const useLike = () => {
   // Post Likes
   const likePost = async (
     postSlug: string,
-    isLiked: boolean
+    isLiked: boolean,
+    likeFromModal: boolean = false
   ) => {
     const { decreaseLikeCount, increaseLikeCount } = usePostStore()
 
     try {
-      isLiked ? decreaseLikeCount() : increaseLikeCount()
+      isLiked ? decreaseLikeCount(likeFromModal) : increaseLikeCount(likeFromModal)
       const like_message = 'Post liked successfully'
 
       const response = await instance.post(`posts/${postSlug}/like/`)
       return response.data.message === like_message
     } catch (error) {
       // Rollback optimistic update
-      isLiked ? increaseLikeCount() : decreaseLikeCount()
+      isLiked ? increaseLikeCount(likeFromModal) : decreaseLikeCount(likeFromModal)
       handleApiError(error)
       return null;
     }
