@@ -3,8 +3,16 @@
 <template>
   <section class="auth flex flex-col h-screen items-center">
     <div class="w-fit mt-5 border border-red-600 text-red-500 p-5 rounded-md">
-      This is a clone of Instagram for demonstration purposes only and it is not
-      affiliated with the original platform whatsoever.
+      <strong>Disclaimer:</strong>
+      <p>
+        This is a <strong>DEMONSTRATION</strong> site and IS NOT the
+        <strong>REAL</strong> Instagram.
+      </p>
+      <p>👉NEVER ENTER your real Instagram credentials here.</p>
+      <p>
+        This site is solely intended to showcase my development skills and is not
+        affiliated with any official platform
+      </p>
       <a
         href="https://github.com/cornuel/instagram"
         target="_blank"
